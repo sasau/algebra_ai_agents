@@ -1,0 +1,38 @@
+# --- secrets: never commit an API key ---
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+secrets.json
+
+# --- dependencies & build output ---
+node_modules/
+dist/
+build/
+*.tsbuildinfo
+
+# --- Gradle (Java track) ---
+.gradle/
+# The wrapper jar MUST be committed: it is what lets a student run ./gradlew
+# without installing Gradle first. Re-listed explicitly so no broader rule
+# above can ever swallow it.
+!gradle/wrapper/gradle-wrapper.jar
+!gradle/wrapper/gradle-wrapper.properties
+
+# --- logs & caches ---
+npm-debug.log*
+yarn-error.log*
+.npm/
+.cache/
+
+# --- editor / OS noise ---
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# --- student work that should stay local ---
+# findings.md IS submitted — do not ignore it.
+scratch/

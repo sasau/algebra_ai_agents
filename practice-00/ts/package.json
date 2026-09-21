@@ -1,0 +1,30 @@
+{
+  "name": "practice-00-llm-basics",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Practice 00 — Intro to LLMs. First API call, context growth, sampling knobs, JSON output.",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "check": "tsx src/00-check-setup.ts",
+    "ex1": "tsx src/01-first-call.ts",
+    "ex2": "tsx src/02-conversation.ts",
+    "ex3": "tsx src/03-knobs.ts",
+    "ex4": "tsx src/04-json.ts",
+    "stretch:stream": "tsx src/05-stretch-stream.ts",
+    "stretch:chat": "tsx src/06-stretch-chat.ts",
+    "all": "npm run ex1 && npm run ex2 && npm run ex3 && npm run ex4"
+  },
+  "//deps": "Versions are pinned exactly, not floated with ^. The internal npm mirror blocks packages less than 3 days old, so a caret range can resolve to a version that 403s for the whole class. Bump these deliberately, not accidentally.",
+  "dependencies": {
+    "@anthropic-ai/sdk": "0.126.0",
+    "dotenv": "17.4.2"
+  },
+  "devDependencies": {
+    "@types/node": "26.6.0",
+    "tsx": "4.23.13",
+    "typescript": "7.0.2"
+  }
+}
