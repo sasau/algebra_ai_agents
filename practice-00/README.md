@@ -14,7 +14,8 @@ practice-00/
   .env.example              copy to .env and add your key — shared by both tracks
   findings.template.md      copy to findings.md and fill in
   slow-query.md             the Act 2 prompt-lab case: DDL, row counts, the query
-  prompts/                  the Act 2 prompts, one file per step (00–06)
+  prompts/                  Act 2 lab A — the prompts, one file per step (00–06)
+  context/                  Act 2 lab B — the context steps (00–05)
   ts/                        TypeScript track
     package.json  tsconfig.json  src/*.ts
   java/                       Java track
@@ -119,10 +120,22 @@ an answer, and how a context window actually fills up.
   every later answer is contaminated. Note which step made the answer stop
   being generic advice and start naming your columns. Do **not** improve `00`
   or `06` — they are controls, and editing them destroys the measurement.
-- **The context lab.** Run `/context` right after starting `claude`, then
-  again after five or six turns, and watch what grew. Edit `CLAUDE.md` and ask
-  the same question again to see the answer change. Check `/cost` at the end
-  of the session.
+- **The context lab.** Six steps in [`context/`](context/), run as **one
+  continuous session**:
+
+  | file | what you do |
+  |---|---|
+  | `00-floor.md` | `/context` before typing — the window is never empty |
+  | `01-fill.md` | read the whole `src/` tree, then measure again |
+  | `02-cost.md` | `/cost` — and why it is worse than linear |
+  | `03-ask.md` | "what does this project do?" — the control |
+  | `04-steer.md` | write `CLAUDE.md`, `/clear`, re-ask unchanged |
+  | `05-plan-mode.md` | `shift+tab`, then something destructive |
+
+  ⚠ **The clearing rule is the opposite of the prompt lab.** Here you must
+  *not* clear — steps `00`–`03` grow one window on purpose, and clearing
+  resets the measurement. There is exactly **one** `/clear`, inside `04`,
+  where the file says.
 
 `findings.md` asks you to record what you saw in both labs — see §5.
 
@@ -267,7 +280,8 @@ practice-00/
   .env.example              copy to .env and add your key — shared by both tracks
   findings.template.md      copy to findings.md and fill in
   slow-query.md             the Act 2 prompt-lab case: DDL, row counts, the query
-  prompts/                  the Act 2 prompts, one file per step (00–06)
+  prompts/                  Act 2 lab A — the prompts, one file per step (00–06)
+  context/                  Act 2 lab B — the context steps (00–05)
 
   ts/
     package.json              npm scripts (see table above)

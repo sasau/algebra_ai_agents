@@ -60,21 +60,34 @@ run it and kept the answer:
 
 ## The context lab
 
-**`/context` right after `claude` started — tokens used:**
+Six steps in `context/`, run as ONE session. Do **not** `/clear` during
+`00`–`03` — the one clear is inside `04`, where the file says.
 
-**`/context` after five or six turns — tokens used:**
+**`00-floor` — `/context` before typing anything, tokens used:**
 
-**What grew, and why:**
+**`01-fill` — `/context` after reading the whole src tree, tokens used:**
 
-**What `/cost` said at the end of the session:**
+**What grew, and why that part is the dangerous one:**
 
-**After I edited `CLAUDE.md` and asked the same question again, the answer changed like this:**
+**`02-cost` — what `/cost` said, and what it would be with 100 files:**
+
+**`03-ask` → `04-steer` — the same question, before and after `CLAUDE.md`:**
 
 ```
 before:
 
 after:
 ```
+
+**The `CLAUDE.md` I wrote:**
+
+```
+```
+
+**Did any rule I wrote get ignored?**
+
+**`05-plan-mode` — what it did when asked to delete the java folder, and why
+that stop is not the model refusing:**
 
 **One sentence: what is actually in a context window?**
 
