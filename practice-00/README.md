@@ -14,6 +14,7 @@ practice-00/
   .env.example              copy to .env and add your key — shared by both tracks
   findings.template.md      copy to findings.md and fill in
   slow-query.md             the Act 2 prompt-lab case: DDL, row counts, the query
+  prompts/                  the Act 2 prompts, one file per step (00–06)
   ts/                        TypeScript track
     package.json  tsconfig.json  src/*.ts
   java/                       Java track
@@ -97,12 +98,25 @@ an answer, and how a context window actually fills up.
 
 - **The prompt lab.** The case is in [`slow-query.md`](slow-query.md): a nightly
   report query that takes 42 seconds and must come in under 2, with its full
-  DDL, row counts, and the single index the table actually has. Ask the
-  deliberately bad version first — *"How do I speed up this query?"* — and keep
-  that answer as your control. Then add one part back at a time (role &
-  audience → the material pasted in → constraints → output format → show the
-  reasoning), re-asking after each, and note which step made the answer stop
-  being generic advice and start naming your columns.
+  DDL, row counts, and the single index the table actually has.
+
+  **The prompts are written for you** — [`prompts/`](prompts/), one file per
+  step, copy-paste ready:
+
+  | file | adds |
+  |---|---|
+  | `00-baseline.md` | nothing — the control, deliberately bad |
+  | `01-role.md` | role & audience |
+  | `02-material.md` | the DDL, indexes and row counts |
+  | `03-constraints.md` | "three options, ranked" |
+  | `04-format.md` | `{fix, reason, risk}` JSON |
+  | `05-reasoning.md` | "state the query plan first" |
+  | `06-politeness.md` | the null test — politeness and nothing else |
+
+  Run them in order and keep every answer; the prompt accumulates. Note which
+  step made the answer stop being generic advice and start naming your columns.
+  Do **not** improve `00` or `06` — they are controls, and editing them
+  destroys the measurement.
 - **The context lab.** Run `/context` right after starting `claude`, then
   again after five or six turns, and watch what grew. Edit `CLAUDE.md` and ask
   the same question again to see the answer change. Check `/cost` at the end
@@ -251,6 +265,7 @@ practice-00/
   .env.example              copy to .env and add your key — shared by both tracks
   findings.template.md      copy to findings.md and fill in
   slow-query.md             the Act 2 prompt-lab case: DDL, row counts, the query
+  prompts/                  the Act 2 prompts, one file per step (00–06)
 
   ts/
     package.json              npm scripts (see table above)

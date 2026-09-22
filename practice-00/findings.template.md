@@ -26,24 +26,22 @@
 ## The prompt lab
 
 The case is in `slow-query.md` — the 42-second report query, its DDL, and its
-one index. The question never changes; only the prompt around it does.
+one index. The prompts are in `prompts/`, one file per step. The question never
+changes; only the prompt around it does.
 
-**My baseline prompt, and the answer I got:**
+**The baseline answer I got** (`prompts/00-baseline.md`):
 
 ```
-prompt:
-
-answer:
 ```
 
 **Then, one part at a time** — tick each once you have run it and kept the answer:
 
-- [ ] 1 · role & audience
-- [ ] 2 · the material (DDL + row counts pasted in)
-- [ ] 3 · constraints ("three options, ranked")
-- [ ] 4 · output format (`{fix, reason, risk}`)
-- [ ] 5 · show the reasoning
-- [ ] 6 · the control: baseline + "please, this is important" and nothing else
+- [ ] `01-role.md` — role & audience
+- [ ] `02-material.md` — the DDL, indexes and row counts pasted in
+- [ ] `03-constraints.md` — "three options, ranked"
+- [ ] `04-format.md` — `{fix, reason, risk}`
+- [ ] `05-reasoning.md` — state the query plan first
+- [ ] `06-politeness.md` — the null test (compare against `00`, not `05`)
 
 **At which step did the answer stop being generic and start naming my columns?**
 
@@ -51,7 +49,7 @@ answer:
 
 **One thing I expected to help that did nothing:**
 
-**My best answer — the full prompt that produced it:**
+**My best answer** (paste it — and name which prompt file produced it):
 
 ```
 ```
