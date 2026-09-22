@@ -50,7 +50,7 @@ CREATE TABLE messages (
     price_micros BIGINT      NOT NULL DEFAULT 0
 );
 
--- every index on messages, in full:
+-- every index that exists on messages, in full:
 CREATE INDEX idx_messages_contact ON messages (contact_id);
 ```
 

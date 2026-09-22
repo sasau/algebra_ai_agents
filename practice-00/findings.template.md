@@ -34,7 +34,8 @@ changes; only the prompt around it does.
 ```
 ```
 
-**Then, one part at a time** — tick each once you have run it and kept the answer:
+**Then, one part at a time** — `/clear` before each, then tick it once you have
+run it and kept the answer:
 
 - [ ] `01-role.md` — role & audience
 - [ ] `02-material.md` — the DDL, indexes and row counts pasted in
@@ -42,6 +43,9 @@ changes; only the prompt around it does.
 - [ ] `04-format.md` — `{fix, reason, risk}`
 - [ ] `05-reasoning.md` — state the query plan first
 - [ ] `06-politeness.md` — the null test (compare against `00`, not `05`)
+
+> Did you `/clear` before every one of the seven? If you missed one, that
+> answer saw the previous prompt's schema and is not comparable — re-run it.
 
 **At which step did the answer stop being generic and start naming my columns?**
 

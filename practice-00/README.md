@@ -113,10 +113,12 @@ an answer, and how a context window actually fills up.
   | `05-reasoning.md` | "state the query plan first" |
   | `06-politeness.md` | the null test — politeness and nothing else |
 
-  Run them in order and keep every answer; the prompt accumulates. Note which
-  step made the answer stop being generic advice and start naming your columns.
-  Do **not** improve `00` or `06` — they are controls, and editing them
-  destroys the measurement.
+  Run them in order and keep every answer. **`/clear` before every prompt** —
+  each file holds the complete prompt, so the *text* accumulates but the
+  *conversation* must not; otherwise the schema from step 2 leaks forward and
+  every later answer is contaminated. Note which step made the answer stop
+  being generic advice and start naming your columns. Do **not** improve `00`
+  or `06` — they are controls, and editing them destroys the measurement.
 - **The context lab.** Run `/context` right after starting `claude`, then
   again after five or six turns, and watch what grew. Edit `CLAUDE.md` and ask
   the same question again to see the answer change. Check `/cost` at the end
