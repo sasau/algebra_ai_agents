@@ -4,7 +4,7 @@ Lab code for the *AI Agents & Automation* course at Algebra University College.
 One folder per practice session.
 
 ```
-practices/
+algebra_ai_agents/
   practice-00/    Intro to LLMs — first API call, context, knobs, JSON
   practice-01/    (next session)
   ...
@@ -35,8 +35,8 @@ touching the others.
 ## Getting started
 
 ```bash
-git clone <this-repo>
-cd practices/practice-00
+git clone https://github.com/sasau/algebra_ai_agents
+cd algebra_ai_agents/practice-00
 cp .env.example .env        # then put your key in .env — see below
 ```
 

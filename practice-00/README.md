@@ -13,6 +13,7 @@ stretch goals) — TypeScript and Java. Pick one and work it end to end.
 practice-00/
   .env.example              copy to .env and add your key — shared by both tracks
   findings.template.md      copy to findings.md and fill in
+  slow-query.md             the Act 2 prompt-lab case: DDL, row counts, the query
   ts/                        TypeScript track
     package.json  tsconfig.json  src/*.ts
   java/                       Java track
@@ -85,18 +86,23 @@ common failure is a missing or placeholder key.
 | Act | What | Where | Time |
 |---|---|---|---|
 | 1 | Make your machine work | this file, §1 above | ~25 min |
-| 2 | Prompts & context, explored live | the Claude Code CLI, in agent mode | ~35 min |
+| 2 | Prompts & context, explored live | the Claude Code CLI, in agent mode | ~40 min |
 | 3 | Call the API from your own code | your chosen track, below | ~35 min |
 
-### Act 2 — prompts & context, in agent mode (~35 min)
+### Act 2 — prompts & context, in agent mode (~40 min)
 
 Before writing any API code, spend time in the Claude Code CLI itself to feel
 two things you cannot see from a single API call: how prompt phrasing changes
 an answer, and how a context window actually fills up.
 
-- **The prompt lab.** Ask the same question with a bare prompt, then again
-  with a system role, an output-format instruction, or a real schema pasted
-  in. Compare the answers.
+- **The prompt lab.** The case is in [`slow-query.md`](slow-query.md): a nightly
+  report query that takes 42 seconds and must come in under 2, with its full
+  DDL, row counts, and the single index the table actually has. Ask the
+  deliberately bad version first — *"How do I speed up this query?"* — and keep
+  that answer as your control. Then add one part back at a time (role &
+  audience → the material pasted in → constraints → output format → show the
+  reasoning), re-asking after each, and note which step made the answer stop
+  being generic advice and start naming your columns.
 - **The context lab.** Run `/context` right after starting `claude`, then
   again after five or six turns, and watch what grew. Edit `CLAUDE.md` and ask
   the same question again to see the answer change. Check `/cost` at the end
@@ -244,6 +250,7 @@ context labs, and your answers for each of the four exercises. Then check:
 practice-00/
   .env.example              copy to .env and add your key — shared by both tracks
   findings.template.md      copy to findings.md and fill in
+  slow-query.md             the Act 2 prompt-lab case: DDL, row counts, the query
 
   ts/
     package.json              npm scripts (see table above)

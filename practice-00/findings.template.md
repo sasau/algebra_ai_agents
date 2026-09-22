@@ -25,6 +25,9 @@
 
 ## The prompt lab
 
+The case is in `slow-query.md` — the 42-second report query, its DDL, and its
+one index. The question never changes; only the prompt around it does.
+
 **My baseline prompt, and the answer I got:**
 
 ```
@@ -33,9 +36,22 @@ prompt:
 answer:
 ```
 
-**The tweak that changed the answer most (system role / output format / real schema pasted in):**
+**Then, one part at a time** — tick each once you have run it and kept the answer:
 
-**The same question, answered differently — what the rewritten prompt was:**
+- [ ] 1 · role & audience
+- [ ] 2 · the material (DDL + row counts pasted in)
+- [ ] 3 · constraints ("three options, ranked")
+- [ ] 4 · output format (`{fix, reason, risk}`)
+- [ ] 5 · show the reasoning
+- [ ] 6 · the control: baseline + "please, this is important" and nothing else
+
+**At which step did the answer stop being generic and start naming my columns?**
+
+**The tweak that changed the answer most, and why I think it did:**
+
+**One thing I expected to help that did nothing:**
+
+**My best answer — the full prompt that produced it:**
 
 ```
 ```
