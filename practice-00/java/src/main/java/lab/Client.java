@@ -3,8 +3,10 @@ package lab;
 import com.anthropic.client.AnthropicClient;
 import com.anthropic.client.okhttp.AnthropicOkHttpClient;
 import com.anthropic.models.messages.Message;
+import com.anthropic.models.messages.OutputTokensDetails;
 import com.anthropic.models.messages.Usage;
 import io.github.cdimascio.dotenv.Dotenv;
+import java.util.Map;
 
 /**
  * Shared setup for every exercise in this practice.
@@ -49,6 +51,26 @@ public final class Client {
      * sites. That is exactly why this file exists.
      */
     public static final String BIG_MODEL = "claude-sonnet-5";
+
+    /**
+     * The most capable model we touch — used once, in Exercise 7, to see what
+     * the top of the range buys on the same prompt. Five times Haiku's price per
+     * token, and it thinks by default, so it also spends MORE tokens per answer.
+     */
+    public static final String OPUS_MODEL = "claude-opus-5";
+
+    /**
+     * Price per million tokens, in dollars, as {input, output}, for every model
+     * this lab calls. Lives here for the same reason the ids do: one place to
+     * change it.
+     *
+     * <p>Thinking tokens are billed as OUTPUT tokens — they are already inside
+     * {@code usage.outputTokens()}, which is why "try harder" is never free.
+     */
+    public static final Map<String, double[]> PRICING = Map.of(
+            MODEL, new double[] {1, 5},
+            BIG_MODEL, new double[] {2, 10},
+            OPUS_MODEL, new double[] {5, 25});
 
     /** Built once, on first use. The SDK client is thread-safe and reusable. */
     private static AnthropicClient instance;
@@ -126,5 +148,32 @@ public final class Client {
     /** The stop reason as a plain string, or "none" when the API omitted it. */
     public static String stopReasonOf(Message message) {
         return message.stopReason().map(Object::toString).orElse("none");
+    }
+
+    /**
+     * The thinking text of a response — the "working" the model did before it
+     * answered, or "" if it did not think (or the API was told to omit it).
+     * Same filter-by-type idea as {@link #textOf}, aimed at the other block kind.
+     */
+    public static String thinkingOf(Message message) {
+        StringBuilder out = new StringBuilder();
+        message.content().stream()
+                .flatMap(block -> block.thinking().stream())
+                .forEach(thinkingBlock -> out.append(thinkingBlock.thinking()));
+        return out.toString();
+    }
+
+    /** How many of the billed output tokens were spent thinking (0 if none). */
+    public static long thinkingTokensOf(Usage usage) {
+        return usage.outputTokensDetails().map(OutputTokensDetails::thinkingTokens).orElse(0L);
+    }
+
+    /** What one call cost, in dollars, from its usage and the PRICING table. */
+    public static double costOf(String model, Usage usage) {
+        double[] price = PRICING.get(model);
+        if (price == null) {
+            return 0;
+        }
+        return (usage.inputTokens() * price[0] + usage.outputTokens() * price[1]) / 1_000_000;
     }
 }

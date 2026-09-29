@@ -36,3 +36,7 @@ Thumbs.db
 # --- student work that should stay local ---
 # findings.md IS submitted — do not ignore it.
 scratch/
+# Claude Code's personal files: CLAUDE.md and .claude/settings.json are
+# shared with the team; these two are yours alone.
+CLAUDE.local.md
+**/.claude/settings.local.json

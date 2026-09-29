@@ -47,6 +47,26 @@ export const MODEL = "claude-haiku-4-5";
 export const BIG_MODEL = "claude-sonnet-5";
 
 /**
+ * The most capable model we touch — used once, in Exercise 7, to see what the
+ * top of the range buys on the same prompt. Five times Haiku's price per
+ * token, and it thinks by default, so it also spends MORE tokens per answer.
+ */
+export const OPUS_MODEL = "claude-opus-5";
+
+/**
+ * Price per million tokens, in dollars, for every model this lab calls.
+ * Lives here for the same reason the ids do: one place to change it.
+ *
+ * Thinking tokens are billed as OUTPUT tokens — they are already inside
+ * `usage.output_tokens`, which is why "try harder" is never free.
+ */
+export const PRICING: Record<string, { input: number; output: number }> = {
+  [MODEL]: { input: 1, output: 5 },
+  [BIG_MODEL]: { input: 2, output: 10 },
+  [OPUS_MODEL]: { input: 5, output: 25 },
+};
+
+/**
  * Why the lab pins Haiku 4.5 rather than the newest model:
  *
  *   The `temperature`, `top_p` and `top_k` sampling parameters were REMOVED
@@ -87,4 +107,28 @@ export function reportUsage(label: string, usage: Anthropic.Usage): void {
   console.log(
     `   [${label}] in: ${usage.input_tokens} tok · out: ${usage.output_tokens} tok`,
   );
+}
+
+/**
+ * The thinking text of a response — the "working" the model did before it
+ * answered, or "" if it did not think (or the API was told to omit it).
+ * Same filter-by-type idea as `textOf`, aimed at the other block kind.
+ */
+export function thinkingOf(message: Anthropic.Message): string {
+  return message.content
+    .filter((block): block is Anthropic.ThinkingBlock => block.type === "thinking")
+    .map((block) => block.thinking)
+    .join("");
+}
+
+/** How many of the billed output tokens were spent thinking (0 if none). */
+export function thinkingTokensOf(usage: Anthropic.Usage): number {
+  return usage.output_tokens_details?.thinking_tokens ?? 0;
+}
+
+/** What one call cost, in dollars, from its usage and the PRICING table. */
+export function costOf(model: string, usage: Anthropic.Usage): number {
+  const price = PRICING[model];
+  if (!price) return 0;
+  return (usage.input_tokens * price.input + usage.output_tokens * price.output) / 1_000_000;
 }

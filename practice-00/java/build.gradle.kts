@@ -31,6 +31,7 @@ java {
 //     ./gradlew run -Pex=check    ->  lab.CheckSetup
 //     ./gradlew run -Pex=1        ->  lab.Ex01FirstCall
 //     ./gradlew run -Pex=stream   ->  lab.Ex05StretchStream
+//     ./gradlew run -Pex=7        ->  lab.Ex07Models   (three models; ~$0.10–0.30)
 //
 // The named tasks at the bottom (./gradlew ex1) do the same thing and are
 // easier to remember. Use whichever you prefer.
@@ -40,6 +41,7 @@ val mains = mapOf(
     "2" to "lab.Ex02Conversation",
     "3" to "lab.Ex03Knobs",
     "4" to "lab.Ex04Json",
+    "7" to "lab.Ex07Models",
     "stream" to "lab.Ex05StretchStream",
     "chat" to "lab.Ex06StretchChat",
 )

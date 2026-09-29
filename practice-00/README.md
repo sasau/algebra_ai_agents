@@ -6,7 +6,7 @@ the model to return machine-readable output.
 
 Everything later in the course is a loop around what you build today.
 
-This practice ships **two tracks that run the same four exercises** (plus two
+This practice ships **two tracks that run the same five exercises** (plus two
 stretch goals) — TypeScript and Java. Pick one and work it end to end.
 
 ```
@@ -14,7 +14,7 @@ practice-00/
   .env.example              copy to .env and add your key — shared by both tracks
   findings.template.md      copy to findings.md and fill in
   slow-query.md             the Act 2 prompt-lab case: DDL, row counts, the query
-  prompts/                  Act 2 lab A — the prompts, one file per step (00–06)
+  prompts/                  Act 2 lab A — the prompts, one file per step (00–09)
   context/                  Act 2 lab B — the context steps (00–05)
   ts/                        TypeScript track
     package.json  tsconfig.json  src/*.ts
@@ -113,6 +113,9 @@ an answer, and how a context window actually fills up.
   | `04-format.md` | `{fix, reason, risk}` JSON |
   | `05-reasoning.md` | "state the query plan first" |
   | `06-politeness.md` | the null test — politeness and nothing else |
+  | `07-bait.md` | asks about a setting and an extension that do not exist |
+  | `08-permission.md` | `07` + permission to say "that does not exist" |
+  | `09-models.md` | `05` unchanged — rerun it under haiku, sonnet, opus and two efforts |
 
   Run them in order and keep every answer. **`/clear` before every prompt** —
   each file holds the complete prompt, so the *text* accumulates but the
@@ -120,6 +123,9 @@ an answer, and how a context window actually fills up.
   every later answer is contaminated. Note which step made the answer stop
   being generic advice and start naming your columns. Do **not** improve `00`
   or `06` — they are controls, and editing them destroys the measurement.
+  Steps `07`–`08` make the model hallucinate and then stop it; step `09`
+  holds the prompt still and changes the model (`claude --model …
+  --effort …`) — the file has the exact commands and a table to fill in.
 - **The context lab.** Six steps in [`context/`](context/), run as **one
   continuous session**:
 
@@ -139,7 +145,7 @@ an answer, and how a context window actually fills up.
 
 `findings.md` asks you to record what you saw in both labs — see §5.
 
-### Act 3 — the four exercises (~35 min)
+### Act 3 — the exercises (~35 min)
 
 Run them in order — each builds on the last.
 
@@ -149,13 +155,19 @@ Run them in order — each builds on the last.
 | **2** | `npm run ex2` | `./gradlew ex2` | The model has no memory. You build it — and watch it get expensive |
 | **3** | `npm run ex3` | `./gradlew ex3` | `temperature` and `max_tokens`, plus a parameter that was removed |
 | **4** | `npm run ex4` | `./gradlew ex4` | A system prompt that forces JSON, and a hallucination in valid JSON |
+| **7** | `npm run ex7` | `./gradlew ex7` | One prompt, three models, thinking and effort — tokens, time and dollars per call |
 
-Or run all four in one go: TypeScript has `npm run all` (chains ex1–ex4); on
+Exercise 7 is numbered after the two stretch scripts (`05`, `06`) because it
+was added later; run it **after** Exercise 4. It calls Sonnet 5 and Opus 5, so
+one run costs roughly $0.10–0.30 — run it once, not in a loop.
+
+Or run the first four in one go: TypeScript has `npm run all` (chains ex1–ex4 —
+Exercise 7 is left out on purpose, because of what it costs); on
 the Java track, run the four `./gradlew exN` tasks in order (there is no
 combined task).
 
 Java's `-Pex` form works too, if you prefer it: `./gradlew run -Pex=1`
-accepts `check`, `1`, `2`, `3`, `4`, `stream`, `chat` — the named tasks
+accepts `check`, `1`, `2`, `3`, `4`, `7`, `stream`, `chat` — the named tasks
 (`./gradlew ex1`, `./gradlew stretchStream`, …) do the same thing and are
 easier to remember.
 
@@ -189,6 +201,16 @@ live there, nowhere else.
    forces valid JSON. A tool call (Session 02) is just JSON the model produced
    and your code ran — but Part D shows that valid JSON can still be
    confidently wrong (a hallucination that parses cleanly).
+7. **`07-models.ts` / `Ex07Models.java`** — the model is a *parameter*, and
+   so is how hard it tries. The Act 2 winning prompt goes to Haiku 4.5 with
+   thinking off and on (`budget_tokens`), to Sonnet 5 at effort `low` and
+   `high`, and to Opus 5 — each call prints its latency, output tokens, how
+   many of those were thinking, and its cost. Part B sends `budget_tokens` to
+   Sonnet 5 on purpose and catches the `400`: the frontier models replaced it
+   with `output_config.effort`, the same kind of break as Exercise 3's
+   `temperature`. Part D asks about a PostgreSQL setting and an extension that
+   do not exist, then asks again with permission to say so — two sentences of
+   prompt usually fix what a bigger model does not.
 
 ---
 
@@ -222,6 +244,20 @@ Model ids live in exactly **one module per track** — `ts/src/client.ts` and
 Do not "upgrade" the pinned model to make the 400 go away — the 400 is the
 point.
 
+The same module also holds `BIG_MODEL` (`claude-sonnet-5`), `OPUS_MODEL`
+(`claude-opus-5`) and a `PRICING` table (dollars per million input / output
+tokens) that Exercise 7 uses to print what each call cost. **"Try harder" is
+spelled differently per model**, which is the second quirk that belongs in
+this one file:
+
+| model | how you ask it to think | what 400s |
+|---|---|---|
+| `claude-haiku-4-5` | `thinking: {type: "enabled", budget_tokens: N}` (N ≥ 1024, < `max_tokens`) | — |
+| `claude-sonnet-5`, `claude-opus-5` | `thinking: {type: "adaptive"}` + `output_config: {effort: "low" … "max"}` | `budget_tokens`, `temperature` |
+
+Thinking tokens are billed as **output** tokens — a call that "tries hard"
+can cost several times one that does not, for the same visible answer.
+
 **Java compile note:** building the Java track prints
 `warning: [deprecation] temperature(double) in Builder has been deprecated`.
 This is expected, not a mistake you made — the SDK deprecated the knob for the
@@ -245,10 +281,10 @@ cp findings.template.md findings.md
 
 Fill it in — it is graded on observation, not on being right. It covers all
 three acts: the setup check output, what you found in the Act 2 prompt and
-context labs, and your answers for each of the four exercises. Then check:
+context labs, and your answers for each of the five exercises. Then check:
 
 - [ ] The setup check passes (`npm run check` or `./gradlew checkSetup`)
-- [ ] All four exercises run without errors
+- [ ] Exercises 1–4 and 7 run without errors
 - [ ] `findings.md` completed for all three acts
 - [ ] Your name and which track you ran at the top of `findings.md`
 - [ ] **No key in any committed file** (`git status` shows no `.env`)
@@ -269,7 +305,8 @@ context labs, and your answers for each of the four exercises. Then check:
 | **Java** — `permission denied` running `./gradlew` | the wrapper script lost its executable bit (common after some zip/clone tools) | `chmod +x gradlew`, run again |
 | **Java** — check fails on Java version, or Gradle can't find a JDK | `JAVA_HOME` points at a JDK below 21, or none is set | install JDK 21 (e.g. Temurin) and point `JAVA_HOME` at it — the build's toolchain also auto-downloads a matching JDK if needed |
 | **Java** — `warning: [deprecation] temperature(double) ...` during build | expected | not an error — see §4, it's part of the Exercise 3 lesson |
-| **Java** — `Unknown -Pex=...` | typo in `-Pex` value | use one of `check,1,2,3,4,stream,chat`, or use the named task (`./gradlew ex1`) instead |
+| `400 ... budget_tokens` / `thinking.type.enabled` | `budget_tokens` sent to Sonnet 5 or Opus 5 | expected in Exercise 7 Part B — those models take `output_config.effort` instead |
+| **Java** — `Unknown -Pex=...` | typo in `-Pex` value | use one of `check,1,2,3,4,7,stream,chat`, or use the named task (`./gradlew ex1`) instead |
 
 ---
 
@@ -280,7 +317,7 @@ practice-00/
   .env.example              copy to .env and add your key — shared by both tracks
   findings.template.md      copy to findings.md and fill in
   slow-query.md             the Act 2 prompt-lab case: DDL, row counts, the query
-  prompts/                  Act 2 lab A — the prompts, one file per step (00–06)
+  prompts/                  Act 2 lab A — the prompts, one file per step (00–09)
   context/                  Act 2 lab B — the context steps (00–05)
 
   ts/
@@ -296,6 +333,7 @@ practice-00/
       04-json.ts               exercise 4
       05-stretch-stream.ts     stretch: streaming
       06-stretch-chat.ts       stretch: a chat loop
+      07-models.ts             exercise 7: models, thinking, effort, hallucination
 
   java/
     build.gradle.kts          Gradle tasks (see table above)
@@ -310,4 +348,5 @@ practice-00/
       Ex04Json.java            exercise 4
       Ex05StretchStream.java   stretch: streaming
       Ex06StretchChat.java     stretch: a chat loop
+      Ex07Models.java          exercise 7: models, thinking, effort, hallucination
 ```

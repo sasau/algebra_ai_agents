@@ -13,6 +13,7 @@
     "ex2": "tsx src/02-conversation.ts",
     "ex3": "tsx src/03-knobs.ts",
     "ex4": "tsx src/04-json.ts",
+    "ex7": "tsx src/07-models.ts",
     "stretch:stream": "tsx src/05-stretch-stream.ts",
     "stretch:chat": "tsx src/06-stretch-chat.ts",
     "all": "npm run ex1 && npm run ex2 && npm run ex3 && npm run ex4"

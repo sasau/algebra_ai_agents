@@ -7,10 +7,11 @@ question again — **word for word identical**.
 to change an agent's behaviour without changing anything you say to it. The
 question is a constant; the *standing instructions* are the variable.
 
-`CLAUDE.md` is read at the start of every session and sits in the same layer
-as `system` in a raw API call — the layer for rules that hold for every turn,
-as opposed to material specific to one question. You met that distinction on
-lecture slide 21; this is it in your hands.
+`CLAUDE.md` is read at the start of every session and does the job of the
+`system` prompt from the lecture — rules that hold for every turn, as opposed
+to material specific to one question. Strictly, Claude Code sends it as the
+first message *after* its own system prompt, not inside it; Act 3
+(`customize/`) shows the difference and how to change the real one.
 
 ## ⚠ The one clear in this lab
 

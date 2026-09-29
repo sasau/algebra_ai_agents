@@ -1,0 +1,6 @@
+{
+  "permissions": {
+    "allow": ["Bash(./tools/git-summary.sh *)"],
+    "deny": ["Read(./.env)"]
+  }
+}

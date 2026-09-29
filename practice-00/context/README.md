@@ -50,7 +50,8 @@ Two things the prompt lab could not show you:
    material you did not type.** One `read all the files` turn can outweigh an
    entire conversation. Sessions 08 and 11 exist because of this.
 2. **You can change an agent's behaviour without changing your question.**
-   `CLAUDE.md` is the standing-instructions layer — the same layer as `system`
-   in a raw API call. Session 04 and Session 12 build on it.
+   `CLAUDE.md` is the standing-instructions layer — it does the job of a
+   `system` prompt, sent as the first message after Claude Code's own. Act 3
+   (`customize/`) builds on it today; Sessions 04 and 12 go further.
 
 Record everything in `findings.md`.
