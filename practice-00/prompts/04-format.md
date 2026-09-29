@@ -12,8 +12,8 @@ JSON the model produced and your code ran.
 **What to watch:** two things, in tension. Does the JSON constraint make the
 reasoning **worse** — shorter, more clipped, less careful? And does the model
 obey the shape exactly, or does it wrap the JSON in an explanatory sentence that
-would break `JSON.parse`? Both are common. Exercise 4 in Act 3 attacks this
-properly.
+would break `JSON.parse`? Both are common. Take-home Exercise 4 (README §3)
+attacks this properly.
 
 > **`/clear` first.** Every prompt is a fresh conversation — see `README.md`.
 

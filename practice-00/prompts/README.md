@@ -6,7 +6,7 @@ save it, move to the next file.
 
 | file | what it adds | the part from Figure P0.4 |
 |---|---|---|
-| `00-baseline.md` | nothing — this is the control | — |
+| `00-baseline.md` | the bare query + the question — the control | — |
 | `01-role.md` | who is speaking, and to whom | 1 · role & audience |
 | `02-material.md` | the actual DDL, indexes and row counts | 3 · the material |
 | `03-constraints.md` | bounds the shape of the answer | 4 · constraints |
@@ -23,8 +23,8 @@ save it, move to the next file.
 
 This is the one rule that makes the lab work, and it is easy to get backwards:
 
-- **The prompt text accumulates.** `01` is the baseline plus a role; `02` is
-  that plus the schema; by `05` you are holding a complete prompt assembled one
+- **The prompt text accumulates.** `00` is the bare query and the question;
+  `01` adds a role; `02` adds the schema; by `05` you are holding a complete prompt assembled one
   deliberate piece at a time. Each file already contains the *whole* prompt —
   there is nothing to paste in front of it.
 - **The conversation must NOT accumulate.** If you paste `03` into the same
@@ -42,7 +42,8 @@ claude
 ```
 
 **`06-politeness.md` is where forgetting this hurts most.** It is the bare
-question plus good manners, and it is supposed to produce a *generic* answer.
+query plus good manners, and it is supposed to produce the same *guessing*
+answer as `00`.
 Run it without clearing and the model still remembers your schema from step 2,
 so it answers specifically — and you will conclude that politeness worked. It
 did not. You just forgot to `/clear`.
@@ -72,10 +73,14 @@ cleared window shows only the system prompt and tool definitions.
 
 ## What you are looking for
 
-Note **which step** the answer stops being generic advice about SQL and starts
-naming *your* columns — `DATE(sent_at)`, the missing composite index,
-`LOWER(channel)`. For most people that is step `02`, and the size of that jump
-compared to every other step is the lesson of the lab.
+Every prompt from `00` on contains the query, so the model can always see
+`DATE(sent_at)` — it is in the SQL. What it cannot see until `02` is the
+database: that the only index is on `contact_id`, that `messages` has 240 M
+rows, and that `channel` is already lowercase. Note **which step** the answer
+stops *guessing* about those and starts stating them — the missing composite
+on `(account_id, sent_at)`, the pointless `LOWER(channel)`. For most people
+that is step `02`, and the size of that jump compared to every other step is
+the lesson of the lab.
 
 `07-bait.md` is there to be believed. Count how many of its three impossible
 requests the answer satisfies anyway — then see how many `08` still does.

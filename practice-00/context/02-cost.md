@@ -16,8 +16,8 @@ billed in turn 20.
   minutes. The growth is not linear in the work you do; it is closer to
   quadratic in the length of the conversation, because each turn re-sends
   everything before it.
-- Compare against Exercise 2 in Act 3, where you will watch the same
-  multiplier appear in raw API calls with the numbers printed explicitly.
+- Compare against take-home Exercise 2 (README §3), where you can watch the
+  same multiplier appear in raw API calls with the numbers printed explicitly.
 
 This is why "just use a bigger model with a bigger window" is not a strategy.
 A bigger window raises the ceiling; it does not stop the growth.

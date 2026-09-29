@@ -1,13 +1,15 @@
 # Practice 00 — Intro to LLMs
 
-The first lab of *AI Agents & Automation*. By the end you will have made a real
-API call, built a conversation by hand, turned the sampling knobs, and forced
-the model to return machine-readable output.
+The first lab of *AI Agents & Automation*. In class you make your machine
+work, feel how prompts and context change an answer in the Claude Code CLI,
+and then configure that agent yourself — a `CLAUDE.md`, rules, a script it
+can call as a tool, a skill, and its system prompt.
 
-Everything later in the course is a loop around what you build today.
+Everything later in the course is a loop around what you set up today.
 
-This practice ships **two tracks that run the same five exercises** (plus two
-stretch goals) — TypeScript and Java. Pick one and work it end to end.
+The repo also ships **two tracks that run the same five API exercises** (plus
+two stretch goals) — TypeScript and Java. In class you use a track only for
+the setup check; the exercises are an optional **take-home** (§3).
 
 ```
 practice-00/
@@ -16,6 +18,8 @@ practice-00/
   slow-query.md             the Act 2 prompt-lab case: DDL, row counts, the query
   prompts/                  Act 2 lab A — the prompts, one file per step (00–09)
   context/                  Act 2 lab B — the context steps (00–05)
+  customize/                Act 3 — make the agent yours, one file per step (01–06)
+  tools/git-summary.sh      Act 3 — the shell script you turn into a tool
   ts/                        TypeScript track
     package.json  tsconfig.json  src/*.ts
   java/                       Java track
@@ -37,8 +41,8 @@ want to spend the lab:
 | Run with | `npm run <script>` | `./gradlew <task>` |
 
 Everyone, on either track, also needs **git** and an **Anthropic API key**.
-The **Claude Code CLI** is needed for Act 2 (below) — not for the exercises
-themselves.
+The **Claude Code CLI** is needed for Acts 2 and 3 (below) — not for the
+take-home exercises.
 
 ---
 
@@ -88,10 +92,12 @@ common failure is a missing or placeholder key.
 | Act | What | Where | Time |
 |---|---|---|---|
 | 1 | Make your machine work | this file, §1 above | ~25 min |
-| 2 | Prompts & context, explored live | the Claude Code CLI, in agent mode | ~40 min |
-| 3 | Call the API from your own code | your chosen track, below | ~35 min |
+| 2 | Prompts & context, explored live | the Claude Code CLI, in agent mode | ~55 min |
+| 3 | Make the agent yours | [`customize/`](customize/), in the Claude Code CLI | ~40 min |
 
-### Act 2 — prompts & context, in agent mode (~40 min)
+The API exercises that used to be Act 3 are now a take-home — §3.
+
+### Act 2 — prompts & context, in agent mode (~55 min)
 
 Before writing any API code, spend time in the Claude Code CLI itself to feel
 two things you cannot see from a single API call: how prompt phrasing changes
@@ -106,7 +112,7 @@ an answer, and how a context window actually fills up.
 
   | file | adds |
   |---|---|
-  | `00-baseline.md` | nothing — the control, deliberately bad |
+  | `00-baseline.md` | the bare query + "how do I speed it up?" — the control |
   | `01-role.md` | role & audience |
   | `02-material.md` | the DDL, indexes and row counts |
   | `03-constraints.md` | "three options, ranked" |
@@ -120,8 +126,9 @@ an answer, and how a context window actually fills up.
   Run them in order and keep every answer. **`/clear` before every prompt** —
   each file holds the complete prompt, so the *text* accumulates but the
   *conversation* must not; otherwise the schema from step 2 leaks forward and
-  every later answer is contaminated. Note which step made the answer stop
-  being generic advice and start naming your columns. Do **not** improve `00`
+  every later answer is contaminated. Every prompt includes the query; note
+  which step made the answer stop guessing about the *database* (indexes, row
+  counts, data) and start stating facts about it. Do **not** improve `00`
   or `06` — they are controls, and editing them destroys the measurement.
   Steps `07`–`08` make the model hallucinate and then stop it; step `09`
   holds the prompt still and changes the model (`claude --model …
@@ -145,9 +152,37 @@ an answer, and how a context window actually fills up.
 
 `findings.md` asks you to record what you saw in both labs — see §5.
 
-### Act 3 — the exercises (~35 min)
+### Act 3 — make the agent yours (~40 min)
 
-Run them in order — each builds on the last.
+Act 2 steered an agent someone else configured. Act 3 configures it. Six
+steps in [`customize/`](customize/) — start with its
+[README](customize/README.md), which has the load-order table:
+
+| file | what you build | where it goes |
+|---|---|---|
+| `01-claude-md.md` | the briefing every session starts from | `CLAUDE.md` |
+| `02-imports.md` | link a doc instead of pasting it | `@slow-query.md` in `CLAUDE.md` |
+| `03-rules.md` | rules by topic, one loaded only for SQL files | `.claude/rules/git.md`, `sql.md` |
+| `04-tool.md` | a shell script Claude may run as a tool | `tools/git-summary.sh` + `.claude/settings.json` |
+| `05-skill.md` | a procedure loaded only when needed | `.claude/skills/commit-message/SKILL.md` |
+| `06-system-prompt.md` | add to the system prompt, then replace it | `--append-system-prompt`, `--system-prompt` |
+
+Launch `claude` from `practice-00/`, and `/exit` + relaunch between steps —
+most of these files are read only at launch. A finished copy of every file
+is in [`customize/solution/`](customize/solution/); read it after you have
+written your own, not before.
+
+`CLAUDE.md` and `.claude/settings.json` are meant to be committed — they are
+the team's shared setup. `CLAUDE.local.md` and `.claude/settings.local.json`
+are personal and git-ignored.
+
+---
+
+## 3. Take-home — call the API from your own code
+
+**Optional, not run in class.** The same model you used through the CLI,
+called from a program you can read. Run them in order — each builds on the
+last.
 
 | # | Command (TypeScript) | Command (Java) | What you'll see |
 |---|---|---|---|
@@ -212,9 +247,7 @@ live there, nowhere else.
    do not exist, then asks again with permission to say so — two sentences of
    prompt usually fix what a bigger model does not.
 
----
-
-## 3. Stretch goals (optional)
+### Stretch goals (optional)
 
 | TypeScript | Java | What it does |
 |---|---|---|
@@ -273,7 +306,7 @@ whole class mid-lab. Bump versions deliberately, not by accident.
 
 ---
 
-## 5. Submit (~13 min)
+## 5. Submit (end of Act 3)
 
 ```bash
 cp findings.template.md findings.md
@@ -281,13 +314,17 @@ cp findings.template.md findings.md
 
 Fill it in — it is graded on observation, not on being right. It covers all
 three acts: the setup check output, what you found in the Act 2 prompt and
-context labs, and your answers for each of the five exercises. Then check:
+context labs, and what `/context` showed at each Act 3 step. The take-home
+section at the end is optional. Then check:
 
 - [ ] The setup check passes (`npm run check` or `./gradlew checkSetup`)
-- [ ] Exercises 1–4 and 7 run without errors
 - [ ] `findings.md` completed for all three acts
+- [ ] Your `CLAUDE.md` and `.claude/` (rules, `settings.json`, the
+      `commit-message` skill) exist in `practice-00/`
 - [ ] Your name and which track you ran at the top of `findings.md`
-- [ ] **No key in any committed file** (`git status` shows no `.env`)
+- [ ] **No key in any committed file** — `git status` shows `findings.md`,
+      `CLAUDE.md` and `.claude/`, never `.env`
+- [ ] *(take-home, optional)* Exercises 1–4 and 7 run without errors
 
 ---
 
@@ -319,6 +356,10 @@ practice-00/
   slow-query.md             the Act 2 prompt-lab case: DDL, row counts, the query
   prompts/                  Act 2 lab A — the prompts, one file per step (00–09)
   context/                  Act 2 lab B — the context steps (00–05)
+  customize/                Act 3 — the six steps (01–06) + README
+    solution/                 a finished CLAUDE.md, rules, settings.json and skill
+  tools/
+    git-summary.sh            read-only repo snapshot — the Act 3 tool
 
   ts/
     package.json              npm scripts (see table above)

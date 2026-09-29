@@ -26,8 +26,8 @@
 ## The prompt lab
 
 The case is in `slow-query.md` — the 42-second report query, its DDL, and its
-one index. The prompts are in `prompts/`, one file per step. The question never
-changes; only the prompt around it does.
+one index. The prompts are in `prompts/`, one file per step. The query and the
+question never change; only the prompt around them does.
 
 **The baseline answer I got** (`prompts/00-baseline.md`):
 
@@ -51,7 +51,11 @@ run it and kept the answer:
 > that answer saw the previous prompt's schema and is not comparable — re-run
 > it. Step `09` uses a fresh `claude` per row instead.
 
-**At which step did the answer stop being generic and start naming my columns?**
+**Guesses in the baseline** — what did `00` assume about indexes or data that it
+could not know? (e.g. "make sure `account_id` is indexed"):
+
+**At which step did it stop guessing — and name the one index, the 240 M rows,
+or the lowercase `channel` as facts?**
 
 **The tweak that changed the answer most, and why I think it did:**
 

@@ -1,20 +1,21 @@
 # Step 2 — give it the material
 
-**What changed from step 1:** the actual schema, the actual index list, the
-actual row counts, and the actual query are now *in* the prompt. Pasted, not
-described.
+**What changed from step 1:** the query was already there. Now the actual
+schema, the actual index list, the actual row counts and the facts about the
+data are *in* the prompt with it. Pasted, not described.
 
 **Why it matters:** this is the step that usually wins by a distance — often by
 more than the other four combined. A model cannot reason about a schema it has
-never seen. Everything before this point was the model answering a question
-about *queries in general*, because that is all you gave it.
+never seen. Before this point it could read your SQL but had to *guess* the
+database underneath it — and it guessed fluently.
 
-**What to watch:** this is where the answer typically stops being advice and
-starts naming **your** columns — `DATE(sent_at)` wrapping an indexed column so
-no index can be used, the missing composite on `(account_id, sent_at)`,
-`LOWER(channel)` being redundant because the application already writes
-lowercase. If that shift happens here, note it; if it happened earlier or
-later for you, note that instead. Either way it is a result.
+**What to watch:** this is where the guesses turn into facts. `DATE(sent_at)`
+it may already have caught in step 0 — that defect is visible in the SQL. The
+other two are not: that the only index is on `contact_id`, so nothing serves
+the WHERE and a composite on `(account_id, sent_at)` is missing; and that
+`LOWER(channel)` is redundant because the application already writes
+lowercase. If the answer names them here for the first time, note it; if it
+named one earlier, or only later, note that instead. Either way it is a result.
 
 Three facts below are invisible in the SQL itself and decide which fix is
 correct: the table has **exactly one** index, the tables are 240 M and 3.1 M
