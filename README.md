@@ -6,7 +6,8 @@ One folder per practice session.
 ```
 algebra_ai_agents/
   practice-00/    Intro to LLMs — first API call, context, knobs, JSON
-  practice-01/    (next session)
+  practice-01/    What are agents? — five words hands-on, a hand-written agent loop, an autonomous bot in a box
+  practice-02/    (next session)
   ...
 ```
 

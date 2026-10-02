@@ -1,0 +1,33 @@
+# practice-01/.dockerignore — what the Docker build context does NOT send to the daemon.
+#
+# The context is practice-01/ (docker/Dockerfile is built with `-f docker/Dockerfile .`
+# from here), because the Dockerfile copies parser-ts/. Everything else in this folder
+# would otherwise be shipped too — the Java tracks, your .env, a previous run's out/.
+#
+# Rules are evaluated top to bottom and the LAST match wins, so a `!` line can re-include
+# one file that an earlier pattern excluded. `*` does not cross `/`; `**` does.
+
+# Dependencies and build output — the image installs its own with `npm ci`.
+**/node_modules
+**/.gradle
+**/build
+
+# Secrets. `.env.*` also catches .env.example; neither belongs in an image layer.
+.env
+.env.*
+
+# The other acts. The bot's target is parser-ts and only parser-ts.
+java
+ts
+parser-java
+
+# A previous run's copy of the container (verify.sh reads it; the next build must not).
+docker/out
+docker/out-break-it
+
+# Prose is not part of the target... except the one file the bot MUST see.
+# `**/*.md` drops every markdown file at any depth; the negation that follows re-includes
+# exactly one path. Negation works here because the parent directory (parser-ts/) is itself
+# still included — Docker cannot re-include a file whose directory was excluded.
+**/*.md
+!parser-ts/CLAUDE.md

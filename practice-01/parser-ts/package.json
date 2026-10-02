@@ -1,0 +1,21 @@
+{
+  "name": "parser-ts",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Practice 01 — a tiny SQL mini-parser (SELECT … FROM … [WHERE …]). The target the agents work on in Act 2 and Act 3.",
+  "type": "module",
+  "//engines": "vitest 5 declares node ^22.12 || ^24 || >=26; on Node 20 npm prints an EBADENGINE warning and the test runner may not start. The agent loop next door (../ts) only needs Node 20.",
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "//deps": "Versions are pinned exactly, not floated with ^. The internal npm mirror blocks packages less than 3 days old, so a caret range can resolve to a version that 403s for the whole class. Bump these deliberately, not accidentally.",
+  "devDependencies": {
+    "@types/node": "26.6.0",
+    "typescript": "7.0.2",
+    "vitest": "5.0.2"
+  }
+}

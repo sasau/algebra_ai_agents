@@ -1,0 +1,4 @@
+# The container's /work, copied out after every run. It is evidence for verify.sh, not
+# source — and it contains node_modules and a .git of its own. Never commit it.
+out/
+out-break-it/
