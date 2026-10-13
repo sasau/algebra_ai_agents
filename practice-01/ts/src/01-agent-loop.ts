@@ -31,8 +31,8 @@ const GOAL =
 
 /**
  * The system prompt frames the role. Two sentences: who the model is, and how
- * the model signals the success half of the stopping condition (part 5) —
- * by answering with text and no tool call, which the API reports as end_turn.
+ * the model can signal the end of its turn (part 5) with text and no tool
+ * call. The API reports end_turn; the independent test later checks success.
  */
 const SYSTEM =
   "You are a coding agent working in a small TypeScript project; use the tools to read files, change the source and run the tests. " +
@@ -93,12 +93,13 @@ async function runLoop(): Promise<void> {
   // when it writes in step 4. Nothing else persists between steps.
   const messages: Anthropic.MessageParam[] = [{ role: "user", content: GOAL }];
 
-  console.log(`\n[P] ${GOAL}`); // the first perception IS the goal prompt
+  // [P] logs the input supplied to each model call, not hidden model reasoning.
 
   // Part 5, budget half — `step <= maxSteps` is the loop's own stopping rule.
   for (let step = 1; step <= maxSteps; step++) {
     totals.steps = step;
     console.log(`\n── step ${step}/${maxSteps} ──────────────────────────────────`);
+    console.log(`[P] next model call: goal + ${step - 1} tool-result turn(s) (${messages.length} ${messages.length === 1 ? "message" : "messages"})`);
 
     // DECIDE — one model call, with the tools declared and the history attached.
     const r = await client.messages.create({
@@ -114,10 +115,10 @@ async function runLoop(): Promise<void> {
 
     const said = textOf(r).trim();
 
-    // Part 5, success half — the MODEL declares the goal met by answering with
-    // text and no tool call. We do not verify here; that comes after the loop.
+    // end_turn means the model finished this turn without asking for a tool.
+    // It does not prove the goal succeeded; the independent test below decides that.
     if (r.stop_reason === "end_turn") {
-      console.log(`[D] goal met — stopping`);
+      console.log(`[D] model ended turn — checking the goal outside the loop`);
       if (said) console.log(`    ${said.split("\n").join("\n    ")}`);
       return;
     }
@@ -161,8 +162,10 @@ async function runLoop(): Promise<void> {
 }
 
 let failure: Error | undefined;
+let modelEnded = false;
 try {
   await runLoop();
+  modelEnded = true;
 } catch (err) {
   failure = err instanceof Error ? err : new Error(String(err));
 }
@@ -178,6 +181,10 @@ const summary = check.content
   .filter((l) => /^exit code:|^\s*(Test Files|Tests)\s/.test(l))
   .map((l) => l.trim());
 console.log(`   npm test → ${summary.join(" · ") || head(check.content, 3)}`);
+const verifiedGreen = !check.is_error && /^exit code: 0(?:\n|$)/.test(check.content);
+if (modelEnded && !verifiedGreen) {
+  failure = new Error("the model ended its turn, but independent verification found the test still red");
+}
 
 const diff = spawnSync("git", ["diff", "--stat", "parser-ts"], { cwd: PRACTICE_ROOT, encoding: "utf8" });
 console.log(`   git diff --stat parser-ts:`);
@@ -198,6 +205,6 @@ TO DO — write in agent-anatomy.md, part 2:
   1. Copy 8–15 lines of the trace above and keep their [P] [D] [A] [O] labels.
   2. Name the five parts with their instance from THIS run: goal · model ·
      tools · memory · stopping condition (both halves — which one fired?).
-  3. Did "verify from outside" agree with the model's "goal met"? If it ever
-     does not, which of the five rules caught it?
+  3. Did "verify from outside" confirm the model's final answer? If it did
+     not, which of the five rules caught it?
 `);

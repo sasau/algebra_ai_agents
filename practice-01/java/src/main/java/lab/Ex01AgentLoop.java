@@ -37,14 +37,13 @@ import java.util.stream.Collectors;
  *   <li><b>model</b> — {@link Client#MODEL}, called once per step.</li>
  *   <li><b>tools</b> — {@link Tools}: read_file · write_file · run_tests.</li>
  *   <li><b>memory</b> — {@code messages}, the list every call sees in full.</li>
- *   <li><b>stopping condition</b> — two halves: the SUCCESS half is the model
- *       answering with {@code stop_reason: end_turn}; the BUDGET half is
- *       {@link Client#MAX_STEPS}. You need both — a goal with no budget is a
- *       loop that never ends when the model is wrong.</li>
+ *   <li><b>stopping condition</b> — {@code end_turn} ends a model turn;
+ *       {@link Client#MAX_STEPS} limits calls. Neither proves success. An
+ *       independent test run after the loop checks the goal.</li>
  * </ul>
  *
  * <p>Every turn is printed with the lecture's labels, so the transcript you get
- * IS a labelled trace: {@code [P]} perceive (the goal), {@code [D]} decide (the
+ * IS a labelled trace: {@code [P]} perceive (goal plus history on each call), {@code [D]} decide (the
  * model's text), {@code [A]} act (every tool call, including reads), {@code [O]}
  * observe (what came back). Paste 8–15 lines of it into
  * {@code agent-anatomy.md}, part 2.
@@ -71,7 +70,7 @@ public final class Ex01AgentLoop {
     public static void main(String[] args) {
         // BUDGET half of the stopping condition. Client.MAX_STEPS is the default;
         // `--max-steps N` (from ./gradlew agent -PmaxSteps=N) overrides it so you
-        // can watch this half fire before the success half does.
+        // can watch the budget fire before the model ends its turn.
         int maxSteps = Client.MAX_STEPS;
         for (int i = 0; i < args.length - 1; i++) {
             if (args[i].equals("--max-steps")) {
@@ -142,7 +141,7 @@ public final class Ex01AgentLoop {
         private int stepsUsed = 0;
         private long inputTokens = 0;
         private long outputTokens = 0;
-        private boolean goalMet = false;
+        private boolean modelEnded = false;
         IllegalStateException failure;
 
         Run(Tools tools, int maxSteps) {
@@ -158,9 +157,7 @@ public final class Ex01AgentLoop {
             // TOOLS: declared once; the same list rides along with every request.
             List<Tool> toolDefinitions = tools.definitions();
 
-            // GOAL → the first thing the model perceives. [P] is printed once:
-            // every later turn perceives the same goal plus the history below.
-            System.out.println("[P] " + GOAL);
+            // GOAL starts the transcript; [P] is printed for every call below.
             messages.add(MessageParam.builder()
                     .role(MessageParam.Role.USER)
                     .content(GOAL)
@@ -170,6 +167,8 @@ public final class Ex01AgentLoop {
             for (int step = 1; step <= maxSteps; step++) {
                 stepsUsed = step;
                 System.out.printf("%n── step %d/%d ───────────────────────────────────────%n", step, maxSteps);
+                System.out.printf("[P] next model call: goal + %d tool-result turn(s) (%d %s)%n",
+                        step - 1, messages.size(), messages.size() == 1 ? "message" : "messages");
 
                 // MODEL: one call = one decide. The request carries the system
                 // prompt, the tools, and the entire memory.
@@ -194,12 +193,10 @@ public final class Ex01AgentLoop {
 
                 switch (why) {
                     case END_TURN -> {
-                        // SUCCESS half of the stopping condition: the model
-                        // answered without asking for a tool — it declares the
-                        // goal met. We do not take its word for it; see
-                        // verifyFromOutside().
-                        System.out.println("[D] goal met — stopping");
-                        goalMet = true;
+                        // end_turn means the model finished without asking for a tool.
+                        // Verification below decides whether the goal actually succeeded.
+                        System.out.println("[D] model ended turn — checking the goal outside the loop");
+                        modelEnded = true;
                         return;
                     }
                     case TOOL_USE -> {
@@ -268,8 +265,10 @@ public final class Ex01AgentLoop {
             Tools.Result tests = tools.runTests();
             String verdict = tests.text().startsWith("exit code 0") ? "GREEN" : "RED";
             System.out.println("   npm test: " + verdict + " (" + tests.text().lines().findFirst().orElse("?") + ")");
-            if (goalMet && verdict.equals("RED")) {
-                System.out.println("   ! the model declared the goal met, but the test is still red");
+            if (modelEnded && verdict.equals("RED")) {
+                failure = new IllegalStateException(
+                        "the model ended its turn, but independent verification found the test still red");
+                System.out.println("   ! " + failure.getMessage());
             }
 
             try {

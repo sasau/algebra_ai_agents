@@ -13,7 +13,7 @@
 
 ---
 
-# Part 1 — the five words, from your own runs (Act 1)
+# Part 1 — six observations, from your own runs (Act 1)
 
 You fixed the same failing test in `parser-java/` several ways. Fill one row
 per way with what **you observed**, not what the lecture said. Reset the bug
@@ -26,10 +26,11 @@ between rows with `git checkout -- src/main`.
 | **workflow** — `./workflow.sh` | | | | | |
 | **chat** — pasted the failure into `claude`, applied the fix by hand | | | | | |
 | **agent** — same session: "Make the test pass…", approved each action | | | | | |
-| **agentic mode** — the moment that session went from answering to acting | | | | | |
+| **agentic interaction** — first tool request in the agent run | | | | | |
 
-**The one column that separates the five words** (lecture slide 10). In your
-own words, what is it, and which rows share a value?
+**Distinguish the roles.** Which row is a callable function, which is
+reusable instructions, and which two rows differ by who chooses the next
+step? What changed between the text-only chat and agentic interaction?
 
 **The skill's `description` decided whether it was loaded.** Paste the
 description of `fix-test`, then say which words in it matched your request:
@@ -65,11 +66,12 @@ front of it when the turn began.*
 | model | |
 | tools | |
 | memory | |
-| stopping condition — success half | |
-| stopping condition — budget half | |
+| model end signal (`end_turn`) | |
+| harness budget (`MAX_STEPS`) | |
+| independent success check (`npm test`) | |
 
-**Act 2 only — when you ran `--max-steps 3`:** what did the loop print, and
-which half of the stopping condition fired?
+**Act 2 only — when you ran `--max-steps 3`:** what did the loop print,
+and which stop signal fired? Did the independent test find the goal complete?
 
 ```
 ```

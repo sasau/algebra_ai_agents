@@ -1,15 +1,18 @@
 # Practice 01 — What are agents?
 
-The second lab of *AI Agents & Automation*. The lecture gave you five words —
-**tool · skill · workflow · agent · agentic mode** — that people use as if
-they were interchangeable. Today you make them concrete by fixing **one failing
+The second lab of *AI Agents & Automation*. You compare six observations:
+**tool · skill · workflow · text-only chat · agent · agentic interaction**.
+They describe different parts of a system: a tool is callable, a skill supplies
+instructions, workflow and agent name who chooses the next step, and chat versus
+agentic describes whether this interaction asks the harness to act. You make
+these distinctions concrete by fixing **one failing
 test**, `SELECT * FROM t WHERE x = 1` →
 `ParseException: unexpected token WHERE at 1:17`, several different ways, and
 noticing who picks each next step. Then you run a ~60-line agent loop you can
 read end to end, and finally let a bot work unattended inside a Docker
 container and check its claims from outside.
 
-Your deliverable is `agent-anatomy.md`, in four parts: the five words from your
+Your deliverable is `agent-anatomy.md`, in four parts: the six observations from your
 own runs · a labelled trace · the autonomous run · a verdict on whether lusql
 (the SQL engine you build in Session 15) is agent-shaped.
 
@@ -126,11 +129,11 @@ details rather than `Cannot connect to the Docker daemon`.
 
 | Act | What | Where | Time |
 |---|---|---|---|
-| 1 | The five words, hands-on | `parser-java/` + the Claude Code CLI | ~35 min |
+| 1 | Six observations, hands-on | `parser-java/` + the Claude Code CLI | ~35 min |
 | 2 | The loop, written by hand | `ts/` or `java/`, against `parser-ts/` | ~25 min |
 | 3 | The bot in a box | `docker/` | ~35 min |
 
-### Act 1 — the five words, hands-on (~35 min)
+### Act 1 — six observations, hands-on (~35 min)
 
 Work in `parser-java/`. You fix the same red test six ways and ask each time:
 **who picked the next step?** Between rows, put the bug back from a second
@@ -220,12 +223,13 @@ parsesWhereClause() PASSED` and `BUILD SUCCESSFUL`. Then select all in the
 terminal and paste the scrollback into `transcript.txt` in `practice-01/`; part 2
 needs it.
 
-**6. agentic mode.** Not another run: it is the moment inside row 5 when the
-session stopped *answering* and started *acting* — your first permission
-prompt. Note which action it was.
+**6. agentic interaction.** This is not another run or a separate Claude Code
+mode switch. In row 5, identify the first tool request: the model asked the
+harness to act. A read may run without a prompt; a permission prompt marks only
+an action that needed approval. Record both events if they differ.
 
 **Write now: part 1** of `agent-anatomy.md` — the six rows, from what you
-observed, and the "one column" sentence. Keep `transcript.txt` for part 2.
+observed, and the sentence distinguishing each term's role. Keep `transcript.txt` for part 2.
 
 ### Act 2 — the loop, written by hand (~25 min)
 
@@ -244,8 +248,10 @@ the files as they are.
 
 The printed lines are a labelled trace:
 
-- `[P]` perceive — the goal, printed once at the start.
-- `[D]` decide — the text the model wrote before asking for tools.
+- `[P]` perceive — the input supplied to every model call: the goal and
+  growing history. The log shows this input, not the model's private reasoning.
+- `[D]` decide — the model's response. Its text may be empty; a `tool_use`
+  block still records the action it selected.
 - `[A] › read_file(path: "src/parser.ts")` act — **every** tool call, including
   `read_file`; Act is not only the edits.
 - `[O]` observe — the first three lines of what came back.
@@ -255,9 +261,11 @@ There are three tools — `read_file`, `write_file`, `run_tests` — jailed to
 asks for that, the harness enforces it, and only the second holds when the model
 decides otherwise.
 
-The stopping condition has two halves. **Success:** the model answers with text
-and no tool call, and the loop prints `[D] goal met — stopping`. **Budget:** the
-loop gives up after `MAX_STEPS` (12) calls. Watch the second one fire:
+The loop has two stop signals. **Model end:** `stop_reason: end_turn` means
+the model finished this turn without another tool request; it does not prove the
+goal succeeded. The loop prints `[D] model ended turn — checking the goal
+outside the loop`. **Budget:** the harness gives up after `MAX_STEPS` (12)
+model calls. Trigger the budget signal:
 
 ```bash
 npm run agent -- --max-steps 3        # TypeScript
@@ -267,8 +275,10 @@ npm run agent -- --max-steps 3        # TypeScript
 It ends with `budget exhausted after 3 steps — the budget half of the stopping
 condition fired`, usually with the tests still red. However it ends, code the
 model did not write then **verifies from outside**: it reruns `npm test`, prints
-`git diff --stat parser-ts`, and prints steps · tokens · cost. "Goal met" is the
-model's claim; this is the evidence. A green TypeScript run shows `Tests  5
+`git diff --stat parser-ts`, and prints steps · tokens · cost. The model's
+final answer is a claim; the independent test result is the evidence. If the
+model ends while the test remains red, the program exits with an error. A green
+TypeScript run shows `Tests  5
 passed (5)`; the Java loop prints `npm test: GREEN`. (The Java task ignores the
 program's exit code on purpose, so you read the loop, not a `BUILD FAILED` wall.)
 
@@ -391,7 +401,7 @@ current but not for classroom loops. Both lockfiles resolve every package from
 cp agent-anatomy.template.md agent-anatomy.md
 ```
 
-Fill in its four parts: **1** the five words from your own runs · **2** the
+Fill in its four parts: **1** the six observations from your own runs · **2** the
 labelled trace and the five parts · **3** the autonomous run and its evidence ·
 **4** a one-paragraph verdict on whether lusql is agent-shaped. It is graded on
 what you observed, not on being right. Then check:
