@@ -23,21 +23,7 @@ public final class Client {
 
     private Client() {}
 
-    /**
-     * The model that drives the loop.
-     *
-     * <p>Haiku 4.5 is the cheapest current model ($1/$5 per million tokens) and
-     * it is fast — an agent loop makes 5–12 calls per run, and twenty students
-     * run it at once, so speed and price both matter more here than raw
-     * capability. A four-line parser fix is well within its reach.
-     *
-     * <p>Why not a bigger model: {@code claude-sonnet-5} (the mid-tier that
-     * Practice 00 called {@code BIG_MODEL}) is now LEGACY; the current mid-tier
-     * is {@code claude-sonnet-5-5} at $2/$10. Either would fix this parser too,
-     * at two-plus times the cost per token and no faster — not what you want
-     * inside a classroom loop. If you do swap it in, change THIS constant and
-     * add its price to {@link #PRICING}; nothing else needs to know.
-     */
+    /** Pinned classroom model. Pricing below is an estimate, not an account spending limit. */
     public static final String MODEL = "claude-haiku-4-5";
 
     /**
@@ -79,7 +65,8 @@ public final class Client {
         if (instance == null) {
             loadKey();
             // Reads ANTHROPIC_API_KEY from the environment automatically.
-            instance = AnthropicOkHttpClient.fromEnv();
+            instance = AnthropicOkHttpClient.builder().apiKey(resolvedKey())
+                    .timeout(java.time.Duration.ofSeconds(60)).maxRetries(0).build();
         }
         return instance;
     }

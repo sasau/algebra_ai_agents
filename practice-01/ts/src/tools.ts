@@ -12,8 +12,8 @@
  *      touches a file or a shell itself; it emits `{ name, input }` and waits.
  *
  * Everything here is jailed to TARGET_ROOT (practice-01/parser-ts). The model
- * is given three verbs and one directory; that is the whole of what it can do
- * to the world, whatever it decides to try.
+ * receives three tool functions and a path allowlist. This is not a process
+ * sandbox: model-written source executed by npm test still runs on the host.
  *
  * Tool implementations never throw. A failure is reported back to the model
  * as a tool_result with `is_error: true`, because a model that is TOLD its
@@ -21,9 +21,12 @@
  */
 import type Anthropic from "@anthropic-ai/sdk";
 import { spawnSync } from "node:child_process";
-import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
+import { existsSync, lstatSync, mkdirSync, openSync, closeSync, readSync, writeFileSync } from "node:fs";
 import { dirname, isAbsolute, relative, resolve, sep } from "node:path";
 import { TARGET_ROOT } from "./env.js";
+let targetRoot = TARGET_ROOT;
+/** Only the harness selects a run directory; this is not a model tool. */
+export function useTarget(root: string): void { targetRoot = resolve(root); }
 
 /** What an implementation hands back; becomes the `tool_result` block. */
 export interface ToolOutcome {
@@ -48,6 +51,7 @@ export const TOOLS: Anthropic.Tool[] = [
       "Files larger than 20 KB are truncated.",
     input_schema: {
       type: "object",
+      additionalProperties: false,
       properties: {
         path: { type: "string", description: "Project-relative path of the file to read." },
       },
@@ -59,9 +63,10 @@ export const TOOLS: Anthropic.Tool[] = [
     description:
       "Replace the contents of a file in the project with `content` (the complete new file, " +
       "not a diff). `path` is relative to the project root, for example `src/parser.ts`. " +
-      "Files under `test/` cannot be written. Returns a confirmation with the byte count.",
+      "Only `.ts` files under `src/` can be written; tests and project configuration are read-only. Returns a confirmation with the byte count.",
     input_schema: {
       type: "object",
+      additionalProperties: false,
       properties: {
         path: { type: "string", description: "Project-relative path of the file to write." },
         content: { type: "string", description: "The complete new contents of the file." },
@@ -77,6 +82,7 @@ export const TOOLS: Anthropic.Tool[] = [
       "any failing test and the error it raised.",
     input_schema: {
       type: "object",
+      additionalProperties: false,
       properties: {},
       required: [],
     },
@@ -91,9 +97,12 @@ export const TOOLS: Anthropic.Tool[] = [
  * Three refusals, each a different escape route: an absolute path ignores the
  * root entirely; a `..` segment climbs out of it; and `relative()` is the
  * belt-and-braces check that whatever `resolve()` produced really is below
- * TARGET_ROOT. (Symlinks are not followed and not checked — the target is a
- * plain checkout; a production harness would `realpath` here too.)
+ * targetRoot. Symlinks and paths outside the readable file allowlist are refused.
  */
+function isSymlink(path: string): boolean {
+  try { return lstatSync(path).isSymbolicLink(); }
+  catch (error) { if ((error as NodeJS.ErrnoException).code === "ENOENT") return false; throw error; }
+}
 function jail(path: string): { ok: true; abs: string; rel: string } | { ok: false; error: string } {
   if (path.trim() === "") return { ok: false, error: "path must not be empty" };
   if (isAbsolute(path)) {
@@ -102,10 +111,21 @@ function jail(path: string): { ok: true; abs: string; rel: string } | { ok: fals
   if (path.split(/[\\/]/).includes("..")) {
     return { ok: false, error: `paths may not contain '..': ${path}` };
   }
-  const abs = resolve(TARGET_ROOT, path);
-  const rel = relative(TARGET_ROOT, abs);
+  const abs = resolve(targetRoot, path);
+  const rel = relative(targetRoot, abs);
   if (rel === "" || rel.startsWith("..") || isAbsolute(rel)) {
     return { ok: false, error: `path escapes the project: ${path}` };
+  }
+  // A path allowlist also keeps dependencies, .git and possible secret files unreadable.
+  const readable = /^(src|test)\/[A-Za-z0-9_./-]+\.ts$/.test(rel) ||
+    ["package.json", "tsconfig.json", "vitest.config.ts", "CLAUDE.md"].includes(rel);
+  if (!readable) return { ok: false, error: `refused: ${path} is outside the readable file allowlist` };
+  let current = targetRoot;
+  for (const part of rel.split(sep)) {
+    current = resolve(current, part);
+    if (isSymlink(current)) {
+      return { ok: false, error: `refused: symlink in path ${path}` };
+    }
   }
   return { ok: true, abs, rel };
 }
@@ -114,14 +134,18 @@ function readFile(path: string): ToolOutcome {
   const j = jail(path);
   if (!j.ok) return { content: j.error, is_error: true };
   if (!existsSync(j.abs)) return { content: `no such file: ${path}`, is_error: true };
-  if (statSync(j.abs).isDirectory()) return { content: `${path} is a directory, not a file`, is_error: true };
+  if (!lstatSync(j.abs).isFile()) return { content: `${path} is a directory, not a file`, is_error: true };
 
-  const buf = readFileSync(j.abs);
-  if (buf.length <= READ_CAP_BYTES) return { content: buf.toString("utf8") };
+  const fd = openSync(j.abs, "r");
+  const buf = Buffer.alloc(READ_CAP_BYTES + 1);
+  let length: number;
+  try { length = readSync(fd, buf); } finally { closeSync(fd); }
+  const data = buf.subarray(0, length);
+  if (data.length <= READ_CAP_BYTES) return { content: data.toString("utf8") };
   return {
     content:
-      buf.subarray(0, READ_CAP_BYTES).toString("utf8") +
-      `\n… [truncated: showing ${READ_CAP_BYTES} of ${buf.length} bytes]`,
+      data.subarray(0, READ_CAP_BYTES).toString("utf8") +
+      `\n… [truncated after ${READ_CAP_BYTES} bytes]`,
   };
 }
 
@@ -132,22 +156,22 @@ function readFile(path: string): ToolOutcome {
  * reads the refusal. A constraint the harness enforces holds whatever the
  * model decides; a constraint only the prompt states holds until it does not.
  *
- * Note what this does NOT guard: package.json, vitest.config.ts, or deleting
- * a test by other means. That is why the loop verifies from outside afterwards
- * and prints `git diff --stat` — Rule 5 catches what Rule 2 did not foresee.
+ * Only TypeScript source under src/ is writable. Tests, package scripts,
+ * dependency lockfiles and test-runner configuration stay read-only.
  */
 function writeFile(path: string, content: string): ToolOutcome {
   const j = jail(path);
   if (!j.ok) return { content: j.error, is_error: true };
 
   const top = j.rel.split(sep)[0];
-  if (top === "test") {
+  if (top !== "src" || !j.rel.endsWith(".ts")) {
     return {
-      content: `refused: ${path} is under test/ — tests are read-only in this project; fix the source instead`,
+      content: `refused: ${path} is not a source .ts file under src/ — tests and project configuration are read-only`,
       is_error: true,
     };
   }
 
+  if (Buffer.byteLength(content, "utf8") > 64 * 1024) return { content: "refused: content exceeds 64 KB", is_error: true };
   mkdirSync(dirname(j.abs), { recursive: true });
   writeFileSync(j.abs, content, "utf8");
   return { content: `ok, ${Buffer.byteLength(content, "utf8")} bytes written to ${path}` };
@@ -165,15 +189,17 @@ function writeFile(path: string, content: string): ToolOutcome {
  */
 function runTests(): ToolOutcome {
   const run = spawnSync("npm", ["test"], {
-    cwd: TARGET_ROOT,
+    cwd: targetRoot,
     encoding: "utf8",
+    env: { ...process.env, ANTHROPIC_API_KEY: "" },
     timeout: 120_000,
+    maxBuffer: 256 * 1024,
     shell: process.platform === "win32",
   });
 
   if (run.status === null) {
     const why = run.error?.message ?? (run.signal ? `killed by ${run.signal}` : "unknown reason");
-    return { content: `could not run npm test in ${TARGET_ROOT}: ${why}`, is_error: true };
+    return { content: `could not run npm test in ${targetRoot}: ${why}`, is_error: true };
   }
 
   const tail = `${run.stdout}\n${run.stderr}`
@@ -202,6 +228,10 @@ function stringField(input: unknown, key: string): string | undefined {
  * read and fix.
  */
 export function runTool(name: string, input: unknown): ToolOutcome {
+  try {
+  if (!input || typeof input !== "object" || Array.isArray(input)) return { content: "input must be an object", is_error: true };
+  const allowed = name === "read_file" ? ["path"] : name === "write_file" ? ["path", "content"] : [];
+  if (Object.keys(input).some(key => !allowed.includes(key))) return { content: "unexpected input field", is_error: true };
   switch (name) {
     case "read_file": {
       const path = stringField(input, "path");
@@ -220,5 +250,7 @@ export function runTool(name: string, input: unknown): ToolOutcome {
       return runTests();
     default:
       return { content: `unknown tool: ${name}`, is_error: true };
+  } } catch (error) {
+    return { content: `tool failed: ${error instanceof Error ? error.message : String(error)}`, is_error: true };
   }
 }

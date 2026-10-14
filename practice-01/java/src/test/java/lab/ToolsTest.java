@@ -85,4 +85,34 @@ class ToolsTest {
         assertTrue(unknown.isError());
         assertTrue(unknown.text().startsWith("unknown tool"), unknown.text());
     }
+
+    @Test
+    void writeFile_projectConfigurationIsReadOnly() {
+        assertTrue(tools.writeFile("package.json", "{}").isError());
+        assertTrue(tools.writeFile("vitest.config.ts", "").isError());
+    }
+
+    @Test
+    void dispatch_nonStringContentCannotTruncateSource() throws IOException {
+        Files.writeString(target.resolve("src/parser.ts"), "KEEP");
+        assertTrue(tools.dispatch("write_file", Map.of("path", "src/parser.ts", "content", 42)).isError());
+        assertEquals("KEEP", Files.readString(target.resolve("src/parser.ts")));
+    }
+
+    @Test
+    void symlinkReadAndWriteAreRefused() throws IOException {
+        Path outside = Files.createTempFile("p01-outside-", ".ts");
+        try {
+            Files.writeString(outside, "KEEP");
+            Files.createSymbolicLink(target.resolve("src/link.ts"), outside);
+            assertTrue(tools.readFile("src/link.ts").isError());
+            assertTrue(tools.writeFile("src/link.ts", "evil").isError());
+            assertEquals("KEEP", Files.readString(outside));
+        } finally { Files.deleteIfExists(outside); }
+    }
+
+    @Test
+    void malformedPathIsAnErrorResult() {
+        assertTrue(tools.readFile("src/\u0000.ts").isError());
+    }
 }

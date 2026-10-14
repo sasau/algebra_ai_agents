@@ -72,17 +72,22 @@ public final class Ex01AgentLoop {
         // `--max-steps N` (from ./gradlew agent -PmaxSteps=N) overrides it so you
         // can watch the budget fire before the model ends its turn.
         int maxSteps = Client.MAX_STEPS;
-        for (int i = 0; i < args.length - 1; i++) {
-            if (args[i].equals("--max-steps")) {
-                maxSteps = Integer.parseInt(args[i + 1]);
+        try {
+            if (args.length > 0) {
+                if (args.length != 2 || !args[0].equals("--max-steps")) throw new IllegalArgumentException();
+                maxSteps = Integer.parseInt(args[1]);
+                if (maxSteps < 1) throw new IllegalArgumentException();
             }
+        } catch (IllegalArgumentException e) {
+            System.err.println("--max-steps needs a positive whole number, e.g. ./gradlew agent -PmaxSteps=3");
+            System.exit(2);
         }
 
         // Fail here, in one sentence, rather than twelve lines of SDK stack
         // trace ending in "401" on the first call. CheckSetup explains the fix
         // in full; this just points at it.
         String key = Client.resolvedKey();
-        if (key == null || key.isBlank()) {
+        if (key == null || key.isBlank() || key.equals("sk-ant-REPLACE-ME")) {
             System.out.println();
             System.out.println("  ✗ ANTHROPIC_API_KEY is not set — the loop cannot call the model.");
             System.out.println("      fix: run ./gradlew checkSetup and follow its instructions");
@@ -90,24 +95,18 @@ public final class Ex01AgentLoop {
             System.exit(1);
         }
 
-        Tools tools = Tools.forLab();                      // TOOLS, jailed to ../parser-ts
-        Path practiceRoot = Path.of("..").toAbsolutePath().normalize();   // practice-01/
-
-        // Reset the target so every run starts from the same red test. Without
-        // this, a second run finds the test already green and "succeeds" in one
-        // step having done nothing. Warn and carry on if git cannot do it
-        // (e.g. parser-ts is not tracked yet) — the loop still works, it just
-        // may not be starting from the shipped bug.
+        Path practiceRoot = Path.of("..").toAbsolutePath().normalize();
+        Tools tools;
         try {
-            Tools.Exec reset = Tools.exec(practiceRoot, "git", "checkout", "--", "parser-ts/src");
-            if (reset.exit() != 0) {
-                System.out.println("! could not reset parser-ts/src (git exit " + reset.exit()
-                        + "): " + reset.output().strip());
-                System.out.println("  continuing — the test may already be green");
-            }
+            Tools.Exec prepared = Tools.exec(practiceRoot, "node", "scripts/prepare-run.mjs", "act2-java");
+            if (prepared.exit() != 0) throw new IOException(prepared.output());
+            tools = new Tools(Path.of(prepared.output().strip()));
         } catch (IOException | InterruptedException e) {
-            System.out.println("! could not reset parser-ts/src: " + e.getMessage() + " — continuing");
+            System.err.println("could not prepare isolated run: " + e.getMessage());
+            System.exit(1);
+            return;
         }
+        System.out.println("Run directory: " + tools.target());
 
         System.out.printf("%nAgent loop · %s · budget %d steps · target %s%n%n",
                 Client.MODEL, maxSteps, tools.target());
@@ -115,10 +114,10 @@ public final class Ex01AgentLoop {
         Run run = new Run(tools, maxSteps);
         try {
             run.loop();
-        } catch (IllegalStateException e) {
+        } catch (RuntimeException e) {
             // Printed AFTER the verification below has run (finally), so you
             // see what state the target was left in even when the loop failed.
-            run.failure = e;
+            run.failure = new IllegalStateException(e.getMessage(), e);
         } finally {
             run.verifyFromOutside(practiceRoot);
         }
@@ -272,9 +271,9 @@ public final class Ex01AgentLoop {
             }
 
             try {
-                Tools.Exec diff = Tools.exec(practiceRoot, "git", "diff", "--stat", "parser-ts");
+                Tools.Exec diff = Tools.exec(practiceRoot, "git", "diff", "--no-index", "--stat", "parser-ts/src", tools.target().resolve("src").toString());
                 String stat = diff.output().strip();
-                System.out.println("   git diff --stat parser-ts:");
+                System.out.println("   source changes (baseline → isolated run):");
                 System.out.println(stat.isEmpty()
                         ? "      (no changes)"
                         : stat.lines().map(l -> "      " + l).collect(Collectors.joining("\n")));

@@ -11,6 +11,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.CompletableFuture;
+import java.nio.file.LinkOption;
+import java.nio.file.InvalidPathException;
 
 /**
  * The three tools the agent may call — and the jail they run in.
@@ -128,13 +131,13 @@ public final class Tools {
                 .description(
                         "Replace the entire contents of a file in the parser project with `content` "
                         + "(creating it if needed). The path is relative to the project root. "
-                        + "Writes under test/ are REFUSED — the tests define the goal and may not "
+                        + "Only .ts files under src/ may be written — tests and project configuration may not "
                         + "be changed. Always send the complete file, not a diff.")
                 .inputSchema(Tool.InputSchema.builder()
                         .properties(Tool.InputSchema.Properties.builder()
                                 .putAdditionalProperty("path", JsonValue.from(Map.of(
                                         "type", "string",
-                                        "description", "Path relative to the project root; not under test/")))
+                                        "description", "Path to a .ts file under src/")))
                                 .putAdditionalProperty("content", JsonValue.from(Map.of(
                                         "type", "string",
                                         "description", "The complete new contents of the file")))
@@ -168,10 +171,16 @@ public final class Tools {
      * reported back to it as an error, never thrown.
      */
     public Result dispatch(String name, Map<String, Object> input) {
+        if (name == null || input == null) return Result.error("tool name and input object are required");
+        List<String> allowed = name.equals("read_file") ? List.of("path") : name.equals("write_file") ? List.of("path", "content") : List.of();
+        if (input.keySet().stream().anyMatch(key -> !allowed.contains(key))) return Result.error("unexpected input field");
         switch (name) {
             case "read_file":
+                if (input == null || !(input.get("path") instanceof String)) return Result.error("read_file needs a string path");
                 return readFile(string(input, "path"));
             case "write_file":
+                if (input == null || !(input.get("path") instanceof String) || !(input.get("content") instanceof String))
+                    return Result.error("write_file needs a string path and a string content");
                 return writeFile(string(input, "path"), string(input, "content"));
             case "run_tests":
                 return runTests();
@@ -187,7 +196,7 @@ public final class Tools {
     /** The named argument as a string, or "" if absent — the tool itself reports the problem. */
     private static String string(Map<String, Object> input, String key) {
         Object value = input == null ? null : input.get(key);
-        return value == null ? "" : String.valueOf(value);
+        return value instanceof String text ? text : "";
     }
 
     // --- the three tools --------------------------------------------------------
@@ -207,7 +216,8 @@ public final class Tools {
             return Result.error(path + " is a directory, not a file");
         }
         try {
-            byte[] bytes = Files.readAllBytes(file);
+            byte[] bytes;
+            try (var stream = Files.newInputStream(file)) { bytes = stream.readNBytes(READ_CAP_BYTES + 1); }
             if (bytes.length <= READ_CAP_BYTES) {
                 return Result.ok(new String(bytes, StandardCharsets.UTF_8));
             }
@@ -233,10 +243,11 @@ public final class Tools {
         // SAYS "do not edit anything under test/"; this makes it impossible.
         // We test the normalized, jailed path so `src/../test/x.ts` is caught too.
         Path relative = target.relativize(file);
-        if (relative.getNameCount() > 0 && relative.getName(0).toString().equals("test")) {
-            return Result.error("refused: '" + path + "' is under test/ — the tests define the goal "
-                    + "and may not be edited. Fix the source under src/ instead.");
+        if (relative.getNameCount() < 2 || !relative.getName(0).toString().equals("src") || !path.endsWith(".ts")) {
+            return Result.error("refused: '" + path + "' is not a .ts file under src/ — tests and project configuration "
+                    + "may not be edited. Fix the source under src/ instead.");
         }
+        if (content == null || content.getBytes(StandardCharsets.UTF_8).length > 64 * 1024) return Result.error("refused: content missing or exceeds 64 KB");
         try {
             Files.createDirectories(file.getParent());
             byte[] bytes = content.getBytes(StandardCharsets.UTF_8);
@@ -294,7 +305,9 @@ public final class Tools {
         if (path == null || path.isBlank()) {
             throw new Refused("refused: path is empty");
         }
-        Path given = Path.of(path);
+        Path given;
+        try { given = Path.of(path); } catch (InvalidPathException e) { throw new Refused("refused: invalid path"); }
+        if (Arrays.asList(path.split("[\\\\/]" )).contains("..")) throw new Refused("refused: '..' segments are not allowed");
         if (given.isAbsolute()) {
             throw new Refused("refused: absolute path '" + path
                     + "' — paths must be relative to the parser project");
@@ -302,6 +315,17 @@ public final class Tools {
         Path resolved = target.resolve(given).normalize();
         if (!resolved.startsWith(target)) {
             throw new Refused("refused: '" + path + "' escapes the parser project");
+        }
+        Path relative = target.relativize(resolved);
+        String portable = relative.toString().replace('\\', '/');
+        if (!(portable.matches("^(src|test)/[A-Za-z0-9_./-]+\\.ts$") ||
+                List.of("package.json", "tsconfig.json", "vitest.config.ts", "CLAUDE.md").contains(portable))) {
+            throw new Refused("refused: path is outside the readable file allowlist");
+        }
+        Path current = target;
+        for (Path part : relative) {
+            current = current.resolve(part);
+            if (Files.isSymbolicLink(current)) throw new Refused("refused: symlink in path");
         }
         return resolved;
     }
@@ -324,17 +348,34 @@ public final class Tools {
         ProcessBuilder pb = new ProcessBuilder(command)
                 .directory(dir.toFile())
                 .redirectErrorStream(true);
+        pb.environment().remove("ANTHROPIC_API_KEY");
         pb.environment().put("FORCE_COLOR", "0");
         pb.environment().put("NO_COLOR", "1");
         Process process = pb.start();
-        // Read everything first: a process that fills its stdout pipe blocks
-        // forever if nobody drains it, and waitFor() alone would never return.
-        String output = new String(process.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
+        // Drain output concurrently so a full pipe cannot block the timeout.
+        CompletableFuture<String> output = CompletableFuture.supplyAsync(() -> {
+            try {
+                var tail = new java.io.ByteArrayOutputStream();
+                byte[] chunk = new byte[8192];
+                int n;
+                while ((n = process.getInputStream().read(chunk)) != -1) {
+                    if (tail.size() + n > 256 * 1024) {
+                        byte[] old = tail.toByteArray(); tail.reset();
+                        tail.write(old, Math.max(0, old.length - 128 * 1024), Math.min(old.length, 128 * 1024));
+                    }
+                    tail.write(chunk, 0, n);
+                }
+                return tail.toString(StandardCharsets.UTF_8);
+            }
+            catch (IOException e) { return "output unavailable: " + e.getMessage(); }
+        });
         if (!process.waitFor(PROCESS_TIMEOUT.toMillis(), TimeUnit.MILLISECONDS)) {
+            process.descendants().forEach(ProcessHandle::destroyForcibly);
             process.destroyForcibly();
-            return new Exec(124, output);
+            process.waitFor(5, TimeUnit.SECONDS);
+            return new Exec(124, output.getNow("timed out"));
         }
-        return new Exec(process.exitValue(), output);
+        return new Exec(process.exitValue(), output.join());
     }
 
     /** The last {@code n} lines of {@code text}. */

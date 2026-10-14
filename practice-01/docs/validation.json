@@ -1,0 +1,123 @@
+{
+  "date": "2026-10-14",
+  "scope": "Practice 01 guided code revision; isolated /tmp workspace",
+  "environment": {
+    "node": "22.23.2",
+    "npm": "12.0.2",
+    "java": "21.0.10",
+    "gradle": "9.7.1",
+    "claude_code_container": "2.1.283"
+  },
+  "checks": [
+    {
+      "command": "npm run typecheck (ts/)",
+      "result": "pass"
+    },
+    {
+      "command": "npm test (ts/)",
+      "result": "pass",
+      "tests": 4
+    },
+    {
+      "command": "npm run check (ts/)",
+      "result": "pass; offline, no model request"
+    },
+    {
+      "command": "npm run tools:demo (ts/)",
+      "result": "pass; read OK, test/config writes refused, expected WHERE failure observed; exit 0"
+    },
+    {
+      "command": "gradle test toolsDemo checkSetup (java/; offline cached Gradle in /tmp)",
+      "result": "pass",
+      "tests": 11
+    },
+    {
+      "command": "gradle test --tests ParserTest --rerun-tasks (fresh Act 1 copy)",
+      "result": "expected failure",
+      "tests": 2,
+      "passed": 1,
+      "failed": 1,
+      "error": "unexpected token WHERE at 1:17"
+    },
+    {
+      "command": "npm test (fresh parser-ts copy, via both tool demos)",
+      "result": "expected failure",
+      "tests": 5,
+      "passed": 4,
+      "failed": 1,
+      "error": "unexpected token WHERE at 1:17"
+    },
+    {
+      "command": "node --test docker/check-evidence.test.mjs",
+      "result": "pass",
+      "tests": 7
+    },
+    {
+      "command": "bash -n docker/{run,verify,break-it}.sh parser-java/workflow.sh",
+      "result": "pass"
+    },
+    {
+      "command": "docker build -f docker/Dockerfile -t p01-bot <fresh target context>",
+      "result": "pass"
+    },
+    {
+      "command": "docker run --rm --network none p01-bot claude --version",
+      "result": "pass; 2.1.283"
+    },
+    {
+      "command": "docker/verify.sh offline fixture matrix",
+      "result": "pass",
+      "fixtures": [
+        {
+          "name": "baseline red",
+          "exit": 1
+        },
+        {
+          "name": "valid source-only repair",
+          "exit": 0
+        },
+        {
+          "name": "test tamper",
+          "exit": 1
+        },
+        {
+          "name": "deleted parser source",
+          "exit": 1
+        }
+      ]
+    },
+    {
+      "command": "workflow.sh offline fake-Gradle/fake-CLI integration fixtures",
+      "result": "pass",
+      "fixtures": [
+        {
+          "fixture": "red-summary-pass",
+          "exit": 1
+        },
+        {
+          "fixture": "red-summary-fail",
+          "exit": 2
+        },
+        {
+          "fixture": "build-fail",
+          "exit": 2
+        },
+        {
+          "fixture": "green",
+          "exit": 0
+        }
+      ]
+    }
+  ],
+  "preservation": {
+    "original_practice_files": "unchanged; SHA256 verified",
+    "parser_source_baselines": "unchanged and intentionally red",
+    "parser_test_sources": "unchanged"
+  },
+  "limitations": [
+    "No paid model calls were made. SDK end-to-end repair, workflow text generation and unattended model execution remain untested.",
+    "Tool path allowlists do not sandbox source executed by the host test process.",
+    "Docker agent runtime retains API credentials and outbound network access; generated logs must be reviewed before sharing.",
+    "CLI dollar budget uses client estimates and is not an exact provider billing ceiling."
+  ]
+}

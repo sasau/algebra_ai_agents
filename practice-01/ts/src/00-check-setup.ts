@@ -8,7 +8,7 @@
  * are available, and the API actually answers you. Each check either passes
  * or tells you exactly what to do about it.
  *
- * If this script prints "ALL CHECKS PASSED", Act 2 will run.
+ * The default is offline. --live explicitly makes a small paid API request.
  */
 import { ENV_PATH, PRACTICE_ROOT, TARGET_ROOT, TS_ROOT } from "./env.js";
 import { spawnSync } from "node:child_process";
@@ -16,6 +16,7 @@ import { existsSync } from "node:fs";
 import { join } from "node:path";
 
 let failures = 0;
+const live = process.argv.includes("--live");
 
 function pass(label: string, detail = ""): void {
   console.log(`  ✓ ${label}${detail ? ` — ${detail}` : ""}`);
@@ -47,7 +48,7 @@ console.log("\nPractice 01 — environment check · TypeScript track\n");
 // vitest 5, which declares Node 22.12 or newer — so on Node 20 your own code
 // runs, but `npm test` inside parser-ts may not. We say so rather than fail.
 const [major = 0, minor = 0] = process.versions.node.split(".").map(Number);
-if (major >= 20) {
+if (major > 22 || (major === 22 && minor >= 12)) {
   pass("Node version", `v${process.versions.node}`);
   if (major < 22 || (major === 22 && minor < 12)) {
     warn(
@@ -74,7 +75,9 @@ if (existsSync(join(TS_ROOT, "node_modules", "@anthropic-ai", "sdk"))) {
 // rejects it, and "invalid x-api-key" is a much clearer error than a silent
 // hang. We never print the key itself.
 const key = process.env.ANTHROPIC_API_KEY;
-if (!key) {
+if (!live) {
+  warn("API check not requested", "offline check; use npm run check:live to verify credentials with a small paid request");
+} else if (!key) {
   fail(
     "ANTHROPIC_API_KEY is not set",
     `cd .. && cp .env.example .env, then put your key in ${ENV_PATH}`,
@@ -92,23 +95,15 @@ if (!key) {
 } else {
   // Show only the last 4 characters, so you can tell two keys apart without
   // ever leaking one into a terminal recording or a screenshot.
-  pass("ANTHROPIC_API_KEY present", `${key.length} chars, ends …${key.slice(-4)}`);
+  pass("ANTHROPIC_API_KEY present", "value hidden");
 }
 
 // --- 4. .env is ignored by git -------------------------------------------
 // The single most expensive mistake in this repo is committing a key.
-const gitignorePaths = [
-  join(PRACTICE_ROOT, ".gitignore"),
-  join(PRACTICE_ROOT, "..", ".gitignore"),
-];
-if (gitignorePaths.some((p) => existsSync(p))) {
-  pass(".gitignore present", "your .env will not be committed");
-} else {
-  fail(
-    "no .gitignore found",
-    "do not commit anything until one exists — your key would go with it",
-  );
-}
+const ignored = spawnSync("git", ["check-ignore", "--quiet", "--no-index", "--", ENV_PATH], { cwd: PRACTICE_ROOT });
+if (ignored.status === 0) pass(".env is ignored by git");
+else if (existsSync(join(PRACTICE_ROOT, ".gitignore"))) warn("not inside a git clone", "local .gitignore protects .env after cloning; never add it forcibly");
+else fail("cannot confirm .env is ignored", "keep practice-01/.gitignore and never commit your .env");
 
 // --- 5. The target project is installed ----------------------------------
 // The agent's run_tests tool spawns `npm test` inside parser-ts. That needs
@@ -120,8 +115,7 @@ if (existsSync(join(TARGET_ROOT, "node_modules", "vitest"))) {
 }
 
 // --- 6. git ---------------------------------------------------------------
-// The loop resets parser-ts/src with `git checkout` before each run and shows
-// `git diff --stat` after it. Without git you can still run once, blind.
+// The loop compares the supplied source with an isolated run using git diff --no-index.
 const gitVersion = versionOf("git");
 if (gitVersion) {
   pass("git available", gitVersion);
@@ -146,7 +140,7 @@ if (dockerVersion) {
 // Everything above is local. This is the only check that proves the key works,
 // the network is reachable, and your account has credit. We ask for 5 tokens
 // so it costs essentially nothing.
-if (failures === 0) {
+if (live && failures === 0) {
   console.log("\n  … calling the API (this costs a fraction of a cent) …\n");
   try {
     const { client, MODEL, textOf } = await import("./client.js");
@@ -173,13 +167,13 @@ if (failures === 0) {
     }
   }
 } else {
-  console.log("\n  … skipping the API call until the checks above pass.\n");
+  console.log("\n  … no API call made (offline mode or a failed prerequisite).\n");
 }
 
 // --- verdict --------------------------------------------------------------
 console.log("");
 if (failures === 0) {
-  console.log("  ALL CHECKS PASSED — you are ready. Start with: npm run agent\n");
+  console.log("  ALL CHECKS PASSED — next: npm run tools:demo (offline) or npm run check:live (paid API check)\n");
   process.exit(0);
 } else {
   console.log(`  ${failures} check(s) failed. Fix them above, then run npm run check again.\n`);

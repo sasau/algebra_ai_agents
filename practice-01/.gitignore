@@ -1,0 +1,5 @@
+# Generated exercise copies and credentials stay local.
+.runs/
+.env
+.env.*
+!.env.example

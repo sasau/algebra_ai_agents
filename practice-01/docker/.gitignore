@@ -2,3 +2,6 @@
 # source — and it contains node_modules and a .git of its own. Never commit it.
 out/
 out-break-it/
+
+out.previous-*
+out-break-it.previous-*

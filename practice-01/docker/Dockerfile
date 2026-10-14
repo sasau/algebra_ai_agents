@@ -1,21 +1,10 @@
-# practice-01/docker/Dockerfile — the box the fully autonomous bot runs in (Act 3).
-#
-# The lecture's rung 4 — "the agent decides AND acts, nobody approves each step" — is only
-# acceptable because of where it happens. This image is a throwaway Linux machine that
-# contains the parser project and the Claude Code CLI, and NOTHING of yours: no home
-# directory, no SSH keys, no other repos. Whatever the bot does, it does in here.
-#
-# Build it from practice-01/ (the context must contain parser-ts/, which this file copies):
-#
-#   docker build -f docker/Dockerfile -t p01-bot .
-#
-# run.sh does that for you, then starts the container with the three limits that make an
-# unattended run safe: the container boundary, --max-turns, --max-budget-usd.
-#
-# The API key is NOT in this file and must never be. It arrives at run time only, through
-# `docker run -e ANTHROPIC_API_KEY`, and lives for exactly as long as the container does.
-# Anyone who can pull an image can read every ENV and every layer in it — a key baked in
-# here would be a key published.
+# Practice 01 Act 3: trusted baseline image for unattended execution and verification.
+# run.sh builds from a fresh context containing only parser-ts, never student host files.
+# The runtime API key is passed by docker run, never stored in an image layer.
+# The running agent can read that key and use outbound network access; logs can
+# retain printed secrets after container removal. Review artifacts before sharing.
+# Non-root execution, no host mounts, resource limits and estimated CLI budgets
+# reduce exposure. The independent verifier uses no key or network.
 
 # The npm package @anthropic-ai/claude-code declares `engines.node >= 22` (since 2.1.198),
 # so we use Node 22. Anthropic's own reference Dockerfile uses node:20 + `USER node`; we
@@ -50,6 +39,7 @@ RUN mkdir -p /work /out && chown node:node /work /out
 # The node image ships a ready-made unprivileged user `node` (uid 1000) — we use it.
 USER node
 ENV HOME=/home/node
+ENV DISABLE_TELEMETRY=1
 WORKDIR /work
 
 # The target: parser-ts, the same WHERE-clause bug you fixed by hand in Act 2. Copied as
@@ -83,7 +73,7 @@ RUN if grep '"resolved": "https://' package-lock.json | grep -qv '"resolved": "h
 RUN npm ci --no-audit --no-fund
 
 # Baseline commit — so that after the run `git diff` shows EXACTLY what the bot changed,
-# and verify.sh can prove whether test/ was touched. A fresh repo, a throwaway identity.
+# for interactive inspection; verify.sh instead trusts files copied from a fresh image. A fresh repo, a throwaway identity.
 # node_modules goes into .git/info/exclude (not a .gitignore in the tree) so the baseline
 # stays small without adding a file the bot could then see as "its" change.
 RUN git init -q \

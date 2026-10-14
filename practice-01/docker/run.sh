@@ -1,26 +1,9 @@
 #!/usr/bin/env bash
-# run.sh — Act 3: the fully autonomous bot, in a box.
-#
-# This is the lecture's rung 4. In Acts 1 and 2 a human (you) sat in the loop: you approved
-# edits, you watched each step. Here nobody does — Claude Code runs with
-# --dangerously-skip-permissions, which the docs say to use ONLY "in isolated environments like
-# containers, VMs, or dev containers ... where Claude Code cannot damage your host system".
-# That is the one reason this script is legal: the bot never touches your machine. Three
-# limits make the run safe, and each is a thing you can point at:
-#
-#   1. the CONTAINER  — a throwaway Linux box holding only parser-ts; your files are not in it
-#   2. --max-turns    — at most N perceive/decide/act/observe cycles, then it stops
-#   3. --max-budget-usd — at most $X of API spend, then it stops
-#
-# 2 and 3 are the BUDGET half of the stopping condition (Rule 3). The SUCCESS half is in the
-# goal text: "stop when it is green". A goal with no success test — see break-it.sh — leaves
-# the budget as the only thing that ever halts the loop.
-#
-#   ./run.sh                               defaults: 15 turns, $1.00, the fix-the-test goal
-#   MAX_TURNS=5 MAX_BUDGET=0.25 ./run.sh   tighter
-#   GOAL="..." ./run.sh                    a different goal (break-it.sh does this)
-#
-# Afterwards: ./verify.sh — the bot's own report in out/result.json is a CLAIM, not evidence.
+# Unattended Claude Code run in a disposable container. No host bind mounts.
+# The runtime key and outbound network are accessible to the bot. Turn limits
+# and the CLI's estimated spending cap bound execution; they are not an exact
+# billing guarantee or a complete security boundary. Verify source independently.
+# Earlier outputs are renamed, never erased. No source checkout/reset occurs.
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -37,8 +20,10 @@ MAX_TURNS="${MAX_TURNS:-15}"
 MAX_BUDGET="${MAX_BUDGET:-1.00}"
 GOAL="${GOAL:-Make \`npm test\` pass in this project. Do not edit anything under test/. Stop when it is green.}"
 
-case "$MAX_TURNS" in ''|*[!0-9]*) die "MAX_TURNS must be a whole number, got '$MAX_TURNS'" ;; esac
-case "$MAX_BUDGET" in ''|*[!0-9.]*) die "MAX_BUDGET must be a dollar amount like 1.00, got '$MAX_BUDGET'" ;; esac
+case "$MAX_TURNS" in ''|0|*[!0-9]*) die "MAX_TURNS must be a whole number, got '$MAX_TURNS'" ;; esac
+node -e 'if (!/^\d+(\.\d+)?$/.test(process.argv[1]) || Number(process.argv[1]) <= 0) process.exit(1)' "$MAX_BUDGET" \
+  || die "MAX_BUDGET must be a positive dollar amount, like 1.00"
+case "${OUT_NAME:-out}" in out|out-break-it) ;; *) die "OUT_NAME must be out or out-break-it" ;; esac
 
 # --- the key: from your shell, or from practice-01/.env — never from this file or the image --
 # `set -a` exports every variable the sourced file assigns, so ANTHROPIC_API_KEY reaches
@@ -61,29 +46,16 @@ command -v docker >/dev/null 2>&1 \
 docker info >/dev/null 2>&1 \
   || die "the Docker daemon is not running. Fix: start Docker Desktop and wait for the whale to settle."
 
-# --- 1. build the box -----------------------------------------------------------------------
-# The context is practice-01/ (not docker/) because the Dockerfile copies parser-ts/ into
-# the image. ../.dockerignore keeps your .env, node_modules and the other acts out of it.
-# Every run rebuilds, so every run starts from the committed baseline — cached layers make
-# a rebuild take about a second when nothing changed.
-# --- 0. a clean target ----------------------------------------------------------------------
-# The Dockerfile COPYs parser-ts/ from your working tree and commits it as the image's
-# "baseline". If Act 2's loop left the bug already fixed on disk, the bot would start green and
-# verify.sh would have nothing to show — so put the bug back first. Only parser-ts/src is
-# touched; your own files elsewhere are not. (In a fresh clone before practice-01 is committed
-# this prints a harmless "pathspec" warning and continues.)
-echo "== 0. resetting parser-ts/src to the committed bug"
-git -C "$PRACTICE_ROOT" checkout -- parser-ts/src 2>/dev/null \
-  || echo "   (nothing to reset — parser-ts is not committed yet, or already clean)"
+# Build only a fresh target copy. Never git checkout or reset student files.
+TARGET="$(node "$PRACTICE_ROOT/scripts/prepare-run.mjs" act3)"
+echo "== 1. building $IMAGE from fresh baseline copy $TARGET"
+docker build -f "$SCRIPT_DIR/Dockerfile" -t "$IMAGE" "$(dirname "$TARGET")"
 
-echo "== 1. building $IMAGE from $PRACTICE_ROOT"
-docker build -f "$SCRIPT_DIR/Dockerfile" -t "$IMAGE" "$PRACTICE_ROOT"
-
-# --- 2. a clean out/ ------------------------------------------------------------------------
-# The run's report and a copy of the container's /work end up here. Wiped first, so what you
+# --- 2. preserve earlier out/ ------------------------------------------------------------------------
+# The run's report and a copy of the container's /work end up here. Archived first, so what you
 # read afterwards is from THIS run and not a mix of two.
-case "$OUT" in */docker/out|*/docker/out-break-it) ;; *) die "refusing to rm -rf '$OUT' — unexpected path" ;; esac
-rm -rf "$OUT"
+case "$OUT" in */docker/out|*/docker/out-break-it) ;; *) die "refusing to use output directory '$OUT' — unexpected path" ;; esac
+if [ -e "$OUT" ]; then mv "$OUT" "$OUT.previous-$(date +%Y%m%d-%H%M%S)-$$"; fi
 mkdir -p "$OUT"
 
 # --- 3. run the bot -------------------------------------------------------------------------
@@ -108,14 +80,15 @@ mkdir -p "$OUT"
 # On native Linux it works but leaves out/ owned by uid 1000, so the next wipe needs sudo.
 # `docker cp` has neither problem: the files land owned by you, everywhere.
 # The price: the container must still exist after the command (so no --rm). The trap deletes
-# it — and with it the key in its environment — the moment the copy is done, or if you ^C.
-CONTAINER=p01-bot-run
-docker rm -f "$CONTAINER" >/dev/null 2>&1 || true          # leftovers of an interrupted run
+# it after extraction. Review logs before sharing: printed secrets could persist in artifacts.
+CONTAINER="p01-bot-run-$$"
+# Unique name avoids deleting another student run.          # leftovers of an interrupted run
 trap 'docker rm -f "$CONTAINER" >/dev/null 2>&1 || true' EXIT
 
 echo "== 2. running: claude -p --dangerously-skip-permissions --max-turns $MAX_TURNS --max-budget-usd $MAX_BUDGET"
 echo "   goal: $GOAL"
-docker run --name "$CONTAINER" \
+docker run --name "$CONTAINER" --cpus 1 --memory 768m --pids-limit 128 \
+  --cap-drop ALL --security-opt no-new-privileges \
   -e ANTHROPIC_API_KEY \
   -e GOAL="$GOAL" \
   -e MAX_TURNS="$MAX_TURNS" \
@@ -162,4 +135,4 @@ node -e '
 
 echo
 echo "Full report: $OUT/result.json · the box's /work: $OUT/work"
-echo "Now run ./verify.sh — the bot's word is not evidence."
+echo "Now run ./verify.sh — CLI metadata and model text both need independent verification."

@@ -20,7 +20,7 @@ import java.nio.file.Path;
  * is there for Act 3, and the API actually answers you. Each check either
  * passes or tells you exactly what to do about it.
  *
- * <p>If this prints "ALL CHECKS PASSED", {@code ./gradlew agent} will run.
+ * <p>The default check is offline. Use -Plive for a small paid API check.
  */
 public final class CheckSetup {
 
@@ -47,6 +47,7 @@ public final class CheckSetup {
         System.out.println("Practice 01 — environment check · Java track");
         System.out.println();
 
+        boolean live = java.util.Arrays.asList(args).contains("--live");
         // --- 1. JDK version ----------------------------------------------
         // The course targets Java 21. The build's toolchain enforces it too,
         // but saying so plainly beats a Gradle stack trace.
@@ -74,7 +75,9 @@ public final class CheckSetup {
         Path envFile = practiceRoot.resolve(".env");
         String key = Client.resolvedKey();
 
-        if (key == null || key.isBlank()) {
+        if (!live) {
+            warn("API check not requested", "offline check; use ./gradlew checkSetup -Plive for a small paid request");
+        } else if (key == null || key.isBlank()) {
             fail("ANTHROPIC_API_KEY is not set",
                     "cd .. && cp .env.example .env, then put your key in " + envFile);
         } else if (key.equals("sk-ant-REPLACE-ME")) {
@@ -87,7 +90,7 @@ public final class CheckSetup {
             // Show only the last 4 characters, so you can tell two keys apart
             // without ever leaking one into a screen recording.
             pass("ANTHROPIC_API_KEY present",
-                    key.length() + " chars, ends …" + key.substring(key.length() - 4));
+                    "value hidden");
         }
 
         // --- 4. .env is ignored by git ------------------------------------
@@ -95,7 +98,7 @@ public final class CheckSetup {
         boolean ignored = Files.exists(practiceRoot.resolve(".gitignore"))
                 || Files.exists(practiceRoot.getParent().resolve(".gitignore"));
         if (ignored) {
-            pass(".gitignore present", "your .env will not be committed");
+            pass(".gitignore present", "keep .env ignored; never force-add it");
         } else {
             fail("no .gitignore found",
                     "do not commit anything until one exists — your key would go with it");
@@ -135,8 +138,7 @@ public final class CheckSetup {
         }
 
         // --- 7. git on the PATH -------------------------------------------
-        // The loop resets parser-ts with `git checkout` before every run and
-        // shows what changed with `git diff --stat` after. No git, no Rule 5.
+        // Source changes are compared using git diff --no-index; no reset occurs.
         String git = version("git", "--version");
         if (git != null) {
             pass("git on PATH", git);
@@ -160,7 +162,7 @@ public final class CheckSetup {
         // Everything above is local. This is the only check that proves the key
         // works, the network is reachable, and your account has credit. We ask
         // for 5 tokens so it costs essentially nothing.
-        if (failures == 0) {
+        if (live && failures == 0) {
             System.out.println();
             System.out.println("  … calling the API (this costs a fraction of a cent) …");
             System.out.println();
@@ -193,13 +195,13 @@ public final class CheckSetup {
             }
         } else {
             System.out.println();
-            System.out.println("  … skipping the API call until the checks above pass.");
+            System.out.println("  … no API call made (offline mode or a failed prerequisite).");
         }
 
         // --- verdict -------------------------------------------------------
         System.out.println();
         if (failures == 0) {
-            System.out.println("  ALL CHECKS PASSED — you are ready. Start with: ./gradlew agent");
+            System.out.println("  ALL CHECKS PASSED — next: ./gradlew toolsDemo (offline) or ./gradlew checkSetup -Plive (paid API check)");
             System.out.println();
         } else {
             System.out.println("  " + failures + " check(s) failed. Fix them above, then run the check again.");

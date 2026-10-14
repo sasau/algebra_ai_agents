@@ -16,7 +16,7 @@ import type Anthropic from "@anthropic-ai/sdk";
 import { spawnSync } from "node:child_process";
 import { client, MODEL, MAX_STEPS, MAX_TOKENS, textOf, costOf } from "./client.js";
 import { PRACTICE_ROOT } from "./env.js";
-import { TOOLS, runTool } from "./tools.js";
+import { TOOLS, runTool, useTarget } from "./tools.js";
 
 // ── the five parts, named ───────────────────────────────────────────────────
 
@@ -52,18 +52,14 @@ if (!Number.isInteger(maxSteps) || maxSteps < 1) {
   process.exit(2);
 }
 
-// ── reset the target so every run starts from the same bug ──────────────────
-// The loop edits parser-ts/src for real. Without this, a second run would find
-// the tests already green and stop at step 1 — true, but it teaches nothing.
-// If git cannot do it (the folder is not committed yet, or git is missing), we
-// say so and continue with whatever is on disk.
-{
-  const reset = spawnSync("git", ["checkout", "--", "parser-ts/src"], { cwd: PRACTICE_ROOT, encoding: "utf8" });
-  if (reset.status !== 0) {
-    const why = (reset.stderr || reset.error?.message || "").trim().split("\n")[0] ?? "unknown reason";
-    console.warn(`\n  ! could not reset parser-ts/src with git (${why}) — continuing with the files as they are`);
-  }
-}
+// Fresh copy for every run: the supplied parser and previous evidence stay untouched.
+const prepared = spawnSync(process.execPath, ["scripts/prepare-run.mjs", "act2-ts"], {
+  cwd: PRACTICE_ROOT, encoding: "utf8",
+});
+if (prepared.status !== 0) throw new Error(prepared.stderr || "could not prepare an isolated run");
+const target = prepared.stdout.trim();
+useTarget(target);
+console.log(`Run directory: ${target}`);
 
 // ── small printers for the trace ────────────────────────────────────────────
 
@@ -131,7 +127,7 @@ async function runLoop(): Promise<void> {
       throw new Error(`unexpected stop_reason: ${String(r.stop_reason)} — the loop only knows end_turn, tool_use and max_tokens`);
     }
 
-    // [D] is whatever reasoning the model wrote before asking for tools.
+    // [D] is the visible response text, not private model reasoning.
     console.log(`[D] ${said || "(no text)"}`);
 
     // ACT + OBSERVE — one turn may carry several tool_use blocks; run them all,
@@ -186,9 +182,9 @@ if (modelEnded && !verifiedGreen) {
   failure = new Error("the model ended its turn, but independent verification found the test still red");
 }
 
-const diff = spawnSync("git", ["diff", "--stat", "parser-ts"], { cwd: PRACTICE_ROOT, encoding: "utf8" });
-console.log(`   git diff --stat parser-ts:`);
-console.log(`   ${(diff.stdout || "").trim().split("\n").join("\n   ") || "(nothing changed, or parser-ts is not committed yet)"}`);
+const diff = spawnSync("git", ["diff", "--no-index", "--stat", "parser-ts/src", `${target}/src`], { cwd: PRACTICE_ROOT, encoding: "utf8" });
+console.log(`   source changes (baseline → isolated run):`);
+console.log(`   ${(diff.stdout || "").trim().split("\n").join("\n   ") || "(no source changes)"}`);
 
 console.log(
   `\n   steps used: ${totals.steps}/${maxSteps} · in: ${totals.input} tok · out: ${totals.output} tok · cost: $${totals.cost.toFixed(4)} (${MODEL})`,

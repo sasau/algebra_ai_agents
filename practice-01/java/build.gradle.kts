@@ -26,8 +26,8 @@ dependencies {
 
 java {
     toolchain {
-        // Gradle downloads a matching JDK if yours is a different version,
-        // so everyone compiles against the same thing.
+        // Install JDK 21 before running. This project does not configure
+        // an automatic toolchain download resolver.
         languageVersion = JavaLanguageVersion.of(21)
     }
 }
@@ -46,6 +46,7 @@ java {
 val mains = mapOf(
     "check" to "lab.CheckSetup",
     "agent" to "lab.Ex01AgentLoop",
+    "toolsDemo" to "lab.ToolsDemo",
 )
 
 val requested: String = (project.findProperty("ex") as String?) ?: "check"
@@ -59,10 +60,8 @@ tasks.named<JavaExec>("run") {
     standardInput = System.`in`
     // Keep the lab's own output legible instead of interleaved with Gradle's.
     outputs.upToDateWhen { false }
-    // CheckSetup exits 1 on purpose when a check fails. Without this, Gradle
-    // buries the lab's own "1 check(s) failed" message under a BUILD FAILED
-    // stack trace, and students debug Gradle instead of their environment.
-    isIgnoreExitValue = true
+    // A failed setup or agent must produce a nonzero task exit status.
+    isIgnoreExitValue = false
 }
 
 // Named aliases: ./gradlew agent  ==  ./gradlew run -Pex=agent
@@ -78,7 +77,8 @@ mains.forEach { (key, main) ->
         mainClass = main
         standardInput = System.`in`
         outputs.upToDateWhen { false }
-        isIgnoreExitValue = true // see the `run` task above
+        isIgnoreExitValue = false // see the `run` task above
+        if (key == "check" && project.hasProperty("live")) args("--live")
         if (key == "agent") {
             // `-PmaxSteps=N` overrides Client.MAX_STEPS for one run. It is
             // handed to the program as `--max-steps N`, the same flag the

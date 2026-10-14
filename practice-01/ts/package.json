@@ -2,15 +2,18 @@
   "name": "practice-01-agent-loop",
   "version": "1.0.0",
   "private": true,
-  "description": "Practice 01 — What are agents? Act 2: the agent loop written by hand, pointed at ../parser-ts.",
+  "description": "Practice 01 \u2014 What are agents? Act 2: the agent loop written by hand, pointed at ../parser-ts.",
   "type": "module",
   "engines": {
-    "node": ">=20"
+    "node": ">=22.12"
   },
   "scripts": {
-    "check": "tsx src/00-check-setup.ts",
-    "agent": "tsx src/01-agent-loop.ts",
-    "typecheck": "tsc --noEmit"
+    "check": "node --import tsx src/00-check-setup.ts",
+    "agent": "node --import tsx src/01-agent-loop.ts",
+    "typecheck": "tsc --noEmit",
+    "tools:demo": "node --import tsx src/02-tools-demo.ts",
+    "test": "node --import tsx --test test/tools.test.ts",
+    "check:live": "node --import tsx src/00-check-setup.ts --live"
   },
   "//deps": "Versions are pinned exactly, not floated with ^. The internal npm mirror blocks packages less than 3 days old, so a caret range can resolve to a version that 403s for the whole class. Bump these deliberately, not accidentally.",
   "dependencies": {

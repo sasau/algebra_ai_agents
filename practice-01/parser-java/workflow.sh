@@ -14,25 +14,33 @@ set -euo pipefail
 cd "$(dirname "$0")"      # always run from parser-java/, wherever this was invoked from
 OUT=.workflow-out.txt     # the raw Gradle output; gitignored, kept so you can read it afterwards
 
-# ---- A) run the test ------------------------------------------- arrow drawn by: a human (you)
-# `|| true` because a failing test makes gradlew exit 1, and under `set -e` that would end the
-# script right here — before step B, which is the whole point.
-./gradlew test --tests ParserTest > "$OUT" 2>&1 || true
-
-# ---- B) if red, ask the model to summarise --------------------- arrow drawn by: a human (you)
-# `-p` = one prompt, print the answer, exit. `--max-turns 1` = one model turn, so it cannot even
-# call a tool. It reads the Gradle output from stdin and returns text. Nothing else can happen.
-if grep -q "FAILED" "$OUT"; then
-  SUMMARY="$(cat "$OUT" | claude -p --max-turns 1 --output-format text \
-    "You are one step in a CI workflow. Summarise this Gradle test failure in two lines: what failed and the likely cause. Do not propose code.")"
-
-  # ---- C) report and stop -------------------------------------- arrow drawn by: a human (you)
-  echo "== workflow: ParserTest is RED =="
-  echo "$SUMMARY"
-  echo
-  echo "(full Gradle output in $OUT — the fix is still yours to make)"
-  exit 1
+# A fixed workflow: local test -> if red, one text-only API request -> report.
+# --bare skips hooks/plugins/project instructions. --tools '' disables built-ins;
+# strict empty MCP configuration disables external tools too. A turn limit alone
+# would NOT prevent a tool call. The API key must be exported in your shell.
+status=0
+./gradlew test --tests ParserTest --rerun-tasks > "$OUT" 2>&1 || status=$?
+if [ "$status" -eq 0 ]; then
+  echo "== workflow: ParserTest is GREEN =="
+  exit 0
 fi
-
-echo "green"
-exit 0
+if ! grep -q 'ParserTest > .* FAILED' "$OUT"; then
+  echo "== workflow: setup/build error, not an observed test failure =="
+  echo "Read $PWD/$OUT; fix the environment before asking a model."
+  exit 2
+fi
+if [ -z "${ANTHROPIC_API_KEY:-}" ] || [ "$ANTHROPIC_API_KEY" = "sk-ant-REPLACE-ME" ]; then
+  echo "ANTHROPIC_API_KEY must be exported; see practice-01 README (workflow setup)." >&2
+  exit 2
+fi
+echo "== workflow: ParserTest is RED =="
+if claude -p --bare --tools '' --strict-mcp-config --mcp-config '{"mcpServers":{}}' \
+  --max-turns 1 --max-budget-usd 0.05 --output-format text \
+  "You are one step in a CI workflow. Summarise this Gradle test failure in two lines: what failed and the likely cause. Do not propose code." < "$OUT"; then
+  : # The requested summary returned successfully; preserve the planned red status below.
+else
+  echo "workflow.sh: model summary step failed; inspect authentication/network/CLI error above" >&2
+  exit 2
+fi
+echo "Full Gradle output: $PWD/$OUT — the workflow reports; it does not fix."
+exit 1

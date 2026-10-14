@@ -11,7 +11,7 @@ import Anthropic from "@anthropic-ai/sdk";
 // --- fail loudly and early if the key is missing -------------------------
 // Without this you get a confusing 401 from deep inside the SDK instead of a
 // sentence telling you what to do about it.
-if (!process.env.ANTHROPIC_API_KEY) {
+if (!process.env.ANTHROPIC_API_KEY || process.env.ANTHROPIC_API_KEY === "sk-ant-REPLACE-ME") {
   console.error(
     [
       "",
@@ -29,14 +29,14 @@ if (!process.env.ANTHROPIC_API_KEY) {
 }
 
 /** Reads ANTHROPIC_API_KEY from the environment automatically. */
-export const client = new Anthropic();
+export const client = new Anthropic({ timeout: 60_000, maxRetries: 0 });
 
 /**
  * The model the loop calls — part 2 of the five parts (goal · MODEL · tools ·
  * memory · stopping condition).
  *
- * Haiku 4.5 is the cheapest current model ($1/$5 per million tokens) and it is
- * fast. Both matter here more than in Practice 00: an agent calls the model
+ * Haiku 4.5 is the model pinned for this exercise. The price table is an
+ * estimate for the lab, not an account spending limit. Both matter here more than in Practice 00: an agent calls the model
  * once PER STEP, and the whole conversation so far is re-sent every time, so
  * a twelve-step run costs roughly twelve growing calls, not one.
  */
@@ -69,27 +69,6 @@ export const MAX_STEPS = 12;
  * telling you to raise this number.
  */
 export const MAX_TOKENS = 2048;
-
-/**
- * Why Haiku, and not the mid-tier model you may have read about:
- *
- *   `claude-sonnet-5` — the model Practice 00 called BIG_MODEL — is now a
- *   LEGACY id. It still answers, but Anthropic no longer lists it as current.
- *   The current mid-tier is `claude-sonnet-5-5` ($2 / $10 per million tokens).
- *
- *   Do not point this loop at it in a classroom. Every step re-sends the whole
- *   transcript, so the per-token price is multiplied by the number of steps
- *   AND by the growing context — twenty students running twelve-step loops on
- *   a model costing twice as much adds up fast, for a fix Haiku handles fine.
- *
- *   The lesson, again, is not "always use Haiku". It is that a model id you
- *   depend on turns legacy within a year, so it belongs in one place.
- */
-export const MODEL_NOTES = {
-  pricing: "$1 / $5 per million tokens (input / output)",
-  currentMidTier: "claude-sonnet-5-5",
-  legacy: ["claude-sonnet-5", "claude-opus-5"],
-} as const;
 
 /**
  * Pull the plain text out of a response.

@@ -6,7 +6,7 @@ One folder per practice session.
 ```
 algebra_ai_agents/
   practice-00/    Intro to LLMs — first API call, context, knobs, JSON
-  practice-01/    What are agents? — five words hands-on, a hand-written agent loop, an autonomous bot in a box
+  practice-01/    What are agents? — guided comparisons, supplied tools and agent loop, independently verified container run
   practice-02/    Tools and MCP — shared reader, bounded workspace server, Docker-backed ticket store
   ...
 ```
@@ -23,7 +23,10 @@ practice-00/
   java/    Java track         (Gradle wrapper, JDK 21)
 ```
 
-Pick **one** track and work it end to end. They are deliberately the same
+For Practice 00, pick **one** track and work it end to end. In Practice 01,
+only Act 2 has a track choice: Act 1 uses the Java parser and Claude Code;
+Act 3 uses the TypeScript parser in Docker. Follow [Practice 01 setup](practice-01/README.md)
+for fresh working copies, an offline tool demo and the four-part report. They are deliberately the same
 program written twice, so switching later costs you nothing — the exercises,
 the model behaviour, and the lessons are identical either way.
 

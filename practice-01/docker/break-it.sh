@@ -1,19 +1,7 @@
 #!/usr/bin/env bash
-# break-it.sh — Rule 3, demonstrated: a goal with no success test never stops on its own.
-#
-# run.sh's goal has two halves of a stopping condition: a SUCCESS TEST ("stop when it is
-# green" — npm test exits 0) and a BUDGET (--max-turns, --max-budget-usd). This script hands
-# the same bot a goal whose success test can never check true:
-#
-#   "Keep improving this parser forever. Never stop; there is always something to improve."
-#
-# There is no state of the world in which "forever" is finished, so the model will never
-# declare the goal met. The ONLY thing that can halt this loop is the budget half — 6 turns
-# or $0.50, whichever comes first. That is the whole point: a budget is not a nice-to-have
-# next to the success test, it is the other half of the stopping condition, and the half that
-# saves you when the goal is bad. Watch which one fires, and write it down.
-#
-#   ./break-it.sh        (needs the key, like run.sh; costs at most $0.50)
+# Observe actual termination for an impossible-to-complete forever goal.
+# The model may end early, hit a configured limit or encounter an execution error.
+# This is a paid experiment with 6 turns and a $0.50 estimated CLI budget.
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -61,5 +49,5 @@ node -e '
   } else {
     console.log("-> " + JSON.stringify(why) + ": neither budget fired cleanly. Read out-break-it/stderr.txt and the result text.");
   }
-  console.log("Either way: no success test could ever fire for this goal. Only the budget can stop it — Rule 3.");
+  console.log("No finite run completes a forever goal. Record the observed stop: model end, budget or execution failure.");
 ' "$SCRIPT_DIR/out-break-it/result.json"

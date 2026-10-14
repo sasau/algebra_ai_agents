@@ -63,114 +63,91 @@
   },
   "course": {
     "deck": "practice-02-tools-and-mcp",
-    "slides": 97,
+    "slides": 108,
     "figures": 11,
     "agendaTaggedMinutes": 120,
     "plannedSessionMinutes": 120,
-    "verify": "PASS:97 slides,11 SVGs,120 tagged minutes;31/31 active decks",
+    "verify": "PASS:108 slides,11 SVGs,120 tagged minutes;31/31 active decks",
     "lint": "PASS:31/31",
-    "links": "210 hrefs across32 files; split-digest links checked separately",
-    "precheck": "PASS:new slide and SVG checks;17 authored bands;97 digest titles and11 sequential captions checked",
+    "links": "213 hrefs across32 files",
+    "precheck": "PASS:18 authored bands;code-width,clarity,SVG,SVG-style",
     "digestBytes": {
-      "session-02.md": 6275,
+      "session-02.md": 6007,
       "session-02-lecture.md": 11767,
-      "session-02-practice.md": 25631,
-      "session-02-reference.md": 14493
+      "session-02-practice.md": 25035,
+      "session-02-reference.md": 14549
     },
     "render": {
       "1366x768": {
-        "scaledSlides": 91,
+        "scaledSlides": 102,
         "worstZoom": 0.674,
-        "worstSlide": 7,
         "clipped": []
       },
       "1600x900": {
-        "scaledSlides": 60,
+        "scaledSlides": 63,
         "worstZoom": 0.777,
-        "worstSlide": 18,
         "clipped": []
       },
-      "gate": "FAIL:contrast only; no baseline for this slug",
+      "gate": "FAIL:inherited contrast only;no baseline for this slug",
       "flaggedColorPairs": 7,
       "colorPairsAbsentFromExistingCourseBaselines": 0,
-      "baseline": "absent; no rebaseline or frozen-shell change",
+      "baseline": "absent;no rebaseline or frozen-shell change",
       "pagesBelowZoomFloor": 0,
-      "densityCorrections": [
-        59,
-        90
-      ],
-      "captionCorrections": [
-        3,
-        7,
-        11,
-        20
-      ],
-      "correctionProvenance": "Prior96-page corrections mapped to current numbering; final two SVG captions renumbered74/P2.10 and90/P2.11.",
-      "measurementReport": "_kit/_work/practice-02/overview-final-gate.txt"
+      "report": "_kit/_work/practice-02/task-order/final-gate.txt"
     },
     "browser": {
-      "visitedSlidesPerViewport": 10,
-      "visitedSlides": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
-        7,
-        33,
-        90,
-        97
-      ],
+      "visitedSlidesPerViewport": 108,
       "viewports": [
         "1366x768",
         "1600x900"
       ],
-      "newOverviewScreenshots": 2,
-      "newOverviewZoom": {
-        "1366x768": 0.749483,
-        "1600x900": 0.878301
-      },
+      "finalScreenshotArtifacts": 34,
+      "freshRevision": "task-order-final",
       "opacity": 1,
       "svgTextOutsideViewBox": 0,
       "contentOverflow": 0,
       "clipped": [],
-      "qualification": "Opening infographic and context checked before final article/color refinements; geometry unchanged. Whole97-page render checked final markup. Prior full96-page browser check preserved in prior96SlideRevision.",
+      "deckJavascriptErrors": 0,
       "animation": {
-        "slide": 33,
+        "slide": 32,
         "durationSeconds": 3,
-        "markerMoves": true,
-        "completeStaticDiagramAtTimeZero": true,
-        "provenance": "Unchanged existing diagram; execution recorded under prior96SlideRevision at slide32."
+        "provenance": "Unchanged existing figure; prior revision measured marker movement and static readability."
       },
       "previewServers": "stopped",
       "browser": "closed"
     },
-    "reviewedAt": "2026-10-13T12:46:29.219502+00:00",
-    "format": "Opening infographic2 maps four TODOs and the finished investigation; application3, LAB-101 report5, setup6 and test7. Existing concrete student action walkthrough retained; separate command/source/output blocks;four TODOs and two MCP servers;optional API/E07\u2013E12.",
+    "reviewedAt": "2026-10-14T05:01:20.485099+00:00",
+    "format": "Goal3/actgoals4;repo6/setup7;report8/application9/test10;threatworkflow11\u201312. Act1 direct reader15\u201330;Act2 registration/workspacehost31\u201357;Act3 Docker/query/tickethost/diagnosis58\u201385;submission86\u201392;appendix93\u2013108.",
     "clarityReview": {
-      "pagesReviewed": 96,
-      "initialProceduralBlockers": 2,
-      "initialSetupOrPrecisionNotes": 3,
+      "pagesReviewed": 108,
+      "initialFlags": 8,
       "correctedSlides": [
-        5,
-        58,
-        78,
-        88,
-        89
+        29,
+        42,
+        61,
+        66,
+        73,
+        80,
+        87,
+        96
       ],
-      "unresolvedProceduralBlockers": 0,
-      "contract": "topics/practice-02-action-walkthrough.md",
-      "report": "_kit/_work/practice-02/action-walkthrough-review.md",
-      "qualification": "Editorial evidence checked against repository; not proof of student understanding.",
-      "currentSlideNumbers": [
-        6,
-        59,
-        79,
-        89,
-        90
+      "recheckedSlides": [
+        29,
+        30,
+        42,
+        61,
+        66,
+        73,
+        80,
+        87,
+        93,
+        96
       ],
-      "executionProvenance": "Prior96-page review retained with original page numbers; this revision independently checked new overview and all97 digest titles."
+      "unresolvedFlags": 0,
+      "workedConcepts": 17,
+      "workedConceptsPassed": 17,
+      "qualification": "Editorial cold read/source check; no student pilot or paid host run",
+      "report": "_kit/_work/practice-02/task-order/clarity-review.md"
     },
     "newFixtureReproduction": {
       "command": "npm run fixture:test",
@@ -205,12 +182,12 @@
       "fullAcceptanceSuiteRerun": false,
       "report": "_kit/_work/practice-02/action-walkthrough-review.md",
       "currentSlideNumbers": [
-        18,
-        21,
-        34,
+        20,
+        25,
+        33,
         64
       ],
-      "executionProvenance": "Prior96-page execution retained with original page numbers; code unchanged and no new acceptance-suite run."
+      "executionProvenance": "Historical96-page replacement execution;current locations mapped from the preceding97-page revision. No code-suite rerun in this teaching revision."
     },
     "duplicatePractice": "one active Practice02; earlier duplicate removal preserved",
     "codeSuiteRerun": false,
@@ -228,7 +205,7 @@
       "githubReport": "https://github.com/sasau/algebra_ai_agents/blob/main/practice-02/docs/lab-101.md",
       "localCompanionHrefs": 0,
       "publication": "Author will push practices later; no remote publication claimed.",
-      "staticGate": "PASS:97slides/11SVGs/120minutes;210hrefs/32files",
+      "staticGate": "PASS:108slides/11SVGs/120minutes;213hrefs/32files",
       "postLinkLayoutChecks": [
         {
           "viewport": "1366x768",
@@ -258,10 +235,10 @@
       "browser": "closed",
       "previewServers": "stopped",
       "currentSlideMapping": {
-        "4": 5,
-        "96": 97
+        "5": 8,
+        "97": 92
       },
-      "layoutCheckProvenance": "Original96-page post-link browser measurements retained; current context pages5 and97 checked with the new infographic."
+      "layoutCheckProvenance": "Current full108-page browser pass at both sizes;older measurements retained under prior97SlideRevision."
     },
     "prior96SlideRevision": {
       "deck": "practice-02-tools-and-mcp",
@@ -446,37 +423,607 @@
         "Independently read back and repeat the test"
       ],
       "svgTextContrastMinimum": 5.18,
-      "insertion": "Immediately after title; prior96 pages retained with slide/figure references shifted."
+      "insertion": "Immediately after title;retained in the reorganized108-page practice."
     },
     "consistency": {
-      "slides": 97,
+      "slides": 108,
       "figures": 11,
-      "digestTitlesMatched": 97,
-      "existingSlidesPreservedExceptExpectedNumberReferences": 96,
-      "sequentialCaptions": true,
+      "digestTitlesMatched": 108,
+      "retainedOriginalSlides": 97,
+      "rewrittenOriginalSlides": 33,
+      "unchangedOriginalSlidesExceptCitations": 64,
+      "addedTaskBridges": 11,
+      "authoredPages": 44,
+      "sequentialFigureCaptions": true,
       "figurePositions": [
         2,
-        3,
-        7,
-        11,
-        20,
-        33,
-        47,
-        52,
-        58,
-        74,
-        90
+        9,
+        10,
+        14,
+        24,
+        32,
+        49,
+        54,
+        61,
+        78,
+        83
       ],
-      "relativeMarkdownLinksChecked": 36,
+      "relativeMarkdownLinksChecked": 37,
       "missingMarkdownLinks": [],
-      "preservation": {
-        "summaries/session-02-lecture.md": true,
-        "lectures/session-02-tools-and-mcp-slides.html": true,
-        "_kit/TEMPLATE-slides.html": true,
-        "_kit/render-baseline.json": true
+      "localCompanionHrefs": 0,
+      "preservationHashes": "PASS:lecture,digest,template,baseline",
+      "oneActivePractice02": true
+    },
+    "prior97SlideRevision": {
+      "deck": "practice-02-tools-and-mcp",
+      "slides": 97,
+      "figures": 11,
+      "agendaTaggedMinutes": 120,
+      "plannedSessionMinutes": 120,
+      "verify": "PASS:97 slides,11 SVGs,120 tagged minutes;31/31 active decks",
+      "lint": "PASS:31/31",
+      "links": "210 hrefs across32 files; split-digest links checked separately",
+      "precheck": "PASS:new slide and SVG checks;17 authored bands;97 digest titles and11 sequential captions checked",
+      "digestBytes": {
+        "session-02.md": 6275,
+        "session-02-lecture.md": 11767,
+        "session-02-practice.md": 25631,
+        "session-02-reference.md": 14493
       },
-      "oneActivePractice02": true,
-      "localCompanionHrefs": 0
+      "render": {
+        "1366x768": {
+          "scaledSlides": 91,
+          "worstZoom": 0.674,
+          "worstSlide": 7,
+          "clipped": []
+        },
+        "1600x900": {
+          "scaledSlides": 60,
+          "worstZoom": 0.777,
+          "worstSlide": 18,
+          "clipped": []
+        },
+        "gate": "FAIL:contrast only; no baseline for this slug",
+        "flaggedColorPairs": 7,
+        "colorPairsAbsentFromExistingCourseBaselines": 0,
+        "baseline": "absent; no rebaseline or frozen-shell change",
+        "pagesBelowZoomFloor": 0,
+        "densityCorrections": [
+          59,
+          90
+        ],
+        "captionCorrections": [
+          3,
+          7,
+          11,
+          20
+        ],
+        "correctionProvenance": "Prior96-page corrections mapped to current numbering; final two SVG captions renumbered74/P2.10 and90/P2.11.",
+        "measurementReport": "_kit/_work/practice-02/overview-final-gate.txt"
+      },
+      "browser": {
+        "visitedSlidesPerViewport": 10,
+        "visitedSlides": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          33,
+          90,
+          97
+        ],
+        "viewports": [
+          "1366x768",
+          "1600x900"
+        ],
+        "newOverviewScreenshots": 2,
+        "newOverviewZoom": {
+          "1366x768": 0.749483,
+          "1600x900": 0.878301
+        },
+        "opacity": 1,
+        "svgTextOutsideViewBox": 0,
+        "contentOverflow": 0,
+        "clipped": [],
+        "qualification": "Opening infographic and context checked before final article/color refinements; geometry unchanged. Whole97-page render checked final markup. Prior full96-page browser check preserved in prior96SlideRevision.",
+        "animation": {
+          "slide": 33,
+          "durationSeconds": 3,
+          "markerMoves": true,
+          "completeStaticDiagramAtTimeZero": true,
+          "provenance": "Unchanged existing diagram; execution recorded under prior96SlideRevision at slide32."
+        },
+        "previewServers": "stopped",
+        "browser": "closed"
+      },
+      "reviewedAt": "2026-10-13T12:46:29.219502+00:00",
+      "format": "Opening infographic2 maps four TODOs and the finished investigation; application3, LAB-101 report5, setup6 and test7. Existing concrete student action walkthrough retained; separate command/source/output blocks;four TODOs and two MCP servers;optional API/E07\u2013E12.",
+      "clarityReview": {
+        "pagesReviewed": 96,
+        "initialProceduralBlockers": 2,
+        "initialSetupOrPrecisionNotes": 3,
+        "correctedSlides": [
+          5,
+          58,
+          78,
+          88,
+          89
+        ],
+        "unresolvedProceduralBlockers": 0,
+        "contract": "topics/practice-02-action-walkthrough.md",
+        "report": "_kit/_work/practice-02/action-walkthrough-review.md",
+        "qualification": "Editorial evidence checked against repository; not proof of student understanding.",
+        "currentSlideNumbers": [
+          6,
+          59,
+          79,
+          89,
+          90
+        ],
+        "executionProvenance": "Prior96-page review retained with original page numbers; this revision independently checked new overview and all97 digest titles."
+      },
+      "newFixtureReproduction": {
+        "command": "npm run fixture:test",
+        "directory": "/Users/auscumlic/Development/algebra/practices/practice-02",
+        "exitCode": 1,
+        "tests": 9,
+        "passed": 8,
+        "failed": 1,
+        "skipped": 0,
+        "expectedFailure": "tokenizer normalises CRLF line endings",
+        "error": "Unexpected character \"\\r\" at 1:2",
+        "interpretation": "Expected supplied-application bug reproduced; this is not a lab-verification failure.",
+        "fullCodeSuiteRerun": false,
+        "reportFieldsMatchSeed": true,
+        "newReportRelativeLinks": 3,
+        "readmeRelativeLinks": 7,
+        "missingMarkdownLinks": 0
+      },
+      "newTargetedSlideChecks": {
+        "fullReplacements": [
+          17,
+          20,
+          33,
+          63
+        ],
+        "typecheck": "PASS in disposable completed-student copy",
+        "directToolDemo": "PASS; valid read, NOT_FOUND, PATH_DENIED",
+        "workspaceAdapter": "PASS with actual SDK linked in-memory transport;5tools;valid and missing reads",
+        "ticketQuery": "PASS via stub;unchanged SQL;quote-bearing ID only in values;empty->ok(null);row preserved",
+        "postgresqlExecutionOrGrantsTested": false,
+        "temporaryCopiesRemoved": true,
+        "fullAcceptanceSuiteRerun": false,
+        "report": "_kit/_work/practice-02/action-walkthrough-review.md",
+        "currentSlideNumbers": [
+          18,
+          21,
+          34,
+          64
+        ],
+        "executionProvenance": "Prior96-page execution retained with original page numbers; code unchanged and no new acceptance-suite run."
+      },
+      "duplicatePractice": "one active Practice02; earlier duplicate removal preserved",
+      "codeSuiteRerun": false,
+      "fullCodeAcceptanceRerun": false,
+      "newSupportingReport": "docs/lab-101.md",
+      "setupCorrections": "Guard findings creation; export alternate port for all subsequent clients/host commands.",
+      "practice01ChangedSlide29": {
+        "zoom1366": 1,
+        "zoom1600": 1,
+        "clipped": false,
+        "fullDeckBaseline": "stale; full render reports unrelated pre-existing findings"
+      },
+      "githubLinks": {
+        "githubRepository": "https://github.com/sasau/algebra_ai_agents/tree/main/practice-02",
+        "githubReport": "https://github.com/sasau/algebra_ai_agents/blob/main/practice-02/docs/lab-101.md",
+        "localCompanionHrefs": 0,
+        "publication": "Author will push practices later; no remote publication claimed.",
+        "staticGate": "PASS:97slides/11SVGs/120minutes;210hrefs/32files",
+        "postLinkLayoutChecks": [
+          {
+            "viewport": "1366x768",
+            "slide": 4,
+            "zoom": 0.75,
+            "clipped": false
+          },
+          {
+            "viewport": "1366x768",
+            "slide": 96,
+            "zoom": 0.98018,
+            "clipped": false
+          },
+          {
+            "viewport": "1600x900",
+            "slide": 4,
+            "zoom": 0.9375,
+            "clipped": false
+          },
+          {
+            "viewport": "1600x900",
+            "slide": 96,
+            "zoom": 1,
+            "clipped": false
+          }
+        ],
+        "browser": "closed",
+        "previewServers": "stopped",
+        "currentSlideMapping": {
+          "4": 5,
+          "96": 97
+        },
+        "layoutCheckProvenance": "Original96-page post-link browser measurements retained; current context pages5 and97 checked with the new infographic."
+      },
+      "prior96SlideRevision": {
+        "deck": "practice-02-tools-and-mcp",
+        "slides": 96,
+        "figures": 10,
+        "agendaTaggedMinutes": 120,
+        "plannedSessionMinutes": 120,
+        "verify": "PASS:96 slides,10 SVGs,120 tagged minutes;31/31 active decks",
+        "lint": "PASS:31/31",
+        "links": "210 hrefs across32 files; split-digest links checked separately",
+        "precheck": "PASS:16 bands; code-width,clarity,SVG,SVG-style; standalone identifier warnings only",
+        "digestBytes": {
+          "session-02.md": 6798,
+          "session-02-lecture.md": 11767,
+          "session-02-practice.md": 25590,
+          "session-02-reference.md": 14606
+        },
+        "render": {
+          "1366x768": {
+            "scaledSlides": 90,
+            "worstZoom": 0.674,
+            "worstSlide": 6,
+            "clipped": []
+          },
+          "1600x900": {
+            "scaledSlides": 59,
+            "worstZoom": 0.777,
+            "worstSlide": 17,
+            "clipped": []
+          },
+          "gate": "FAIL:contrast only; no baseline for this slug",
+          "flaggedColorPairs": 7,
+          "colorPairsAbsentFromExistingCourseBaselines": 0,
+          "baseline": "absent; no rebaseline or frozen-shell change",
+          "pagesBelowZoomFloor": 0,
+          "densityCorrections": [
+            58,
+            89
+          ],
+          "captionCorrections": [
+            2,
+            6,
+            10,
+            19
+          ]
+        },
+        "browser": {
+          "visitedSlidesPerViewport": 96,
+          "viewports": [
+            "1366x768",
+            "1600x900"
+          ],
+          "finalScreenshotArtifacts": 32,
+          "freshRevision": "action-final-1420",
+          "opacity": 1,
+          "svgTextOutsideViewBox": 0,
+          "contentOverflow": 0,
+          "clipped": [],
+          "deckJavascriptErrors": 0,
+          "animation": {
+            "slide": 32,
+            "durationSeconds": 3,
+            "markerMoves": true,
+            "completeStaticDiagramAtTimeZero": true
+          },
+          "previewServers": "stopped",
+          "browser": "closed"
+        },
+        "reviewedAt": "2026-10-13T12:28:00.761312+00:00",
+        "format": "concrete student action walkthrough; actual LAB-101 report4, setup5 and test6; separate command/source/output blocks; four TODOs and two MCP servers; optional API/E07\u2013E12",
+        "clarityReview": {
+          "pagesReviewed": 96,
+          "initialProceduralBlockers": 2,
+          "initialSetupOrPrecisionNotes": 3,
+          "correctedSlides": [
+            5,
+            58,
+            78,
+            88,
+            89
+          ],
+          "unresolvedProceduralBlockers": 0,
+          "contract": "topics/practice-02-action-walkthrough.md",
+          "report": "_kit/_work/practice-02/action-walkthrough-review.md",
+          "qualification": "Editorial evidence checked against repository; not proof of student understanding."
+        },
+        "newFixtureReproduction": {
+          "command": "npm run fixture:test",
+          "directory": "/Users/auscumlic/Development/algebra/practices/practice-02",
+          "exitCode": 1,
+          "tests": 9,
+          "passed": 8,
+          "failed": 1,
+          "skipped": 0,
+          "expectedFailure": "tokenizer normalises CRLF line endings",
+          "error": "Unexpected character \"\\r\" at 1:2",
+          "interpretation": "Expected supplied-application bug reproduced; this is not a lab-verification failure.",
+          "fullCodeSuiteRerun": false,
+          "reportFieldsMatchSeed": true,
+          "newReportRelativeLinks": 3,
+          "readmeRelativeLinks": 7,
+          "missingMarkdownLinks": 0
+        },
+        "newTargetedSlideChecks": {
+          "fullReplacements": [
+            17,
+            20,
+            33,
+            63
+          ],
+          "typecheck": "PASS in disposable completed-student copy",
+          "directToolDemo": "PASS; valid read, NOT_FOUND, PATH_DENIED",
+          "workspaceAdapter": "PASS with actual SDK linked in-memory transport;5tools;valid and missing reads",
+          "ticketQuery": "PASS via stub;unchanged SQL;quote-bearing ID only in values;empty->ok(null);row preserved",
+          "postgresqlExecutionOrGrantsTested": false,
+          "temporaryCopiesRemoved": true,
+          "fullAcceptanceSuiteRerun": false,
+          "report": "_kit/_work/practice-02/action-walkthrough-review.md"
+        },
+        "duplicatePractice": "one active Practice02; earlier duplicate removal preserved",
+        "codeSuiteRerun": false,
+        "fullCodeAcceptanceRerun": false,
+        "newSupportingReport": "docs/lab-101.md",
+        "setupCorrections": "Guard findings creation; export alternate port for all subsequent clients/host commands.",
+        "practice01ChangedSlide29": {
+          "zoom1366": 1,
+          "zoom1600": 1,
+          "clipped": false,
+          "fullDeckBaseline": "stale; full render reports unrelated pre-existing findings"
+        },
+        "githubLinks": {
+          "githubRepository": "https://github.com/sasau/algebra_ai_agents/tree/main/practice-02",
+          "githubReport": "https://github.com/sasau/algebra_ai_agents/blob/main/practice-02/docs/lab-101.md",
+          "localCompanionHrefs": 0,
+          "publication": "Author will push practices later; no remote publication claimed.",
+          "staticGate": "PASS:96slides/10SVGs/120minutes;210hrefs/32files",
+          "postLinkLayoutChecks": [
+            {
+              "viewport": "1366x768",
+              "slide": 4,
+              "zoom": 0.75,
+              "clipped": false
+            },
+            {
+              "viewport": "1366x768",
+              "slide": 96,
+              "zoom": 0.98018,
+              "clipped": false
+            },
+            {
+              "viewport": "1600x900",
+              "slide": 4,
+              "zoom": 0.9375,
+              "clipped": false
+            },
+            {
+              "viewport": "1600x900",
+              "slide": 96,
+              "zoom": 1,
+              "clipped": false
+            }
+          ],
+          "browser": "closed",
+          "previewServers": "stopped"
+        }
+      },
+      "openingInfographic": {
+        "slide": 2,
+        "figure": "P2.1",
+        "title": "One bug connects your tool, two servers and a database",
+        "viewBox": "0 0 940 338",
+        "animation": false,
+        "buildOrder": [
+          "Direct reader:TODOs1\u20132",
+          "Workspace MCP:TODO3",
+          "Ticket MCP and PostgreSQL in Docker:TODO4"
+        ],
+        "finishedInvestigation": [
+          "Read LAB-101",
+          "Read source and run test",
+          "Save diagnosis",
+          "Independently read back and repeat the test"
+        ],
+        "svgTextContrastMinimum": 5.18,
+        "insertion": "Immediately after title; prior96 pages retained with slide/figure references shifted."
+      },
+      "consistency": {
+        "slides": 97,
+        "figures": 11,
+        "digestTitlesMatched": 97,
+        "existingSlidesPreservedExceptExpectedNumberReferences": 96,
+        "sequentialCaptions": true,
+        "figurePositions": [
+          2,
+          3,
+          7,
+          11,
+          20,
+          33,
+          47,
+          52,
+          58,
+          74,
+          90
+        ],
+        "relativeMarkdownLinksChecked": 36,
+        "missingMarkdownLinks": [],
+        "preservation": {
+          "summaries/session-02-lecture.md": true,
+          "lectures/session-02-tools-and-mcp-slides.html": true,
+          "_kit/TEMPLATE-slides.html": true,
+          "_kit/render-baseline.json": true
+        },
+        "oneActivePractice02": true,
+        "localCompanionHrefs": 0
+      }
+    },
+    "taskOrder": {
+      "contract": "topics/practice-02-task-order.md",
+      "keyToNew": {
+        "1": 1,
+        "2": 2,
+        "goal": 3,
+        "acts": 4,
+        "4": 5,
+        "repo": 6,
+        "6": 7,
+        "5": 8,
+        "3": 9,
+        "7": 10,
+        "threat": 11,
+        "13": 12,
+        "10": 13,
+        "11": 14,
+        "14": 15,
+        "direct-wiring": 16,
+        "15": 17,
+        "16": 18,
+        "17": 19,
+        "18": 20,
+        "19": 21,
+        "8": 22,
+        "9": 23,
+        "20": 24,
+        "21": 25,
+        "22": 26,
+        "23": 27,
+        "24": 28,
+        "25": 29,
+        "31": 30,
+        "32": 31,
+        "33": 32,
+        "34": 33,
+        "35": 34,
+        "36": 35,
+        "37": 36,
+        "workspace-config": 37,
+        "43": 38,
+        "workspace-session": 39,
+        "44": 40,
+        "38": 41,
+        "29": 42,
+        "39": 43,
+        "40": 44,
+        "41": 45,
+        "42": 46,
+        "45": 47,
+        "46": 48,
+        "47": 49,
+        "48": 50,
+        "49": 51,
+        "50": 52,
+        "51": 53,
+        "52": 54,
+        "53": 55,
+        "54": 56,
+        "55": 57,
+        "56": 58,
+        "59": 59,
+        "60": 60,
+        "58": 61,
+        "62": 62,
+        "63": 63,
+        "64": 64,
+        "65": 65,
+        "61": 66,
+        "66": 67,
+        "57": 68,
+        "ticket-config": 69,
+        "ticket-session": 70,
+        "67": 71,
+        "68": 72,
+        "69": 73,
+        "70": 74,
+        "71": 75,
+        "72": 76,
+        "73": 77,
+        "74": 78,
+        "75": 79,
+        "77": 80,
+        "89": 81,
+        "diagnosis-task": 82,
+        "90": 83,
+        "91": 84,
+        "79": 85,
+        "87": 86,
+        "92": 87,
+        "93": 88,
+        "94": 89,
+        "95": 90,
+        "96": 91,
+        "97": 92,
+        "appendix": 93,
+        "26": 94,
+        "27": 95,
+        "28": 96,
+        "30": 97,
+        "12": 98,
+        "76": 99,
+        "78": 100,
+        "80": 101,
+        "81": 102,
+        "82": 103,
+        "83": 104,
+        "84": 105,
+        "85": 106,
+        "86": 107,
+        "88": 108
+      },
+      "retainedOriginalPages": 97,
+      "rewrittenOriginalPages": 33,
+      "addedTaskBridges": 11,
+      "authoredPages": 44,
+      "unchangedOriginalPagesExceptCitations": 64,
+      "act1ToolLocation": "src/student/01-reader-schema.ts and02-path-boundary.ts;called by src/direct/demo.ts",
+      "act2HostSetupSlides": [
+        37,
+        38,
+        39,
+        40
+      ],
+      "act3HostSetupSlides": [
+        69,
+        70
+      ],
+      "threatModelSlides": [
+        11,
+        12
+      ],
+      "requiredPairingReferenceSlides": [
+        94,
+        95,
+        96
+      ],
+      "setupGuide": "docs/claude-code-setup.md",
+      "referenceDbProbeDistinguishedFromStudentQuery": true
+    },
+    "documentationChange": "README goal table and staged host setup;new docs/claude-code-setup.md. Student/core/server implementations unchanged.",
+    "taskDocumentationChecks": {
+      "relativeLinks": 14,
+      "missingRelativeLinks": 0,
+      "npmScriptNamesChecked": 17,
+      "npmScriptNames": "PASS",
+      "mcpConfigurations": "PASS:workspace-only then two-server;matches actual example",
+      "configurationServerCounts": [
+        1,
+        1,
+        2
+      ]
     }
   },
   "notMeasured": [

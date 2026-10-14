@@ -1,469 +1,369 @@
 # Practice 01 — What are agents?
 
-The second lab of *AI Agents & Automation*. You compare six observations:
-**tool · skill · workflow · text-only chat · agent · agentic interaction**.
-They describe different parts of a system: a tool is callable, a skill supplies
-instructions, workflow and agent name who chooses the next step, and chat versus
-agentic describes whether this interaction asks the harness to act. You make
-these distinctions concrete by fixing **one failing
-test**, `SELECT * FROM t WHERE x = 1` →
-`ParseException: unexpected token WHERE at 1:17`, several different ways, and
-noticing who picks each next step. Then you run a ~60-line agent loop you can
-read end to end, and finally let a bot work unattended inside a Docker
-container and check its claims from outside.
+Use a small parser bug to see who chooses the next action. You will compare a
+command, reusable instructions, a fixed workflow, text-only advice and a coding
+agent. Then you will inspect a supplied agent loop and verify an unattended run.
+This practice applies Lecture 1's agent loop, five components and human gates.
 
-Your deliverable is `agent-anatomy.md`, in four parts: the six observations from your
-own runs · a labelled trace · the autonomous run · a verdict on whether lusql
-(the SQL engine you build in Session 15) is agent-shaped.
+**You do not write a SQL engine today.** The supplied parser reads a tiny subset
+of SQL. `SELECT * FROM t` works. `SELECT * FROM t WHERE x = 1` fails because the
+parser expects the statement to end immediately after the table name. Existing
+tests describe the behavior to add. Do not change those tests.
 
-```
-practice-01/
-  .env.example                copy to .env and add your key — read by ts/ and java/, passed into Docker
-  agent-anatomy.template.md   copy to agent-anatomy.md and fill in — four parts
-  parser-java/                Act 1 target — a mini SQL parser (Java 21) shipped with one red test
-  parser-ts/                  Act 2 + 3 target — the same bug in TypeScript; tests run in ~2 s
-  ts/                         Act 2, TypeScript track — the agent loop, written by hand
-  java/                       Act 2, Java track — the same loop
-  docker/                     Act 3 — the fully autonomous bot, in a box
-```
-
----
-
-## 0. Which track?
-
-Only **Act 2** has two tracks. Acts 1 and 3 are the same for everyone. The two
-loops are the same program written twice — same goal, same three tools, same
-printed trace — so pick whichever language you would rather read.
-
-| | TypeScript track (`ts/`) | Java track (`java/`) |
+| Act | Your task | Output |
 |---|---|---|
-| The loop is written in | TypeScript (Node 20+ is enough for the loop itself) | Java 21 |
-| Run with | `npm run agent` | `./gradlew agent` |
-| Setup check | `npm run check` | `./gradlew checkSetup` |
+| 1, about 30 min | Compare five ways of approaching the same Java test; identify an agentic interaction inside the agent run | Six observations, plus a saved transcript |
+| 2, about 30 min | Inspect and run the supplied tools and agent loop in TypeScript **or** Java; repeat with a smaller step limit | A labelled trace and independent test result |
+| 3, about 35 min | Run Claude Code in a disposable container and verify its source changes with trusted tests | CLI report, verifier verdict and observed stopping reason |
 
-Whichever track you pick, **the machine needs all of these**, because the
-targets are in two languages:
+Submit `agent-anatomy.md`, completed from the four-part template. Keep
+`transcript.txt` as evidence. The 120-minute route allocates setup 15 min, Act 1 30 min, Act 2 30 min, Act 3 35 min and submission 10 min.
 
-- **JDK 21** — `parser-java/`, the Act 1 target, is Java.
-- **Node.js 22 LTS** and npm — `parser-ts/`, the Act 2 and 3 target, is TypeScript,
-  and its test runner (vitest 5) requires Node 22.12 or newer. The loop on
-  either track runs `npm test` there, and Act 3's `run.sh` uses `node` on your
-  host to print its summary. On Node 20 the loop starts but `npm test` may not.
-- **git**, and an **Anthropic API key**.
-- **The Claude Code CLI** — Act 1, on your machine (`workflow.sh` calls
-  `claude`). Act 3 uses the copy installed inside the Docker image, so your
-  host needs it there only for the optional stretch.
-- **Docker Desktop or Docker Engine** — Act 3 only.
+## 1. Get the repository and identify the folders
 
----
-
-## 1. Setup (~10 min)
-
-Clone the repo and create the one shared secret file:
+Install **Node.js 22.12 or newer**, npm, **JDK 21**, git and
+[Claude Code](https://code.claude.com/docs/en/setup). Act 3 also needs Docker
+Desktop or Docker Engine. Both Act 2 tracks need Node: both test a TypeScript
+parser. You choose the language of the **agent harness**, not the target parser.
 
 ```bash
-git clone https://github.com/sasau/algebra_ai_agents
+git clone https://github.com/sasau/algebra_ai_agents.git
 cd algebra_ai_agents/practice-01
+export P01_ROOT="$PWD"
+cp agent-anatomy.template.md agent-anatomy.md
+node --version
+java -version
+claude --version
+```
+
+`P01_ROOT` means the absolute path to this practice in this terminal. Keep the terminal
+open; later commands use it to avoid guessing how many `..` levels to climb.
+
+```text
+practice-01/
+  parser-java/   supplied Java parser, tests, CLAUDE.md and fix-test skill: Act 1
+  parser-ts/     supplied TypeScript parser and tests: Acts 2 and 3
+  ts/            supplied TypeScript agent harness: one Act 2 choice
+  java/          supplied Java agent harness: the other Act 2 choice
+  scripts/       prepare-run.mjs creates fresh exercise copies
+  docker/        unattended run and independent verification: Act 3
+  .runs/         generated working copies; ignored by git, never submitted
+```
+
+The supplied `parser-java/` and `parser-ts/` remain the starting examples. Each
+exercise creates a new directory in `.runs/`. Previous runs and your source edits
+are preserved. **There is no automatic `git checkout` or reset.** A fresh copy
+starts from the supplied folder's current contents, so leave the two supplied
+parser folders unchanged and work in the printed run directory.
+
+## 2. Install and check the offline parts
+
+Install target dependencies first, from the practice root:
+
+```bash
+cd "$P01_ROOT/parser-ts"
+npm ci
+npm test
+```
+
+Expected: **1 failed, 4 passed (5)**, including
+`ParseException: unexpected token WHERE at 1:17`. Exit status 1 is expected for
+this baseline test. An install error, missing executable or startup error is a
+setup failure, not the planned bug.
+
+Choose **one** harness track. These checks do not call a model or need a key:
+
+```bash
+# TypeScript track
+cd "$P01_ROOT/ts"
+npm ci
+npm run check
+npm run typecheck
+npm test
+npm run tools:demo
+```
+
+```bash
+# Java track
+cd "$P01_ROOT/java"
+./gradlew checkSetup
+./gradlew test
+./gradlew toolsDemo
+```
+
+The Java wrapper downloads Gradle/dependencies on the first run. Install JDK 21
+before running it; the build requests that toolchain and does not configure an
+automatic JDK downloader. Java command failures propagate as a failed Gradle
+task; read the program's message just above Gradle's final error summary.
+
+Both tool demos print a new `Run directory: .../.runs/tools-.../parser-ts`, then:
+
+```text
+read_file(src/parser.ts): OK
+write_file(test/parser.test.ts): REFUSED (expected)
+write_file(package.json): REFUSED (expected)
+... exit code 1 ... unexpected token WHERE ...
+DEMO PASSED — tools work; the supplied WHERE test is intentionally red. No model was called.
+```
+
+The TypeScript spelling is `exit code: 1`; Java prints `exit code 1`. The demo
+exits **0** when it reads the source, refuses both protected writes and observes
+the expected red parser test. This is different from the target's `npm test`,
+which exits 1 because the parser has the planned bug.
+
+## 3. Set up model access separately
+
+Claude Code on your host uses its own login. Start `claude` and follow its login
+instructions, then exit. The supplied SDK loop, the text-only workflow and
+the container use an **Anthropic API key**, billed separately from a subscription.
+
+```bash
+cd "$P01_ROOT"
 cp .env.example .env
 ```
 
-Open `.env` and replace `sk-ant-REPLACE-ME` with your key from
-[console.anthropic.com/settings/keys](https://console.anthropic.com/settings/keys).
-
-> **One `.env`, at `practice-01/.env`.** It is not inside `ts/`, `java/` or
-> `docker/` — the TypeScript loop reads it through `src/env.ts`, the Java loop
-> through `Client.java` (one directory up from `java/`), and Act 3's `run.sh`
-> passes the key into the container with `docker run -e`, so it is never baked
-> into the image. An `ANTHROPIC_API_KEY` already exported in your shell wins
-> over the file.
->
-> **Your key is a password.** It lives in `.env`, which git ignores. Never
-> paste it into a source file, a commit, a screenshot, or a chat. If you leak
-> one, revoke it in the Console immediately — deleting the commit is not
-> enough.
-
-Install the Act 2 / 3 target **first** — the setup check below looks for its
-`node_modules` — then install and check the track you chose:
+Open `.env` in your editor and replace `sk-ant-REPLACE-ME` with your key from
+[Anthropic Console](https://console.anthropic.com/settings/keys). Keep the key
+out of source, transcripts, screenshots and submissions. `.env` is ignored by
+git. The two SDK tracks read this shared file; an already exported shell value
+wins. To explicitly make one small paid API check, run **your chosen track**:
 
 ```bash
-# from practice-01/ — the target, needed by both tracks
-cd parser-ts && npm install && npm test; cd ..   # expect RED: 1 failed | 4 passed (5)
-
-# TypeScript track
-cd ts && npm install && npm run check
-
-# Java track — no install step; the wrapper downloads Gradle on first use
-cd java && ./gradlew checkSetup
+cd "$P01_ROOT/ts"
+npm run check:live
 ```
-
-You want `ALL CHECKS PASSED — you are ready. Start with: npm run agent` (or
-`./gradlew agent`). A missing Docker shows as a `!` warning, not a failure —
-you do not need it until Act 3.
-
-Now confirm the Act 1 target is **red**, as shipped:
 
 ```bash
-# from practice-01/
-cd parser-java && ./gradlew test --tests ParserTest
+cd "$P01_ROOT/java"
+./gradlew checkSetup -Plive
 ```
 
-You should see these five lines among the output (Gradle also prints the full
-stack trace after the first one):
+Default setup checks stay offline. A successful offline check does not prove
+that your key, account balance, selected model or network works. A live check
+asks for only a short response and reports credential/network failures.
 
-```
-ParserTest > parsesWhereClause() FAILED
-    lusql.parser.ParseException: unexpected token WHERE at 1:17
-ParserTest > parsesSelectStar() PASSED
-2 tests completed, 1 failed
-BUILD FAILED
-```
+## 4. Act 1 — compare who chooses the next action
 
-That red test is the whole lab. `parsesSelectStar` passes on purpose, so a bot
-cannot "fix" anything by deleting everything. Last, two one-liners:
-`claude --version` must print a version, and `docker info` must print server
-details rather than `Cannot connect to the Docker daemon`.
-
----
-
-## 2. The three acts
-
-| Act | What | Where | Time |
-|---|---|---|---|
-| 1 | Six observations, hands-on | `parser-java/` + the Claude Code CLI | ~35 min |
-| 2 | The loop, written by hand | `ts/` or `java/`, against `parser-ts/` | ~25 min |
-| 3 | The bot in a box | `docker/` | ~35 min |
-
-### Act 1 — six observations, hands-on (~35 min)
-
-Work in `parser-java/`. You fix the same red test six ways and ask each time:
-**who picked the next step?** Between rows, put the bug back from a second
-terminal, so an open `claude` session is undisturbed:
+Create your first disposable Java parser copy:
 
 ```bash
-git checkout -- src/main
+cd "$P01_ROOT"
+ACT1_DIR="$(node "$P01_ROOT/scripts/prepare-run.mjs" act1)"
+printf '%s\n' "$ACT1_DIR"
+cd "$ACT1_DIR"
+./gradlew test --tests ParserTest --rerun-tasks
 ```
 
-**1. tool.** You run it; nothing decides anything.
+Expected: `parsesSelectStar() PASSED`, `parsesWhereClause() FAILED`,
+`unexpected token WHERE at 1:17`, and `2 tests completed, 1 failed`.
+
+For each new comparison below, **exit the previous Claude session**, create a
+fresh copy with the same `ACT1_DIR=...` command, and `cd "$ACT1_DIR"`. Keep its
+printed path in your notes. Do not reset files underneath a running session.
+
+1. **Tool: run the test command above.** You chose the command. It executes a
+   defined operation, reports a failure and exits. It does not decide how to fix it.
+2. **Skill: inspect and invoke supplied instructions.** Open
+   `$ACT1_DIR/.claude/skills/fix-test/SKILL.md`. The folder is already included;
+   no MCP server or registration command is needed. From `$ACT1_DIR`, run
+   `claude --permission-mode default`, then enter `/fix-test ParserTest`.
+   Claude Code discovers the project skill and uses its instructions with its
+   built-in Read/Edit/Bash tools. Reads may run without prompting; approve only
+   appropriate edits/commands and refuse test changes. Explicit `/fix-test`
+   invocation selects the skill directly; it does not test automatic selection
+   from the skill description. Inspect the source diff and rerun the test.
+3. **Workflow: run a fixed program.** In a fresh copy, export the key without
+   printing it, then run the script:
+
+   ```bash
+   set -a
+   . "$P01_ROOT/.env"
+   set +a
+   ./workflow.sh
+   ```
+
+   Read `workflow.sh` first. It runs `ParserTest`; if red, it asks one model
+   request to summarize the failure and reports it. It does not repair source.
+   `--bare` skips hooks/plugins/project context, `--tools ''` disables built-in
+   tools, and a strict empty MCP configuration disables external tools. One turn
+   and $0.05 cap the model step. Exit 1 means the observed test is red; exit 2
+   means setup/auth/build did not permit that comparison. Raw test output is
+   saved in this copy's `.workflow-out.txt`.
+4. **Text-only advice: restrict the available capabilities.** In a fresh copy,
+   supply the failure and source as text to an API-authenticated Claude Code
+   request with no tools. Export the key as in the workflow step, then run:
+
+   ```bash
+   ./gradlew test --tests ParserTest > failure.txt 2>&1
+   cat > chat-task.txt <<'PROMPT'
+   Explain the supplied failure and show a minimal source diff.
+   Preserve the tests. Explain how the diff handles WHERE.
+   PROMPT
+   cat failure.txt src/main/java/lusql/parser/{Parser,Select,Expr}.java \
+     chat-task.txt | claude -p --bare --tools "" \
+     --strict-mcp-config --mcp-config '{"mcpServers":{}}' \
+     --max-turns 1 --max-budget-usd 0.10 > chat-answer.txt
+   cat chat-answer.txt
+   ```
+
+   Apply the proposed source fix yourself and rerun the focused test. The flags
+   enforce text-only operation; a natural-language request alone would not.
+   Save the answer, your edit and the independent verdict. The dollar limit is
+   the CLI's estimate, not an exact billing ceiling.
+5. **Agent: give a goal.** In a fresh copy, start Claude Code in default
+   permission mode and enter:
+   `Make ./gradlew test --tests ParserTest pass. Do not edit src/test/. Stop when it is green.`
+   Observe what it chooses to read, change and run. Review approvals; refuse
+   test edits. Verify with the test command yourself. Save a few relevant
+   transcript lines in `$P01_ROOT/transcript.txt` without keys or other private data.
+
+Your **sixth observation** comes from comparison 5: locate the first tool
+request. That is an agentic interaction because the model requested an action
+from its harness. A permission prompt may appear later; tool request and prompt
+are different events. Fill Part 1 of `agent-anatomy.md` now.
+
+## 5. Act 2 — inspect the tools, then the loop
+
+Use your chosen track. The tool functions and loop are supplied: your task is to
+understand, execute and annotate them, not reconstruct an SDK application from
+an unexplained blank file.
+
+| Question | TypeScript | Java |
+|---|---|---|
+| What tools are advertised to the model? | `ts/src/tools.ts`: `TOOLS` | `java/src/main/java/lab/Tools.java`: `definitions()` |
+| Which function actually executes a request? | `runTool(name, input)` | `dispatch(name, input)` |
+| Where is a request sent to the API? | `ts/src/01-agent-loop.ts`: `client.messages.create` | `Ex01AgentLoop.java`: `messages().create` |
+| Where are model and limits? | `ts/src/client.ts` | `Client.java` |
+| How does history grow? | `messages.push(...)` | `messages.add(...)` |
+
+The tools are plain functions in **your program**. The loop sends their JSON
+schemas in the API request, receives `tool_use`, dispatches the request locally,
+and sends a matching `tool_result`. You do not install these tools in Claude
+Code and do not configure MCP in this practice.
+
+Run your chosen track after the live setup check:
 
 ```bash
-./gradlew test --tests ParserTest
+cd "$P01_ROOT/ts"
+npm run agent
 ```
-
-```
-ParserTest > parsesWhereClause() FAILED
-    lusql.parser.ParseException: unexpected token WHERE at 1:17
-ParserTest > parsesSelectStar() PASSED
-2 tests completed, 1 failed
-BUILD FAILED
-```
-
-**2. skill.** A skill is a folder with a `SKILL.md`: the frontmatter says
-*when*, the body says *how*. Start a session, then call it:
 
 ```bash
-claude --permission-mode default
+cd "$P01_ROOT/java"
+./gradlew agent
 ```
 
-```
-/fix-test ParserTest
-```
+Each run prints its own `.runs/act2-.../parser-ts` path. Source, tests and
+dependencies are copied for the run; the baseline and earlier evidence remain.
+The visible labels are **[P] input** (goal/history), **[D] model response**,
+**[A] dispatched tool request** and **[O] tool result**. Visible text is not a
+transcript of private model reasoning.
 
-Why `--permission-mode default`: since v2.1.283 plain `claude` starts in
-**Auto**, which edits without asking, and you would never meet the approval
-prompts that rows 5 and 6 are about. `default` (shown as *Manual*) asks before
-every edit. Until the skill runs, only its `description` sits in the model's
-context, and that sentence is what the model matches against your request:
+Read `src/parser.ts` in the printed run path to inspect the result. The harness
+reruns tests after the model ends, errors or uses its budget, and prints the
+source difference from the baseline. `end_turn` says the model ended a turn;
+it does not prove success. The outside test decides whether the goal is green.
+A failed check or exhausted budget produces a nonzero program/task exit.
 
-> Fix one failing Gradle test without editing the test itself. Use when a test
-> is red and the user wants the source fixed, not the test.
-
-You should end on these two lines. Gradle prints **no count line** on success;
-the success test is `BUILD SUCCESSFUL`.
-
-```
-ParserTest > parsesWhereClause() PASSED
-BUILD SUCCESSFUL
-```
-
-Leave the session open for rows 4 and 5.
-
-**3. workflow.** Reset, then, in the second terminal:
+Repeat with **one controlled change**: reduce only the model-call budget.
 
 ```bash
-./workflow.sh
+# TypeScript; from ts/
+npm run agent -- --max-steps 3
 ```
-
-You see `== workflow: ParserTest is RED ==`, a two-line summary written by the
-model, and a pointer to `.workflow-out.txt`. The script exits **1**: it reports,
-it does not fix. It is a workflow because *your code drew every arrow* — run the
-test, if red ask the model, report and stop. The model is one step in the
-middle, reading Gradle's output on stdin; it cannot re-route, pick another
-test, call a tool or edit a file (see the comment at the top of `workflow.sh`).
-It needs `claude` on your `PATH` and your key; it does not read `.env`, so run
-`set -a; . ../.env; set +a` first.
-
-**4. chat.** Reset. In the open session, paste the failure from row 1 and ask:
-
-```
-Explain this failure and show me the fix. Do not edit anything.
-```
-
-The model answers; **you** apply the fix by hand, then rerun row 1's command.
-
-**5. agent.** Reset. Same session, give it the goal and nothing else:
-
-```
-Make ./gradlew test --tests ParserTest pass. Do not edit anything under src/test/. Stop when it is green.
-```
-
-Now the model chooses what to read, run and change. This is rung 2, *approve
-each action*: approve each one, and **deny anything under `src/test/`** — a test
-edited to pass proves nothing. You should reach `ParserTest >
-parsesWhereClause() PASSED` and `BUILD SUCCESSFUL`. Then select all in the
-terminal and paste the scrollback into `transcript.txt` in `practice-01/`; part 2
-needs it.
-
-**6. agentic interaction.** This is not another run or a separate Claude Code
-mode switch. In row 5, identify the first tool request: the model asked the
-harness to act. A read may run without a prompt; a permission prompt marks only
-an action that needed approval. Record both events if they differ.
-
-**Write now: part 1** of `agent-anatomy.md` — the six rows, from what you
-observed, and the sentence distinguishing each term's role. Keep `transcript.txt` for part 2.
-
-### Act 2 — the loop, written by hand (~25 min)
-
-Pick your track; it is the same program twice. From `practice-01/`:
 
 ```bash
-cd ts   && npm run agent        # TypeScript
-cd java && ./gradlew agent      # Java
+# Java; from java/
+./gradlew agent -PmaxSteps=3
 ```
 
-The loop first resets `parser-ts/src` with `git checkout`, so every run starts
-from the same bug and **any edit of yours there vanishes**. If git does not
-track `parser-ts/` (practice-01 is not committed yet, or you work from a copy of
-the folder), you get a harmless `pathspec` warning and the loop carries on with
-the files as they are.
+Compare the two run paths and traces. If the model ends before step 3, record
+that observation; a small budget is a limit, not a promise that it will fire.
+Defaults are 12 model calls and 2,048 output tokens per call. SDK requests time
+out after 60 seconds without retries; a test command has a 120-second timeout.
+The printed cost uses a local price estimate; confirm actual charges in your
+provider account. Fill Part 2 of your report.
 
-The printed lines are a labelled trace:
+### What the tool boundary protects
 
-- `[P]` perceive — the input supplied to every model call: the goal and
-  growing history. The log shows this input, not the model's private reasoning.
-- `[D]` decide — the model's response. Its text may be empty; a `tool_use`
-  block still records the action it selected.
-- `[A] › read_file(path: "src/parser.ts")` act — **every** tool call, including
-  `read_file`; Act is not only the edits.
-- `[O]` observe — the first three lines of what came back.
+`read_file` accepts TypeScript source/tests and specified project metadata;
+it does not expose `.env`, `.git` or `node_modules`. It returns at most 20 KB.
+`write_file` accepts only `.ts` files under `src/`, up to 64 KB. Tests, package
+scripts, dependency locks and test configuration are read-only. Invalid types,
+extra fields, path traversal, absolute paths and symlink paths are refused.
+`run_tests` runs a fixed command, caps captured output and clears the API key
+from that child process's environment.
 
-There are three tools — `read_file`, `write_file`, `run_tests` — jailed to
-`parser-ts/`, and `write_file` **refuses anything under `test/`**: the goal
-asks for that, the harness enforces it, and only the second holds when the model
-decides otherwise.
+**This is a tool policy, not an operating-system sandbox.** TypeScript source
+executed by the test runner still runs on your host and can access files or the
+network using your account. Use a lab VM/container for untrusted code; do not
+point this exercise at private repositories. Act 3 introduces an isolated
+filesystem and a separate verifier, but its running bot still holds an API key
+and outbound network access.
 
-The loop has two stop signals. **Model end:** `stop_reason: end_turn` means
-the model finished this turn without another tool request; it does not prove the
-goal succeeded. The loop prints `[D] model ended turn — checking the goal
-outside the loop`. **Budget:** the harness gives up after `MAX_STEPS` (12)
-model calls. Trigger the budget signal:
+## 6. Act 3 — unattended run, then independent verification
 
-```bash
-npm run agent -- --max-steps 3        # TypeScript
-./gradlew agent -PmaxSteps=3          # Java
-```
-
-It ends with `budget exhausted after 3 steps — the budget half of the stopping
-condition fired`, usually with the tests still red. However it ends, code the
-model did not write then **verifies from outside**: it reruns `npm test`, prints
-`git diff --stat parser-ts`, and prints steps · tokens · cost. The model's
-final answer is a claim; the independent test result is the evidence. If the
-model ends while the test remains red, the program exits with an error. A green
-TypeScript run shows `Tests  5
-passed (5)`; the Java loop prints `npm test: GREEN`. (The Java task ignores the
-program's exit code on purpose, so you read the loop, not a `BUILD FAILED` wall.)
-
-The model is `claude-haiku-4-5` at $1 / $5 per million tokens, so a run costs
-cents. `MODEL`, `MAX_STEPS` and `MAX_TOKENS` live in one file per track —
-`ts/src/client.ts`, `java/src/main/java/lab/Client.java` — and nowhere else.
-
-**Write now: part 2** — 8–15 trace lines with their `[P] [D] [A] [O]` labels;
-the five parts (goal · model · tools · memory · stopping condition) with their
-instance from *your* run; and which half of the stopping condition fired.
-
-### Act 3 — the bot in a box (~35 min)
-
-Now nobody approves anything.
+Start Docker and confirm `docker info` shows server details. From the practice:
 
 ```bash
-cd docker
-set -a; . ../.env; set +a
+cd "$P01_ROOT/docker"
 ./run.sh
+./verify.sh
+./break-it.sh
 ```
 
-`set -a` exports every variable the sourced file assigns, so `ANTHROPIC_API_KEY`
-reaches `docker run -e`; a plain `.env` is only a file. (`run.sh` does the same
-when the variable is unset; doing it by hand shows you the key's path.)
+`run.sh` reads the shared `.env` if the key is not already exported. It creates a
+fresh Act 3 baseline copy and builds `p01-bot` from **only that parser target**.
+It runs pinned Claude Code as the non-root `node` user with no host mounts,
+15 turns, a $1.00 estimated CLI spending limit, bounded CPU/memory/processes and dropped Linux capabilities.
+The spending limit uses the CLI’s estimate, may overshoot within a call and can differ from the final provider bill. A Claude Code agentic turn is not identical to one SDK model call. Change limits explicitly with `MAX_TURNS=5 MAX_BUDGET=0.25 ./run.sh`.
 
-`run.sh` builds the image `p01-bot` — `node:22-bookworm-slim`, the non-root user
-`node`, `@anthropic-ai/claude-code@2.1.283` pinned, `parser-ts/` copied to
-`/work` with a git commit called `baseline` — and runs:
+The bypass-permissions flag appears only inside this dedicated container.
+The runtime API key and outbound network remain accessible to that agent.
+A container reduces host damage; it does not make credential exfiltration,
+harmful generated source or leaked logs impossible. Inspect artifacts before
+sharing them. Never use this bypass flag on your host for the exercise.
 
-```
-claude -p --dangerously-skip-permissions --max-turns 15 --max-budget-usd 1.00 --output-format json "<goal>"
-```
+Evidence is in `docker/out/`: `result.json`, `stderr.txt`, `exit-code`, and
+`work/`. Before another run, the old directory is renamed to
+`out.previous-<timestamp>-<pid>`. `break-it.sh` uses `out-break-it/` and preserves
+its earlier directories too. Neither command erases earlier evidence.
 
-The key travels only by `docker run -e ANTHROPIC_API_KEY`; it is never in the
-image. Every limit is an environment variable, e.g.
-`MAX_TURNS=5 MAX_BUDGET=0.25 ./run.sh`. Before building, the script resets `parser-ts/src` to the committed bug (otherwise an Act 2 fix left on disk would be baked into the image and the bot would start green). Output lands in `docker/out/`
-(gitignored): `result.json`, `stderr.txt`, `exit-code`, and `work/`, the
-container's whole `/work`. `run.sh` prints `subtype`, `num_turns`,
-`total_cost_usd`, `is_error`, then the `result` text. `result` and
-`total_cost_usd` are documented; `subtype`, `num_turns` and `is_error` come from
-the SDK's result type — expected, not promised — so it prints whichever exist.
+The JSON fields `is_error`, `subtype`, `num_turns` and `total_cost_usd` are CLI
+metadata. The `result` field can contain a model-backed final response or a
+CLI/API error. Classify it using `is_error`, `subtype` or `terminal_reason`,
+`stderr.txt` and `exit-code` before attributing text to a model. A completion
+claim still needs independent verification. Neither report category verifies parser
+correctness. **`verify.sh`** compares extracted evidence with a fresh copy of
+the trusted image, refuses changes outside `src/*.ts` and all symlinks, then runs
+only the bot's source with **trusted tests, configuration and dependencies** in
+a fresh container. It uses no key, no network and no host mounts. The bot's
+`.git`, `node_modules`, package scripts and changed tests are never executed.
+Any integrity or test failure makes verification exit nonzero.
 
-**`./verify.sh`** — `is_error: false` is a claim the model wrote; this checks it
-with tools the bot did not control, needs no key, and runs `npm test` in a
-*fresh* container (the copied-out `node_modules` were built for Linux and will
-not load on a Mac or Windows host). Its five headers:
+`break-it.sh` uses a goal to improve forever, capped at 6 turns/$0.50. A finite
+run cannot finish that goal, but the model may end early or encounter an error.
+Record the **actual** stop reason. To verify its separate evidence, use
+`OUT_NAME=out-break-it ./verify.sh`. Fill Part 3, then the Part 4 lusql verdict.
 
-```
-== 1. npm test — a fresh container, no key, no agent
-== 2. what the bot touched (against the baseline commit)
-== 3. Rule 2 — did it stay out of test/?
-== 4. did a test get skipped, focused or inverted?
-== 5. did it change what 'npm test' runs?
-```
+## 7. Submit and troubleshoot
 
-**`./break-it.sh`** — the same bot, the goal *"Keep improving this parser
-forever. Never stop; there is always something to improve."*, with
-`MAX_TURNS=6` and `MAX_BUDGET=0.50`. No success test can fire for that goal, so
-only the budget half can stop it. In the `== break-it verdict` block, `subtype`
-(`error_max_turns` or `error_max_budget_usd`) says which budget halted it and
-`num_turns` how far it got. Its evidence lands in `docker/out-break-it/`, so
-the `run.sh` evidence in `docker/out/` that part 3 needs is not overwritten.
+Submit all four report parts and the short transcript. Refer to specific output
+lines and run paths. Explain a failed run accurately rather than claiming it
+worked. Do not submit `.env`, `node_modules`, `.runs` or container output trees.
 
-**Why `--dangerously-skip-permissions` is acceptable here and nowhere else.**
-The user is **non-root** — the CLI refuses otherwise: `--dangerously-skip-permissions
-cannot be used with root/sudo privileges for security reasons` — the filesystem
-is **isolated** (the image holds `parser-ts/` and nothing of yours), and there
-are **two hard limits**, turns and dollars. **Never run that flag on your
-laptop**, and never push `p01-bot` to a public registry.
+| Symptom | Next action |
+|---|---|
+| `/fix-test` is missing | Exit Claude; start it inside the printed Act 1 `parser-java` directory; confirm `.claude/skills/fix-test/SKILL.md` exists |
+| `EBADENGINE` or Vite fails before tests start | Install Node 22.12+; reopen terminal; rerun `npm ci` in the affected npm project |
+| Java toolchain not found | Install JDK 21 and set `JAVA_HOME` to that installation; wrapper does not download it |
+| `401`, `429`, insufficient credit or proxy TLS error | Check the live setup result; fix the key/account/network before a paid loop; never disable TLS validation |
+| Tool demo exits 1 | Read the full output: planned WHERE failure is required, but dependency/startup failures do not count |
+| Docker daemon unavailable | Start Docker Desktop/Engine; wait until `docker info` shows the server |
+| Parser baseline already green | You edited the supplied folder; preserve those edits, then obtain a fresh clone in a separate directory |
+| Verifier fails despite `is_error: false` | Read its integrity/test verdict; CLI completion is not proof of the goal |
 
-**Write now: part 3** — the limits you set, the `run.sh` summary, the
-`verify.sh` evidence, the `break-it.sh` verdict, and whether claim and evidence
-agreed.
-
-### Stretch (optional)
-
-1. **Rung 3, on your host.** `cd parser-ts && claude --permission-mode
-   acceptEdits`, then give it Act 3's goal: *Make `npm test` pass in this
-   project. Do not edit anything under test/. Stop when it is green.* Edits run
-   unasked; commands such as `npm test` still prompt. You gave up the isolated
-   filesystem — the bot is in your real checkout. Restore with
-   `git checkout -- src`.
-2. **A skill that never loads.** In `parser-java/`, replace the `description:`
-   line of `.claude/skills/fix-test/SKILL.md` with the one from
-   `.claude/skills/helper/SKILL.md` ("Helps with code."), restart `claude`, and
-   ask in plain words to fix the failing test. The skill never loads: the
-   description is all the model has to match on. Restore the file with
-   `git checkout -- .claude/skills/fix-test/SKILL.md`.
-
----
-
-## 3. The pinned versions, and why
-
-| What | Pin | Where |
-|---|---|---|
-| `@anthropic-ai/sdk` | 0.128.0 | `ts/` |
-| `vitest` | 5.0.2 (needs Node 22.12 or newer) | `parser-ts/` |
-| `@anthropic-ai/claude-code` | 2.1.283 | the Docker image |
-| `com.anthropic:anthropic-java` | 2.64.0 | `java/` |
-| JUnit 5 | 5.11.4 | `parser-java/` |
-| JUnit 5 | 5.12.2 | `java/` |
-
-Every pin is exact, never `^` or `+`. The course's npm mirror blocks packages
-published less than three days ago, so a range can resolve to a version that
-403s for the whole class mid-lab: each npm pin above was the newest version at
-least three days old when it was chosen. The two Gradle builds are independent,
-so their JUnit versions need not match.
-
-The loop runs `claude-haiku-4-5` ($1 / $5 per million tokens): fast, and cheap
-when 20 students run multi-step loops at once, because every step re-sends the
-whole transcript. `claude-sonnet-5` is a legacy id, and `claude-sonnet-5-5` is
-current but not for classroom loops. Both lockfiles resolve every package from
-`registry.npmjs.org`, so a student outside the university network can install.
-
----
-
-## 4. Submit
-
-```bash
-cp agent-anatomy.template.md agent-anatomy.md
-```
-
-Fill in its four parts: **1** the six observations from your own runs · **2** the
-labelled trace and the five parts · **3** the autonomous run and its evidence ·
-**4** a one-paragraph verdict on whether lusql is agent-shaped. It is graded on
-what you observed, not on being right. Then check:
-
-- [ ] The setup check passes (`npm run check` or `./gradlew checkSetup`)
-- [ ] Your name and track at the top of `agent-anatomy.md`
-- [ ] Parts 1–4 filled in, including both halves of the stopping condition
-- [ ] `transcript.txt` kept
-- [ ] **No key in any committed file** — `git status` shows `agent-anatomy.md`
-      and `transcript.txt`, never `.env`
-
----
-
-## Troubleshooting
-
-| Symptom | Cause | Fix |
-|---|---|---|
-| `Cannot connect to the Docker daemon` / `the Docker daemon is not running` | Docker Desktop is not started | start it, wait for the whale icon to settle, rerun |
-| `--dangerously-skip-permissions cannot be used with root/sudo privileges` | the container ran as root: `USER node` was removed, or `docker run -u root` was used | keep `USER node` in the Dockerfile; never pass `-u 0` |
-| `npm ci` fails during the image build | `parser-ts/package-lock.json` resolves from a private registry | the Dockerfile prints the fix: in `parser-ts/`, `rm -rf node_modules package-lock.json`, then `npm install --registry https://registry.npmjs.org`, then rebuild |
-| `ANTHROPIC_API_KEY is not set` / `401` | no `.env`, still the placeholder, or a wrong, revoked or space-padded key | `cp .env.example .env` in `practice-01/`; re-copy the key from the Console |
-| `pathspec 'parser-ts/src' did not match` | git does not track `parser-ts/` yet (practice-01 not committed) | harmless; the loop carries on with the files as they are |
-| `EBADENGINE`, or `npm test` will not start in `parser-ts/` | Node 20: vitest 5 needs 22.12 or newer | install Node 22 LTS from nodejs.org, reopen the terminal |
-| the first `./gradlew` run is slow | the wrapper downloads Gradle (and a JDK 21 toolchain if yours differs) | wait once; later runs are fast |
-| `.workflow-out.txt` left in `parser-java/` | `workflow.sh` keeps Gradle's raw output so you can read it | it is gitignored; delete it or leave it |
-| budget hit before green (`subtype: error_max_turns` or `error_max_budget_usd`) | the fix needed more than you allowed, or the model wandered | read the diff in `docker/out/work` first; if it is close, raise `MAX_TURNS` or `MAX_BUDGET` — that is the budget half working |
-| `/fix-test` is not listed | `claude` was started outside `parser-java/`, or the skill was added after launch | `/reload-skills`, or restart `claude` from `parser-java/` |
-
----
-
-## Files
-
-```
-practice-01/
-  .env.example                copy to .env and add your key — shared by ts/, java/ and docker/
-  .dockerignore               what the image build does not receive: .env, node_modules, the other acts
-  agent-anatomy.template.md   copy to agent-anatomy.md and fill in — four parts
-
-  parser-java/                Act 1 target — a mini SQL parser (Java 21), one red test
-    CLAUDE.md                   "never edit src/test/"
-    workflow.sh                 the workflow row: run the test, ask the model to summarise, exit 1
-    .claude/skills/             fix-test/SKILL.md (the skill row) · helper/SKILL.md (vague on purpose — stretch 2)
-    build.gradle.kts, gradlew, gradle/wrapper/   JUnit 5.11.4; self-provisioning wrapper
-    src/main/java/lusql/parser/   Lexer, Parser, Token, TokenType, Select, Expr, ParseException
-    src/test/java/lusql/parser/   ParserTest (the red one), LexerTest
-
-  parser-ts/                  Act 2 + 3 target — the same bug in TypeScript; tests in ~2 s
-    CLAUDE.md                   "never edit test/" — the bot in the box reads it too
-    package.json, package-lock.json   vitest 5.0.2 (Node 22.12+), exact pins
-    src/ · test/                lexer.ts, parser.ts, ast.ts, errors.ts · lexer.test.ts, parser.test.ts
-
-  ts/                         Act 2, TypeScript track (npm scripts: check · agent · typecheck)
-    src/client.ts               client + MODEL + MAX_STEPS + MAX_TOKENS + pricing  <- read this first
-    src/                        env.ts · tools.ts (read_file, write_file, run_tests) · 00-check-setup.ts · 01-agent-loop.ts
-
-  java/                       Act 2, Java track (tasks: checkSetup · agent -PmaxSteps=N · test)
-    src/main/java/lab/          Client.java <- read this first · Tools.java · CheckSetup.java · Ex01AgentLoop.java
-    src/test/java/lab/ToolsTest.java   tests the tool jail without the API
-
-  docker/                     Act 3 — the fully autonomous bot, in a box
-    Dockerfile                  node:22-bookworm-slim, user node, claude-code@2.1.283, parser-ts + baseline commit
-    run.sh · verify.sh · break-it.sh   run the bot · five checks from outside · the forever goal
-    README.md                   Act 3 notes, with its own troubleshooting table
-    out/                        created by run.sh: result.json, stderr.txt, exit-code, work/ (gitignored)
-```
+Exact dependency versions and lockfiles are supplied. Use `npm ci`; do not
+upgrade dependencies during the lab. Model availability, prices and Claude Code
+CLI behavior can change; consult official documentation when a pinned version
+is unavailable.

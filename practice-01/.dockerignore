@@ -31,3 +31,6 @@ docker/out-break-it
 # still included — Docker cannot re-include a file whose directory was excluded.
 **/*.md
 !parser-ts/CLAUDE.md
+
+# Disposable exercise copies are never part of a repository-root build context.
+.runs
