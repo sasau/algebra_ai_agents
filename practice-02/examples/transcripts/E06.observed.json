@@ -1,0 +1,44 @@
+{
+  "capturedAt": "2026-10-13T09:12:42.454Z",
+  "node": "v22.23.2",
+  "variant": "reference",
+  "evidence": {
+    "exercise": "E06",
+    "transport": "stdio",
+    "committedResponse": {
+      "ok": true,
+      "value": {
+        "reportId": "b98f6374-5fdc-487e-9ce7-b5b9db026247",
+        "replayed": false
+      }
+    },
+    "retryResponse": {
+      "ok": true,
+      "value": {
+        "reportId": "b98f6374-5fdc-487e-9ce7-b5b9db026247",
+        "replayed": true
+      }
+    },
+    "first": {
+      "reportId": "b98f6374-5fdc-487e-9ce7-b5b9db026247",
+      "replayed": false
+    },
+    "retry": {
+      "reportId": "b98f6374-5fdc-487e-9ce7-b5b9db026247",
+      "replayed": true
+    },
+    "conflict": {
+      "ok": false,
+      "error": {
+        "code": "IDEMPOTENCY_CONFLICT",
+        "message": "This key already identifies a different report payload. Use a new key only for a new intended report.",
+        "retryable": false
+      }
+    },
+    "independentRowCount": 1,
+    "independentStoredReportId": "b98f6374-5fdc-487e-9ce7-b5b9db026247",
+    "callerPoolRestarted": true,
+    "stdioServerProcessRestarted": true,
+    "simulation": "The initial MCP response was captured after commit and discarded from the caller workflow. The initial stdio child was closed; a new client launched a fresh ticket-store child and retried the identical payload. This simulates caller response loss; it does not claim a real network packet was dropped."
+  }
+}

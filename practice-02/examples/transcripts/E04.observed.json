@@ -1,0 +1,24 @@
+{
+  "capturedAt": "2026-10-13T09:12:41.659Z",
+  "node": "v22.23.2",
+  "variant": "reference",
+  "evidence": {
+    "exercise": "E04",
+    "broken": {
+      "promiseReturnedButChildAlive": true
+    },
+    "fixed": {
+      "status": "timeout",
+      "exitCode": null,
+      "durationMs": 805,
+      "output": "DESCENDANT_PID=15449\nLAB_OUTPUT_ONLY LAB_OUTPUT_ONLY LAB_OUTPUT_ONLY LAB_OUTPUT_ONLY LAB_OUTPUT_ONLY LAB_OUTPUT_ONLY LAB_OUTPUT_ONLY LAB_OUTPUT_ONLY LAB_OUTPUT_ONLY LAB_OUTPUT_ONLY LAB_OUTPUT_ONLY LAB",
+      "outputBytes": 5283861,
+      "retainedBytes": 20000,
+      "truncated": true,
+      "failedTests": [],
+      "descendantPid": 15449,
+      "descendantGone": true
+    },
+    "limitation": "600 ms is this probe's test seam; public run_tests enforces 10,000 ms. POSIX descendant checks are verified on macOS/Linux; Windows requires separate taskkill validation."
+  }
+}

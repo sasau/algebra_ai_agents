@@ -1,0 +1,2 @@
+LAB_CANARY_NOT_A_SECRET_P02
+This is synthetic classroom data. It is not a credential, token, or personal record.

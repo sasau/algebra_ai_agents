@@ -1,0 +1,45 @@
+{
+  "capturedAt": "2026-10-13T09:15:40.281Z",
+  "node": "v22.23.2",
+  "variant": "starter",
+  "evidence": {
+    "exercise": "E06",
+    "transport": "stdio",
+    "committedResponse": {
+      "ok": true,
+      "value": {
+        "reportId": "322d5867-69c3-4070-b910-67ec63f38997",
+        "replayed": false
+      }
+    },
+    "retryResponse": {
+      "ok": true,
+      "value": {
+        "reportId": "322d5867-69c3-4070-b910-67ec63f38997",
+        "replayed": true
+      }
+    },
+    "first": {
+      "reportId": "322d5867-69c3-4070-b910-67ec63f38997",
+      "replayed": false
+    },
+    "retry": {
+      "reportId": "322d5867-69c3-4070-b910-67ec63f38997",
+      "replayed": true
+    },
+    "conflict": {
+      "ok": false,
+      "error": {
+        "code": "IDEMPOTENCY_CONFLICT",
+        "message": "This key already identifies a different report payload. Use a new key only for a new intended report.",
+        "retryable": false
+      }
+    },
+    "independentRowCount": 1,
+    "independentStoredReportId": "322d5867-69c3-4070-b910-67ec63f38997",
+    "callerPoolRestarted": true,
+    "stdioServerProcessRestarted": true,
+    "simulation": "The initial MCP response was captured after commit and discarded from the caller workflow. The initial stdio child was closed; a new client launched a fresh ticket-store child and retried the identical payload. This simulates caller response loss; it does not claim a real network packet was dropped."
+  },
+  "conditions": "Supplied completed-student verification in an isolated copy; reference modules replaced student interfaces. Shipped starter TODOs remain incomplete."
+}

@@ -1,0 +1,259 @@
+{
+  "capturedAt": "2026-10-13T09:15:38.588Z",
+  "node": "v22.23.2",
+  "variant": "starter",
+  "evidence": {
+    "exercise": "E02",
+    "rejection": {
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "MCP error -32602: Input validation error: Invalid arguments for tool run_tests: Invalid option: expected one of \"tokenizer\"|\"parser\"|\"all\" at suite"
+          }
+        ],
+        "isError": true
+      },
+      "jsonrpc": "2.0",
+      "id": 3
+    },
+    "unknownMethod": {
+      "jsonrpc": "2.0",
+      "id": 7,
+      "error": {
+        "code": -32601,
+        "message": "Method not found"
+      }
+    },
+    "executionAttemptsBefore": 0,
+    "executionAttemptsAfterRejection": 0,
+    "executionAttemptsAfterControl": 1,
+    "control": {
+      "suite": "parser",
+      "status": "passed",
+      "runId": "e4c11d82-7d53-4c9f-8ada-35ca87d5a2ed"
+    },
+    "measurement": "Observed session-local execution-attempt counter incremented immediately before spawn, with a successful same-session control. This is not an OS-level execution trace.",
+    "trace": [
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 1,
+          "method": "initialize",
+          "params": {
+            "protocolVersion": "2025-11-25",
+            "capabilities": {},
+            "clientInfo": {
+              "name": "raw-practice-02",
+              "version": "1.0.0"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "result": {
+            "protocolVersion": "2025-11-25",
+            "capabilities": {
+              "tools": {
+                "listChanged": true
+              },
+              "resources": {
+                "listChanged": true
+              },
+              "prompts": {
+                "listChanged": true
+              }
+            },
+            "serverInfo": {
+              "name": "workspace-lab",
+              "version": "1.0.0"
+            }
+          },
+          "jsonrpc": "2.0",
+          "id": 1
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 2,
+          "method": "resources/read",
+          "params": {
+            "uri": "workspace://manifest"
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "result": {
+            "contents": [
+              {
+                "uri": "workspace://manifest",
+                "mimeType": "application/json",
+                "text": "{\"name\":\"Practice 02 expression workspace\",\"variant\":\"starter\",\"permittedRoot\":\"fixture/\",\"suites\":[\"tokenizer\",\"parser\",\"all\"],\"expectedFailure\":\"tokenizer normalises CRLF line endings\",\"ticket\":\"LAB-101\",\"limits\":{\"fileReturnedBytes\":20000,\"processOutputBytes\":20000,\"timeoutMs\":10000,\"concurrency\":1,\"reports\":20},\"observation\":{\"executionAttempts\":0,\"meaning\":\"Session-local count incremented immediately before spawn; not an OS-level execution trace.\"},\"trust\":\"The fixture is trusted supplied code. Paths and external ticket text are untrusted inputs. The path check assumes no concurrent actor replaces fixture entries.\"}"
+              }
+            ]
+          },
+          "jsonrpc": "2.0",
+          "id": 2
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 3,
+          "method": "tools/call",
+          "params": {
+            "name": "run_tests",
+            "arguments": {
+              "suite": "all; echo LAB_CANARY"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "MCP error -32602: Input validation error: Invalid arguments for tool run_tests: Invalid option: expected one of \"tokenizer\"|\"parser\"|\"all\" at suite"
+              }
+            ],
+            "isError": true
+          },
+          "jsonrpc": "2.0",
+          "id": 3
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 4,
+          "method": "resources/read",
+          "params": {
+            "uri": "workspace://manifest"
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "result": {
+            "contents": [
+              {
+                "uri": "workspace://manifest",
+                "mimeType": "application/json",
+                "text": "{\"name\":\"Practice 02 expression workspace\",\"variant\":\"starter\",\"permittedRoot\":\"fixture/\",\"suites\":[\"tokenizer\",\"parser\",\"all\"],\"expectedFailure\":\"tokenizer normalises CRLF line endings\",\"ticket\":\"LAB-101\",\"limits\":{\"fileReturnedBytes\":20000,\"processOutputBytes\":20000,\"timeoutMs\":10000,\"concurrency\":1,\"reports\":20},\"observation\":{\"executionAttempts\":0,\"meaning\":\"Session-local count incremented immediately before spawn; not an OS-level execution trace.\"},\"trust\":\"The fixture is trusted supplied code. Paths and external ticket text are untrusted inputs. The path check assumes no concurrent actor replaces fixture entries.\"}"
+              }
+            ]
+          },
+          "jsonrpc": "2.0",
+          "id": 4
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 5,
+          "method": "tools/call",
+          "params": {
+            "name": "run_tests",
+            "arguments": {
+              "suite": "parser"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"ok\":true,\"value\":{\"runId\":\"e4c11d82-7d53-4c9f-8ada-35ca87d5a2ed\",\"suite\":\"parser\",\"startedAt\":\"2026-10-13T09:15:38.453Z\",\"completedAt\":\"2026-10-13T09:15:38.582Z\",\"status\":\"passed\",\"exitCode\":0,\"durationMs\":128,\"output\":\"TAP version 13\\n# Subtest: parser preserves multiplication precedence\\nok 1 - parser preserves multiplication precedence\\n  ---\\n  duration_ms: 0.403917\\n  type: 'test'\\n  ...\\n# Subtest: parser handles parentheses\\nok 2 - parser handles parentheses\\n  ---\\n  duration_ms: 0.054333\\n  type: 'test'\\n  ...\\n# Subtest: parser makes subtraction left associative\\nok 3 - parser makes subtraction left associative\\n  ---\\n  duration_ms: 0.038917\\n  type: 'test'\\n  ...\\n# Subtest: parser rejects a missing closing parenthesis\\nok 4 - parser rejects a missing closing parenthesis\\n  ---\\n  duration_ms: 0.138583\\n  type: 'test'\\n  ...\\n# Subtest: parser rejects trailing tokens\\nok 5 - parser rejects trailing tokens\\n  ---\\n  duration_ms: 0.04175\\n  type: 'test'\\n  ...\\n1..5\\n# tests 5\\n# suites 0\\n# pass 5\\n# fail 0\\n# cancelled 0\\n# skipped 0\\n# todo 0\\n# duration_ms 95.051208\\n\",\"outputBytes\":838,\"retainedBytes\":838,\"truncated\":false,\"failedTests\":[]}}"
+              }
+            ],
+            "structuredContent": {
+              "ok": true,
+              "value": {
+                "runId": "e4c11d82-7d53-4c9f-8ada-35ca87d5a2ed",
+                "suite": "parser",
+                "startedAt": "2026-10-13T09:15:38.453Z",
+                "completedAt": "2026-10-13T09:15:38.582Z",
+                "status": "passed",
+                "exitCode": 0,
+                "durationMs": 128,
+                "output": "TAP version 13\n# Subtest: parser preserves multiplication precedence\nok 1 - parser preserves multiplication precedence\n  ---\n  duration_ms: 0.403917\n  type: 'test'\n  ...\n# Subtest: parser handles parentheses\nok 2 - parser handles parentheses\n  ---\n  duration_ms: 0.054333\n  type: 'test'\n  ...\n# Subtest: parser makes subtraction left associative\nok 3 - parser makes subtraction left associative\n  ---\n  duration_ms: 0.038917\n  type: 'test'\n  ...\n# Subtest: parser rejects a missing closing parenthesis\nok 4 - parser rejects a missing closing parenthesis\n  ---\n  duration_ms: 0.138583\n  type: 'test'\n  ...\n# Subtest: parser rejects trailing tokens\nok 5 - parser rejects trailing tokens\n  ---\n  duration_ms: 0.04175\n  type: 'test'\n  ...\n1..5\n# tests 5\n# suites 0\n# pass 5\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 95.051208\n",
+                "outputBytes": 838,
+                "retainedBytes": 838,
+                "truncated": false,
+                "failedTests": []
+              }
+            }
+          },
+          "jsonrpc": "2.0",
+          "id": 5
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 6,
+          "method": "resources/read",
+          "params": {
+            "uri": "workspace://manifest"
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "result": {
+            "contents": [
+              {
+                "uri": "workspace://manifest",
+                "mimeType": "application/json",
+                "text": "{\"name\":\"Practice 02 expression workspace\",\"variant\":\"starter\",\"permittedRoot\":\"fixture/\",\"suites\":[\"tokenizer\",\"parser\",\"all\"],\"expectedFailure\":\"tokenizer normalises CRLF line endings\",\"ticket\":\"LAB-101\",\"limits\":{\"fileReturnedBytes\":20000,\"processOutputBytes\":20000,\"timeoutMs\":10000,\"concurrency\":1,\"reports\":20},\"observation\":{\"executionAttempts\":1,\"meaning\":\"Session-local count incremented immediately before spawn; not an OS-level execution trace.\"},\"trust\":\"The fixture is trusted supplied code. Paths and external ticket text are untrusted inputs. The path check assumes no concurrent actor replaces fixture entries.\"}"
+              }
+            ]
+          },
+          "jsonrpc": "2.0",
+          "id": 6
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 7,
+          "method": "not/a/method",
+          "params": {}
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 7,
+          "error": {
+            "code": -32601,
+            "message": "Method not found"
+          }
+        }
+      }
+    ]
+  },
+  "conditions": "Supplied completed-student verification in an isolated copy; reference modules replaced student interfaces. Shipped starter TODOs remain incomplete."
+}

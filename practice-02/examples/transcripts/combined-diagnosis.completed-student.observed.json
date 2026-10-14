@@ -1,0 +1,29 @@
+{
+  "capturedAt": "2026-10-13T09:15:41.326Z",
+  "node": "v22.23.2",
+  "variant": "starter",
+  "evidence": {
+    "ticketId": "LAB-101",
+    "runId": "254d865a-a20a-4086-92c0-f5bd0f551ffb",
+    "status": "failed",
+    "failedTests": [
+      "tokenizer normalises CRLF line endings"
+    ],
+    "reportId": "8e58386f-c447-46bc-86c8-7636f79373b7",
+    "evidenceDigest": "0e468e43981482c8c0c09d70ba4364ea14c398028767e5d04737be98488ea360",
+    "verified": {
+      "reportId": "8e58386f-c447-46bc-86c8-7636f79373b7",
+      "ticketId": "LAB-101",
+      "runId": "254d865a-a20a-4086-92c0-f5bd0f551ffb",
+      "summary": "The tokenizer treats CR as an unsupported character; its LF handling does not normalise CRLF. The supplied CRLF test reproduces the failure. This report diagnoses the defect and does not claim a repair.",
+      "evidenceDigest": "0e468e43981482c8c0c09d70ba4364ea14c398028767e5d04737be98488ea360",
+      "idempotencyKey": "c4c15a0d-ba05-4ec7-8ef1-e34fbd8968bc",
+      "createdAt": "2026-10-13 09:15:41.237416+00"
+    },
+    "independentRunId": "447600b4-88cf-4d1a-93f8-9fa65610ee9a",
+    "resourceRead": 1,
+    "sourceRead": true,
+    "scope": "Supplied reference checker stores a synthetic lab report. Interactive host calls require review."
+  },
+  "conditions": "Supplied completed-student verification in an isolated copy; reference modules replaced student interfaces. Shipped starter TODOs remain incomplete."
+}

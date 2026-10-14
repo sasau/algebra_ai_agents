@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__workspace-lab__list_files",
+      "mcp__workspace-lab__read_file",
+      "mcp__workspace-lab__get_test_report",
+      "mcp__workspace-lab__compare_test_runs",
+      "mcp__ticket-store__list_tickets",
+      "mcp__ticket-store__get_ticket"
+    ],
+    "ask": [
+      "mcp__workspace-lab__run_tests",
+      "mcp__ticket-store__create_diagnostic_report"
+    ]
+  }
+}

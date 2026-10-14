@@ -1,0 +1,1283 @@
+{
+  "capturedAt": "2026-10-13T09:22:44.571Z",
+  "deck": "practice-02-tools-and-mcp",
+  "freshReload": true,
+  "viewports": [
+    {
+      "viewport": {
+        "width": 1600,
+        "height": 900
+      },
+      "slides": [
+        {
+          "slide": 1,
+          "zoom": 1,
+          "opacity": 1,
+          "hash": "#1",
+          "heading": "Tools and MCP",
+          "innerBounds": {
+            "left": 240,
+            "right": 1360,
+            "top": 245.875,
+            "bottom": 627.140625
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 2,
+          "zoom": 1,
+          "opacity": 1,
+          "hash": "#2",
+          "heading": "A working boundary requires code and independent evidence",
+          "innerBounds": {
+            "left": 240,
+            "right": 1360,
+            "top": 149.5625,
+            "bottom": 723.453125
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 3,
+          "zoom": 1,
+          "opacity": 1,
+          "hash": "#3",
+          "heading": "Three acts move from handler to external dependency",
+          "innerBounds": {
+            "left": 240,
+            "right": 1360,
+            "top": 101.765625,
+            "bottom": 771.234375
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 4,
+          "zoom": 0.9375,
+          "opacity": 1,
+          "hash": "#4",
+          "heading": "Every act produces a named artifact",
+          "innerBounds": {
+            "left": 275,
+            "right": 1325,
+            "top": 54,
+            "bottom": 819.4375
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": true
+        },
+        {
+          "slide": 5,
+          "zoom": 1,
+          "opacity": 1,
+          "hash": "#5",
+          "heading": "Preflight separates setup errors from the seeded bug",
+          "innerBounds": {
+            "left": 240,
+            "right": 1360,
+            "top": 62.578125,
+            "bottom": 810.421875
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": true
+        },
+        {
+          "slide": 6,
+          "zoom": 1,
+          "opacity": 1,
+          "hash": "#6",
+          "heading": "The expected failing test is the task's starting state",
+          "innerBounds": {
+            "left": 240,
+            "right": 1360,
+            "top": 105.1875,
+            "bottom": 767.828125
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 7,
+          "zoom": 1,
+          "opacity": 1,
+          "hash": "#7",
+          "heading": "A tool before MCP",
+          "innerBounds": {
+            "left": 240,
+            "right": 1360,
+            "top": 295.921875,
+            "bottom": 577.078125
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 8,
+          "zoom": 1,
+          "opacity": 1,
+          "hash": "#8",
+          "heading": "A precise schema limits the reader's input",
+          "innerBounds": {
+            "left": 240,
+            "right": 1360,
+            "top": 104.90625,
+            "bottom": 768.09375
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 9,
+          "zoom": 1,
+          "opacity": 1,
+          "hash": "#9",
+          "heading": "A missing file returns an error without ending the session",
+          "innerBounds": {
+            "left": 240,
+            "right": 1360,
+            "top": 79.3125,
+            "bottom": 793.6875
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 10,
+          "zoom": 0.936352,
+          "opacity": 1,
+          "hash": "#10",
+          "heading": "Each requested call needs its matching result",
+          "innerBounds": {
+            "left": 275.640625,
+            "right": 1324.34375,
+            "top": 54.3125,
+            "bottom": 818.703125
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 11,
+          "zoom": 1,
+          "opacity": 1,
+          "hash": "#11",
+          "heading": "A deterministic runner verifies the handler itself",
+          "innerBounds": {
+            "left": 240,
+            "right": 1360,
+            "top": 104.90625,
+            "bottom": 768.09375
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 12,
+          "zoom": 1,
+          "opacity": 1,
+          "hash": "#12",
+          "heading": "The first checkpoint proves the shared tool contract",
+          "innerBounds": {
+            "left": 240,
+            "right": 1360,
+            "top": 114.328125,
+            "bottom": 758.671875
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 13,
+          "zoom": 1,
+          "opacity": 1,
+          "hash": "#13",
+          "heading": "A bounded workspace server",
+          "innerBounds": {
+            "left": 240,
+            "right": 1360,
+            "top": 295.921875,
+            "bottom": 577.078125
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 14,
+          "zoom": 0.886443,
+          "opacity": 1,
+          "hash": "#14",
+          "heading": "The host owns the model and two client connections",
+          "innerBounds": {
+            "left": 303.59375,
+            "right": 1296.40625,
+            "top": 54.234375,
+            "bottom": 818.765625
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 15,
+          "zoom": 1,
+          "opacity": 1,
+          "hash": "#15",
+          "heading": "Registration adapts a handler to MCP results",
+          "innerBounds": {
+            "left": 240,
+            "right": 1360,
+            "top": 62.578125,
+            "bottom": 810.421875
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 16,
+          "zoom": 1,
+          "opacity": 1,
+          "hash": "#16",
+          "heading": "Tools, resources and prompts have different uses",
+          "innerBounds": {
+            "left": 240,
+            "right": 1360,
+            "top": 120.125,
+            "bottom": 752.890625
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 17,
+          "zoom": 1,
+          "opacity": 1,
+          "hash": "#17",
+          "heading": "Invalid arguments are rejected before execution",
+          "innerBounds": {
+            "left": 240,
+            "right": 1360,
+            "top": 79.046875,
+            "bottom": 793.96875
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 18,
+          "zoom": 1,
+          "opacity": 1,
+          "hash": "#18",
+          "heading": "Canonical paths need a separator-aware containment check",
+          "innerBounds": {
+            "left": 240,
+            "right": 1360,
+            "top": 66.796875,
+            "bottom": 806.21875
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 19,
+          "zoom": 1,
+          "opacity": 1,
+          "hash": "#19",
+          "heading": "A fixed suite map removes free-form command input",
+          "innerBounds": {
+            "left": 240,
+            "right": 1360,
+            "top": 62.859375,
+            "bottom": 810.15625
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 20,
+          "zoom": 1,
+          "opacity": 1,
+          "hash": "#20",
+          "heading": "A bounded runner terminates work and limits retained output",
+          "innerBounds": {
+            "left": 240,
+            "right": 1360,
+            "top": 120.671875,
+            "bottom": 752.34375
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 21,
+          "zoom": 1,
+          "opacity": 1,
+          "hash": "#21",
+          "heading": "Generated run IDs identify bounded stored evidence",
+          "innerBounds": {
+            "left": 240,
+            "right": 1360,
+            "top": 105.1875,
+            "bottom": 767.828125
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 22,
+          "zoom": 1,
+          "opacity": 1,
+          "hash": "#22",
+          "heading": "Protocol output and diagnostic logs use separate streams",
+          "innerBounds": {
+            "left": 240,
+            "right": 1360,
+            "top": 79.59375,
+            "bottom": 793.421875
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 23,
+          "zoom": 1,
+          "opacity": 1,
+          "hash": "#23",
+          "heading": "Registration and tool execution have separate approval gates",
+          "innerBounds": {
+            "left": 240,
+            "right": 1360,
+            "top": 88.453125,
+            "bottom": 784.5625
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": true
+        },
+        {
+          "slide": 24,
+          "zoom": 1,
+          "opacity": 1,
+          "hash": "#24",
+          "heading": "The workspace checkpoint proves access and execution limits",
+          "innerBounds": {
+            "left": 240,
+            "right": 1360,
+            "top": 97.875,
+            "bottom": 775.140625
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 25,
+          "zoom": 1,
+          "opacity": 1,
+          "hash": "#25",
+          "heading": "Docker, authority and verification",
+          "innerBounds": {
+            "left": 240,
+            "right": 1360,
+            "top": 279.1875,
+            "bottom": 593.8125
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 26,
+          "zoom": 0.876289,
+          "opacity": 1,
+          "hash": "#26",
+          "heading": "The MCP server and database enforce distinct restrictions",
+          "innerBounds": {
+            "left": 309.28125,
+            "right": 1290.71875,
+            "top": 54.046875,
+            "bottom": 818.953125
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 27,
+          "zoom": 1,
+          "opacity": 1,
+          "hash": "#27",
+          "heading": "Readiness and loopback binding make the backend predictable",
+          "innerBounds": {
+            "left": 240,
+            "right": 1360,
+            "top": 79.3125,
+            "bottom": 793.6875
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 28,
+          "zoom": 1,
+          "opacity": 1,
+          "hash": "#28",
+          "heading": "Runtime credentials reach only the lab's permitted data",
+          "innerBounds": {
+            "left": 240,
+            "right": 1360,
+            "top": 149.828125,
+            "bottom": 723.171875
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 29,
+          "zoom": 1,
+          "opacity": 1,
+          "hash": "#29",
+          "heading": "SQL parameters keep a ticket ID separate from SQL syntax",
+          "innerBounds": {
+            "left": 240,
+            "right": 1360,
+            "top": 92.390625,
+            "bottom": 780.625
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 30,
+          "zoom": 1,
+          "opacity": 1,
+          "hash": "#30",
+          "heading": "Scoped filters and two caps bound a query result",
+          "innerBounds": {
+            "left": 240,
+            "right": 1360,
+            "top": 92.109375,
+            "bottom": 780.890625
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 31,
+          "zoom": 1,
+          "opacity": 1,
+          "hash": "#31",
+          "heading": "A durable key makes a lost-response retry safe",
+          "innerBounds": {
+            "left": 240,
+            "right": 1360,
+            "top": 120.9375,
+            "bottom": 752.0625
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 32,
+          "zoom": 1,
+          "opacity": 1,
+          "hash": "#32",
+          "heading": "Database failure returns bounded, recoverable error data",
+          "innerBounds": {
+            "left": 240,
+            "right": 1360,
+            "top": 132.546875,
+            "bottom": 740.453125
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 33,
+          "zoom": 1,
+          "opacity": 1,
+          "hash": "#33",
+          "heading": "Direct probes verify role restrictions without a model",
+          "innerBounds": {
+            "left": 240,
+            "right": 1360,
+            "top": 88.453125,
+            "bottom": 784.5625
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 34,
+          "zoom": 1,
+          "opacity": 1,
+          "hash": "#34",
+          "heading": "A selected broken variant isolates one failure mechanism",
+          "innerBounds": {
+            "left": 240,
+            "right": 1360,
+            "top": 88.453125,
+            "bottom": 784.5625
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 35,
+          "zoom": 0.9,
+          "opacity": 1,
+          "hash": "#35",
+          "heading": "A refused side effect is stronger evidence than chat refusal",
+          "innerBounds": {
+            "left": 296,
+            "right": 1304,
+            "top": 54,
+            "bottom": 819.421875
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 36,
+          "zoom": 1,
+          "opacity": 1,
+          "hash": "#36",
+          "heading": "A database row can contain an injected instruction",
+          "innerBounds": {
+            "left": 240,
+            "right": 1360,
+            "top": 131.921875,
+            "bottom": 741.09375
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 37,
+          "zoom": 1,
+          "opacity": 1,
+          "hash": "#37",
+          "heading": "Changed tool descriptions require renewed review",
+          "innerBounds": {
+            "left": 240,
+            "right": 1360,
+            "top": 132.828125,
+            "bottom": 740.1875
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 38,
+          "zoom": 1,
+          "opacity": 1,
+          "hash": "#38",
+          "heading": "Bytes, tokens and host context measure different things",
+          "innerBounds": {
+            "left": 240,
+            "right": 1360,
+            "top": 108.78125,
+            "bottom": 764.21875
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 39,
+          "zoom": 1,
+          "opacity": 1,
+          "hash": "#39",
+          "heading": "Both servers contribute to one independently checked report",
+          "innerBounds": {
+            "left": 240,
+            "right": 1360,
+            "top": 105.1875,
+            "bottom": 767.828125
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 40,
+          "zoom": 1,
+          "opacity": 1,
+          "hash": "#40",
+          "heading": "Six evidenced checks complete the harness component",
+          "innerBounds": {
+            "left": 240,
+            "right": 1360,
+            "top": 164.078125,
+            "bottom": 708.921875
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 41,
+          "zoom": 1,
+          "opacity": 1,
+          "hash": "#41",
+          "heading": "Additional threats require their own stated assumptions",
+          "innerBounds": {
+            "left": 240,
+            "right": 1360,
+            "top": 108.515625,
+            "bottom": 764.5
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 42,
+          "zoom": 1,
+          "opacity": 1,
+          "hash": "#42",
+          "heading": "Tool contracts become infrastructure",
+          "innerBounds": {
+            "left": 240,
+            "right": 1360,
+            "top": 258.265625,
+            "bottom": 614.734375
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": true
+        }
+      ]
+    },
+    {
+      "viewport": {
+        "width": 1366,
+        "height": 768
+      },
+      "slides": [
+        {
+          "slide": 1,
+          "zoom": 1,
+          "opacity": 1,
+          "hash": "#1",
+          "heading": "Tools and MCP",
+          "innerBounds": {
+            "left": 123,
+            "right": 1243,
+            "top": 181.859375,
+            "bottom": 563.125
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 2,
+          "zoom": 1,
+          "opacity": 1,
+          "hash": "#2",
+          "heading": "A working boundary requires code and independent evidence",
+          "innerBounds": {
+            "left": 123,
+            "right": 1243,
+            "top": 85.546875,
+            "bottom": 659.4375
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 3,
+          "zoom": 0.975785,
+          "opacity": 1,
+          "hash": "#3",
+          "heading": "Three acts move from handler to external dependency",
+          "innerBounds": {
+            "left": 136.5625,
+            "right": 1229.4375,
+            "top": 46.078125,
+            "bottom": 700.34375
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 4,
+          "zoom": 0.8,
+          "opacity": 1,
+          "hash": "#4",
+          "heading": "Every act produces a named artifact",
+          "innerBounds": {
+            "left": 235,
+            "right": 1131,
+            "top": 46.078125,
+            "bottom": 699.390625
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": true
+        },
+        {
+          "slide": 5,
+          "zoom": 0.891803,
+          "opacity": 1,
+          "hash": "#5",
+          "heading": "Preflight separates setup errors from the seeded bug",
+          "innerBounds": {
+            "left": 183.59375,
+            "right": 1182.40625,
+            "top": 46.078125,
+            "bottom": 699.15625
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": true
+        },
+        {
+          "slide": 6,
+          "zoom": 1,
+          "opacity": 1,
+          "hash": "#6",
+          "heading": "The expected failing test is the task's starting state",
+          "innerBounds": {
+            "left": 123,
+            "right": 1243,
+            "top": 47.359375,
+            "bottom": 697.625
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 7,
+          "zoom": 1,
+          "opacity": 1,
+          "hash": "#7",
+          "heading": "A tool before MCP",
+          "innerBounds": {
+            "left": 123,
+            "right": 1243,
+            "top": 231.90625,
+            "bottom": 513.0625
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 8,
+          "zoom": 1,
+          "opacity": 1,
+          "hash": "#8",
+          "heading": "A precise schema limits the reader's input",
+          "innerBounds": {
+            "left": 123,
+            "right": 1243,
+            "top": 47.078125,
+            "bottom": 697.890625
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 9,
+          "zoom": 0.933906,
+          "opacity": 1,
+          "hash": "#9",
+          "heading": "A missing file returns an error without ending the session",
+          "innerBounds": {
+            "left": 160.015625,
+            "right": 1205.984375,
+            "top": 46.078125,
+            "bottom": 699.28125
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 10,
+          "zoom": 0.799021,
+          "opacity": 1,
+          "hash": "#10",
+          "heading": "Each requested call needs its matching result",
+          "innerBounds": {
+            "left": 235.546875,
+            "right": 1130.4375,
+            "top": 46.203125,
+            "bottom": 698.78125
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 11,
+          "zoom": 1,
+          "opacity": 1,
+          "hash": "#11",
+          "heading": "A deterministic runner verifies the handler itself",
+          "innerBounds": {
+            "left": 123,
+            "right": 1243,
+            "top": 47.078125,
+            "bottom": 697.890625
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 12,
+          "zoom": 1,
+          "opacity": 1,
+          "hash": "#12",
+          "heading": "The first checkpoint proves the shared tool contract",
+          "innerBounds": {
+            "left": 123,
+            "right": 1243,
+            "top": 50.3125,
+            "bottom": 694.65625
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 13,
+          "zoom": 1,
+          "opacity": 1,
+          "hash": "#13",
+          "heading": "A bounded workspace server",
+          "innerBounds": {
+            "left": 123,
+            "right": 1243,
+            "top": 231.90625,
+            "bottom": 513.0625
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 14,
+          "zoom": 0.756431,
+          "opacity": 1,
+          "hash": "#14",
+          "heading": "The host owns the model and two client connections",
+          "innerBounds": {
+            "left": 259.40625,
+            "right": 1106.59375,
+            "top": 46.078125,
+            "bottom": 698.984375
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 15,
+          "zoom": 0.891803,
+          "opacity": 1,
+          "hash": "#15",
+          "heading": "Registration adapts a handler to MCP results",
+          "innerBounds": {
+            "left": 183.59375,
+            "right": 1182.40625,
+            "top": 46.078125,
+            "bottom": 699.171875
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 16,
+          "zoom": 1,
+          "opacity": 1,
+          "hash": "#16",
+          "heading": "Tools, resources and prompts have different uses",
+          "innerBounds": {
+            "left": 123,
+            "right": 1243,
+            "top": 56.109375,
+            "bottom": 688.875
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 17,
+          "zoom": 0.933906,
+          "opacity": 1,
+          "hash": "#17",
+          "heading": "Invalid arguments are rejected before execution",
+          "innerBounds": {
+            "left": 160.015625,
+            "right": 1205.984375,
+            "top": 46.078125,
+            "bottom": 699.28125
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 18,
+          "zoom": 0.904155,
+          "opacity": 1,
+          "hash": "#18",
+          "heading": "Canonical paths need a separator-aware containment check",
+          "innerBounds": {
+            "left": 176.671875,
+            "right": 1189.3125,
+            "top": 46.078125,
+            "bottom": 699.34375
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 19,
+          "zoom": 0.891803,
+          "opacity": 1,
+          "hash": "#19",
+          "heading": "A fixed suite map removes free-form command input",
+          "innerBounds": {
+            "left": 183.59375,
+            "right": 1182.40625,
+            "top": 46.078125,
+            "bottom": 699.1875
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 20,
+          "zoom": 1,
+          "opacity": 1,
+          "hash": "#20",
+          "heading": "A bounded runner terminates work and limits retained output",
+          "innerBounds": {
+            "left": 123,
+            "right": 1243,
+            "top": 56.65625,
+            "bottom": 688.328125
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 21,
+          "zoom": 1,
+          "opacity": 1,
+          "hash": "#21",
+          "heading": "Generated run IDs identify bounded stored evidence",
+          "innerBounds": {
+            "left": 123,
+            "right": 1243,
+            "top": 47.359375,
+            "bottom": 697.625
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 22,
+          "zoom": 0.935244,
+          "opacity": 1,
+          "hash": "#22",
+          "heading": "Protocol output and diagnostic logs use separate streams",
+          "innerBounds": {
+            "left": 159.265625,
+            "right": 1206.734375,
+            "top": 46.078125,
+            "bottom": 699.265625
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 23,
+          "zoom": 0.954386,
+          "opacity": 1,
+          "hash": "#23",
+          "heading": "Registration and tool execution have separate approval gates",
+          "innerBounds": {
+            "left": 148.546875,
+            "right": 1217.453125,
+            "top": 46.234375,
+            "bottom": 698.734375
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": true
+        },
+        {
+          "slide": 24,
+          "zoom": 0.964254,
+          "opacity": 1,
+          "hash": "#24",
+          "heading": "The workspace checkpoint proves access and execution limits",
+          "innerBounds": {
+            "left": 143.015625,
+            "right": 1222.96875,
+            "top": 46.078125,
+            "bottom": 699.109375
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 25,
+          "zoom": 1,
+          "opacity": 1,
+          "hash": "#25",
+          "heading": "Docker, authority and verification",
+          "innerBounds": {
+            "left": 123,
+            "right": 1243,
+            "top": 215.171875,
+            "bottom": 529.796875
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 26,
+          "zoom": 0.747766,
+          "opacity": 1,
+          "hash": "#26",
+          "heading": "The MCP server and database enforce distinct restrictions",
+          "innerBounds": {
+            "left": 264.25,
+            "right": 1101.734375,
+            "top": 46.078125,
+            "bottom": 699.125
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 27,
+          "zoom": 0.933906,
+          "opacity": 1,
+          "hash": "#27",
+          "heading": "Readiness and loopback binding make the backend predictable",
+          "innerBounds": {
+            "left": 160.015625,
+            "right": 1205.984375,
+            "top": 46.078125,
+            "bottom": 699.28125
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 28,
+          "zoom": 1,
+          "opacity": 1,
+          "hash": "#28",
+          "heading": "Runtime credentials reach only the lab's permitted data",
+          "innerBounds": {
+            "left": 123,
+            "right": 1243,
+            "top": 85.8125,
+            "bottom": 659.15625
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 29,
+          "zoom": 0.968546,
+          "opacity": 1,
+          "hash": "#29",
+          "heading": "SQL parameters keep a ticket ID separate from SQL syntax",
+          "innerBounds": {
+            "left": 140.609375,
+            "right": 1225.375,
+            "top": 46.078125,
+            "bottom": 699.96875
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 30,
+          "zoom": 0.967111,
+          "opacity": 1,
+          "hash": "#30",
+          "heading": "Scoped filters and two caps bound a query result",
+          "innerBounds": {
+            "left": 141.421875,
+            "right": 1224.578125,
+            "top": 46.390625,
+            "bottom": 698.578125
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 31,
+          "zoom": 1,
+          "opacity": 1,
+          "hash": "#31",
+          "heading": "A durable key makes a lost-response retry safe",
+          "innerBounds": {
+            "left": 123,
+            "right": 1243,
+            "top": 56.921875,
+            "bottom": 688.046875
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 32,
+          "zoom": 1,
+          "opacity": 1,
+          "hash": "#32",
+          "heading": "Database failure returns bounded, recoverable error data",
+          "innerBounds": {
+            "left": 123,
+            "right": 1243,
+            "top": 68.53125,
+            "bottom": 676.4375
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 33,
+          "zoom": 0.954386,
+          "opacity": 1,
+          "hash": "#33",
+          "heading": "Direct probes verify role restrictions without a model",
+          "innerBounds": {
+            "left": 148.546875,
+            "right": 1217.453125,
+            "top": 46.234375,
+            "bottom": 698.734375
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 34,
+          "zoom": 0.954386,
+          "opacity": 1,
+          "hash": "#34",
+          "heading": "A selected broken variant isolates one failure mechanism",
+          "innerBounds": {
+            "left": 148.546875,
+            "right": 1217.453125,
+            "top": 46.234375,
+            "bottom": 698.734375
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 35,
+          "zoom": 0.768,
+          "opacity": 1,
+          "hash": "#35",
+          "heading": "A refused side effect is stronger evidence than chat refusal",
+          "innerBounds": {
+            "left": 252.921875,
+            "right": 1113.078125,
+            "top": 46.078125,
+            "bottom": 699.578125
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 36,
+          "zoom": 1,
+          "opacity": 1,
+          "hash": "#36",
+          "heading": "A database row can contain an injected instruction",
+          "innerBounds": {
+            "left": 123,
+            "right": 1243,
+            "top": 67.90625,
+            "bottom": 677.078125
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 37,
+          "zoom": 1,
+          "opacity": 1,
+          "hash": "#37",
+          "heading": "Changed tool descriptions require renewed review",
+          "innerBounds": {
+            "left": 123,
+            "right": 1243,
+            "top": 68.8125,
+            "bottom": 676.171875
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 38,
+          "zoom": 0.996641,
+          "opacity": 1,
+          "hash": "#38",
+          "heading": "Bytes, tokens and host context measure different things",
+          "innerBounds": {
+            "left": 124.875,
+            "right": 1241.109375,
+            "top": 46.078125,
+            "bottom": 699.171875
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 39,
+          "zoom": 1,
+          "opacity": 1,
+          "hash": "#39",
+          "heading": "Both servers contribute to one independently checked report",
+          "innerBounds": {
+            "left": 123,
+            "right": 1243,
+            "top": 47.359375,
+            "bottom": 697.625
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 40,
+          "zoom": 1,
+          "opacity": 1,
+          "hash": "#40",
+          "heading": "Six evidenced checks complete the harness component",
+          "innerBounds": {
+            "left": 123,
+            "right": 1243,
+            "top": 100.0625,
+            "bottom": 644.90625
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 41,
+          "zoom": 0.995122,
+          "opacity": 1,
+          "hash": "#41",
+          "heading": "Additional threats require their own stated assumptions",
+          "innerBounds": {
+            "left": 125.734375,
+            "right": 1240.265625,
+            "top": 46.09375,
+            "bottom": 698.875
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": false
+        },
+        {
+          "slide": 42,
+          "zoom": 1,
+          "opacity": 1,
+          "hash": "#42",
+          "heading": "Tool contracts become infrastructure",
+          "innerBounds": {
+            "left": 123,
+            "right": 1243,
+            "top": 194.25,
+            "bottom": 550.71875
+          },
+          "svgTextOutside": [],
+          "sourceCurrent": true
+        }
+      ]
+    }
+  ]
+}

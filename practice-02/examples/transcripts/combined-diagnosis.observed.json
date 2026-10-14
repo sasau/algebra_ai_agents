@@ -1,0 +1,28 @@
+{
+  "capturedAt": "2026-10-13T09:12:43.868Z",
+  "node": "v22.23.2",
+  "variant": "reference",
+  "evidence": {
+    "ticketId": "LAB-101",
+    "runId": "31dd7e67-951b-443e-b559-17f37623177f",
+    "status": "failed",
+    "failedTests": [
+      "tokenizer normalises CRLF line endings"
+    ],
+    "reportId": "630d85eb-23f5-4b82-b785-f3cd65345daf",
+    "evidenceDigest": "9feba5633c567b135dc42c18449625a9efee31415449ab41f141e5347c6fe197",
+    "verified": {
+      "reportId": "630d85eb-23f5-4b82-b785-f3cd65345daf",
+      "ticketId": "LAB-101",
+      "runId": "31dd7e67-951b-443e-b559-17f37623177f",
+      "summary": "The tokenizer treats CR as an unsupported character; its LF handling does not normalise CRLF. The supplied CRLF test reproduces the failure. This report diagnoses the defect and does not claim a repair.",
+      "evidenceDigest": "9feba5633c567b135dc42c18449625a9efee31415449ab41f141e5347c6fe197",
+      "idempotencyKey": "48a1869d-8862-4105-a491-852fe7f716ea",
+      "createdAt": "2026-10-13 09:12:43.745554+00"
+    },
+    "independentRunId": "6d1d5976-1f4f-47b2-80ff-979a38d86c5f",
+    "resourceRead": 1,
+    "sourceRead": true,
+    "scope": "Supplied reference checker stores a synthetic lab report. Interactive host calls require review."
+  }
+}

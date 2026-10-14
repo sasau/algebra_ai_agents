@@ -1,0 +1,76 @@
+{
+  "capturedAt": "2026-10-13T09:12:41.816Z",
+  "node": "v22.23.2",
+  "variant": "reference",
+  "evidence": {
+    "exercise": "E05",
+    "preparedInputRefusedAsData": {
+      "ok": false,
+      "error": {
+        "code": "NOT_FOUND",
+        "message": "No ticket with this ID exists in the permitted project.",
+        "retryable": false
+      }
+    },
+    "otherProject": {
+      "ok": false,
+      "error": {
+        "code": "NOT_FOUND",
+        "message": "No ticket with this ID exists in the permitted project.",
+        "retryable": false
+      }
+    },
+    "grants": {
+      "checks": [
+        {
+          "role": "reader",
+          "operation": "private-table-read",
+          "denied": true,
+          "sqlState": "42501"
+        },
+        {
+          "role": "reader",
+          "operation": "base-table-read",
+          "denied": true,
+          "sqlState": "42501"
+        },
+        {
+          "role": "reader",
+          "operation": "ticket-mutation",
+          "denied": true,
+          "sqlState": "42501"
+        },
+        {
+          "role": "reader",
+          "operation": "report-insert",
+          "denied": true,
+          "sqlState": "42501"
+        },
+        {
+          "role": "reporter",
+          "operation": "ticket-mutation",
+          "denied": true,
+          "sqlState": "42501"
+        },
+        {
+          "role": "reporter",
+          "operation": "schema-create",
+          "denied": true,
+          "sqlState": "42501"
+        },
+        {
+          "role": "reporter",
+          "operation": "private-table-read",
+          "denied": true,
+          "sqlState": "42501"
+        },
+        {
+          "role": "reporter",
+          "operation": "report-delete",
+          "denied": true,
+          "sqlState": "42501"
+        }
+      ]
+    }
+  }
+}

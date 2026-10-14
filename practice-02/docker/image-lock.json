@@ -1,0 +1,18 @@
+{
+  "verifiedAt": "2026-10-13",
+  "image": "docker.io/library/postgres",
+  "tag": "17.11-bookworm",
+  "indexDigest": "sha256:3645570cccdfa447589da9f57dd740faa29b30938e861289a5574b6ca6b03826",
+  "platformManifests": {
+    "linux/amd64": "sha256:66aafa11cf15800a3c94763f7e11d1e7b2e37e5e84bc4ce027cb6e1e4bfaf4df",
+    "linux/arm64/v8": "sha256:a85953d6f830fd55a12929df3b7a4fa94dc96d652de62d2d714e0867ccb3670d"
+  },
+  "executedPlatform": "linux/amd64",
+  "officialImagesSourceCommit": "2603e26e245e558218728ee14e0a42dcb020dc7f",
+  "sources": [
+    "https://github.com/docker-library/official-images/blob/master/library/postgres",
+    "https://www.postgresql.org/support/versioning/",
+    "https://hub.docker.com/_/postgres"
+  ],
+  "qualification": "Registry manifests verified for both platforms; integration executed only on linux/amd64. Review patched image releases before later course runs."
+}

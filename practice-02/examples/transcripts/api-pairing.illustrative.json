@@ -1,0 +1,49 @@
+{
+  "kind": "illustrative offline Messages API exchange; not a live model capture",
+  "createdAt": "2026-10-13",
+  "purpose": "Two calls in one assistant message are paired by tool_use_id in one following user message. Error data stays in the conversation.",
+  "messages": [
+    {
+      "role": "assistant",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "toolu_example_read",
+          "name": "read_file",
+          "input": {
+            "path": "src/tokenizer.ts"
+          }
+        },
+        {
+          "type": "tool_use",
+          "id": "toolu_example_missing",
+          "name": "read_file",
+          "input": {
+            "path": "src/missing.ts"
+          }
+        }
+      ]
+    },
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "tool_result",
+          "tool_use_id": "toolu_example_read",
+          "is_error": false,
+          "content": "{\"ok\": true, \"value\": {\"path\": \"src/tokenizer.ts\", \"content\": \"[illustrative bounded source excerpt]\", \"returnedBytes\": 37, \"totalBytes\": 37, \"truncated\": false, \"encoding\": \"utf-8\"}}"
+        },
+        {
+          "type": "tool_result",
+          "tool_use_id": "toolu_example_missing",
+          "is_error": true,
+          "content": "{\"ok\": false, \"error\": {\"code\": \"NOT_FOUND\", \"message\": \"The requested path does not exist.\", \"retryable\": false}}"
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "Identifiers and successful file text are synthetic.",
+    "No model usage, stop_reason or context measurement is claimed."
+  ]
+}

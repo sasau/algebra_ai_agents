@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "workspace-lab": {
+      "command": "node",
+      "args": ["scripts/launch-server.mjs", "workspace"],
+      "env": { "LAB_VARIANT": "${LAB_VARIANT:-starter}" }
+    },
+    "ticket-store": {
+      "command": "node",
+      "args": ["scripts/launch-server.mjs", "tickets"],
+      "env": { "LAB_VARIANT": "${LAB_VARIANT:-starter}" }
+    }
+  }
+}

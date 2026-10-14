@@ -1,0 +1,14 @@
+{
+  "capturedAt": "2026-10-13T09:12:42.845Z",
+  "node": "v22.23.2",
+  "variant": "reference",
+  "evidence": {
+    "exercise": "E12",
+    "missingAuth": 401,
+    "invalidAuth": 401,
+    "untrustedOrigin": 403,
+    "authenticatedInitialise": 200,
+    "protocolVersion": "2025-11-25",
+    "tokenRecorded": false
+  }
+}

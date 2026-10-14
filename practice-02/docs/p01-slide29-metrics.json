@@ -1,0 +1,36 @@
+[
+  {
+    "viewport": {
+      "width": 1600,
+      "height": 900
+    },
+    "heading": "How today's work feeds the capstone",
+    "hash": "#29",
+    "zoom": 1,
+    "opacity": 1,
+    "bounds": {
+      "left": 240,
+      "right": 1360,
+      "top": 138.734375,
+      "bottom": 734.28125
+    },
+    "lead": "Today's four parts form the \"when to use an agent\" gate at the top of your harness. The gate decides whether a job needs an agent, tool, or workflow; it earns no points. In Session 15, your part 4 verdict opens PLAN.md. Practice 02 shares read_file and run_tests through a bounded workspace server using the Model Context Protocol (MCP), then connects synthetic tickets through a second server to a Docker database. run_gradle arrives with the capstone."
+  },
+  {
+    "viewport": {
+      "width": 1366,
+      "height": 768
+    },
+    "heading": "How today's work feeds the capstone",
+    "hash": "#29",
+    "zoom": 1,
+    "opacity": 1,
+    "bounds": {
+      "left": 123,
+      "right": 1243,
+      "top": 74.71875,
+      "bottom": 670.265625
+    },
+    "lead": "Today's four parts form the \"when to use an agent\" gate at the top of your harness. The gate decides whether a job needs an agent, tool, or workflow; it earns no points. In Session 15, your part 4 verdict opens PLAN.md. Practice 02 shares read_file and run_tests through a bounded workspace server using the Model Context Protocol (MCP), then connects synthetic tickets through a second server to a Docker database. run_gradle arrives with the capstone."
+  }
+]

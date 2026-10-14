@@ -1,0 +1,36 @@
+{
+  "deck": "practice-02-tools-and-mcp",
+  "slides": 42,
+  "svg": 5,
+  "source": "render.py + Playwright MCP inspection, 2026-10-13",
+  "1600x900": {
+    "scaledSlides": 5,
+    "worstZoom": 0.876,
+    "worstSlide": 26,
+    "clipped": []
+  },
+  "1366x768": {
+    "scaledSlides": 22,
+    "worstZoom": 0.748,
+    "worstSlide": 26,
+    "clipped": []
+  },
+  "baseline": "Absent for new slug; no historical comparison; not rebaselined.",
+  "contrast": "188 flagged instances across both viewports comprise seven tag/colour/background pairs, all already present in existing course baselines; the new slug has no baseline. No baseline or wrapper was modified.",
+  "playwright": {
+    "navigatedSlidesAtEachViewport": 42,
+    "screenshots": 84,
+    "svgTextOutsideViewBox": [],
+    "screenshotPattern": "/tmp/p02-{1600|1366}-{01..42}.png",
+    "collagePattern": "/tmp/p02-review-{1600|1366}-{A..G}.png",
+    "freshReload": true,
+    "allSlidesOpacityOne": true,
+    "navigationHashesMatch": true,
+    "currentStudentRepoSourceConfirmedAtSlides": [
+      4,
+      5,
+      23,
+      42
+    ]
+  }
+}

@@ -7,13 +7,13 @@ One folder per practice session.
 algebra_ai_agents/
   practice-00/    Intro to LLMs — first API call, context, knobs, JSON
   practice-01/    What are agents? — five words hands-on, a hand-written agent loop, an autonomous bot in a box
-  practice-02/    (next session)
+  practice-02/    Tools and MCP — shared reader, bounded workspace server, Docker-backed ticket store
   ...
 ```
 
 ## Two tracks, same exercises
 
-Starting with `practice-00`, each practice ships **two parallel implementations
+Practices 00 and 01 ship **two parallel implementations
 of the same exercises** — a TypeScript track and a Java track — living side by
 side in that practice's folder:
 
@@ -51,6 +51,8 @@ cd ts && npm install && npm run check
 cd java && ./gradlew checkSetup
 ```
 
+Practice 02 is TypeScript only and needs Node 22.12+, Claude Code, and Docker/Compose. Its core lab needs no API key. Start with [practice-02/README.md](practice-02/README.md); complete four safe TODOs and submit independently checked findings.
+
 Follow `practice-00/README.md` for the full walkthrough — prerequisites,
 the three-act structure, the exercise table, and troubleshooting for both
 tracks.
@@ -59,7 +61,7 @@ tracks.
 
 ## The shared `.env`
 
-There is **one** key file per practice, at the practice's root (e.g.
+For the API exercises in Practices 00 and 01, there is **one** key file per practice, at the practice's root (e.g.
 `practice-00/.env`), read by *both* tracks — it is not duplicated into `ts/`
 or `java/`. Copy it from the adjacent `.env.example` and put your real key in
 it. An `ANTHROPIC_API_KEY` already exported in your shell takes precedence
@@ -98,5 +100,7 @@ Track-specific:
 |---|---|---|
 | TypeScript | Node.js 20 LTS or newer | `node -v` |
 | Java | JDK 21 — nothing else, the wrapper does the rest | `java -version` |
+
+Practice 02 pins its own dependencies and PostgreSQL image. `npm run db:up` generates disposable local credentials in its ignored `.env.local`; do not commit that file.
 
 Everything runs locally. Nothing in this repo deploys, tunnels, or publishes.

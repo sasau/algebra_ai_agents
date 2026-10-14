@@ -1,0 +1,47 @@
+{
+  "capturedAt": "2026-10-13T09:12:40.801Z",
+  "node": "v22.23.2",
+  "variant": "reference",
+  "evidence": {
+    "exercise": "E03",
+    "broken": {
+      "prefixLeak": "LAB_CANARY_NOT_A_SECRET_P02",
+      "symlinkLeak": "LAB_CANARY_NOT_A_SECRET_P02"
+    },
+    "fixed": [
+      {
+        "requested": "../CANARY.txt",
+        "result": {
+          "ok": false,
+          "error": {
+            "code": "PATH_DENIED",
+            "message": "The requested path leaves the fixture.",
+            "retryable": false
+          }
+        }
+      },
+      {
+        "requested": "../fixture-private/CANARY.txt",
+        "result": {
+          "ok": false,
+          "error": {
+            "code": "PATH_DENIED",
+            "message": "The requested path leaves the fixture.",
+            "retryable": false
+          }
+        }
+      },
+      {
+        "requested": "linked-canary.txt",
+        "result": {
+          "ok": false,
+          "error": {
+            "code": "PATH_DENIED",
+            "message": "The symlink target leaves the fixture.",
+            "retryable": false
+          }
+        }
+      }
+    ]
+  }
+}

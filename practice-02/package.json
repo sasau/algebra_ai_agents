@@ -1,0 +1,45 @@
+{
+  "name": "practice-02-tools-and-mcp",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "AI Agents & Automation: shared tools, bounded MCP, PostgreSQL and independently verified findings.",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "doctor": "node --import tsx scripts/doctor.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "node --import tsx --test tests/*.test.ts",
+    "fixture:test": "node --import tsx --test fixture/test/*.test.ts",
+    "tool:demo": "node --import tsx src/direct/demo.ts",
+    "tool:live": "node --import tsx src/direct/live.ts",
+    "mcp:inspect": "node --import tsx scripts/inspect.ts",
+    "db:up": "node --import tsx scripts/db.ts up",
+    "db:down": "node --import tsx scripts/db.ts down",
+    "db:reset": "node --import tsx scripts/db.ts reset",
+    "db:probe": "node --import tsx scripts/db.ts probe",
+    "db:verify": "node --import tsx scripts/db.ts verify",
+    "lab:broken": "node --import tsx scripts/broken.ts",
+    "security:check": "node --import tsx scripts/security.ts",
+    "tokens:measure": "node --import tsx scripts/tokens.ts",
+    "diagnosis:verify": "node --import tsx scripts/diagnosis.ts",
+    "verify:reference": "node --import tsx scripts/verify.ts reference",
+    "verify:student": "node --import tsx scripts/verify.ts starter",
+    "http:demo": "node --import tsx src/servers/http-demo.ts",
+    "http:check": "node --import tsx scripts/http-check.ts"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "0.128.0",
+    "@modelcontextprotocol/sdk": "1.32.1",
+    "dotenv": "17.4.2",
+    "pg": "8.23.1",
+    "zod": "4.6.5"
+  },
+  "devDependencies": {
+    "@types/node": "26.6.0",
+    "@types/pg": "8.23.1",
+    "tsx": "4.23.15",
+    "typescript": "7.0.2"
+  }
+}

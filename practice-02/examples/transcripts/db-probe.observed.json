@@ -1,0 +1,101 @@
+{
+  "capturedAt": "2026-10-13T09:05:23.339Z",
+  "result": {
+    "ok": true,
+    "value": {
+      "case": "E05",
+      "transport": "Real SDK client/server over linked in-memory transport; stdio is checked by mcp:inspect.",
+      "discoveredTools": [
+        "list_tickets",
+        "get_ticket",
+        "create_diagnostic_report"
+      ],
+      "mcpLookup": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"ok\":true,\"value\":{\"ticketId\":\"LAB-101\",\"title\":\"Tokenizer mishandles CRLF line endings\",\"status\":\"open\",\"reproductionSteps\":\"Run the tokenizer suite against \\\"1 + 2\\\\r\\\\n\\\". A carriage return is not skipped and the CRLF test fails. Inspect fixture/src/tokenizer.ts.\",\"expectedBehaviour\":\"Both LF and CRLF endings are whitespace. Tokenization must produce the same numbers and operators.\",\"truncated\":false}}"
+          }
+        ],
+        "structuredContent": {
+          "ok": true,
+          "value": {
+            "ticketId": "LAB-101",
+            "title": "Tokenizer mishandles CRLF line endings",
+            "status": "open",
+            "reproductionSteps": "Run the tokenizer suite against \"1 + 2\\r\\n\". A carriage return is not skipped and the CRLF test fails. Inspect fixture/src/tokenizer.ts.",
+            "expectedBehaviour": "Both LF and CRLF endings are whitespace. Tokenization must produce the same numbers and operators.",
+            "truncated": false
+          }
+        }
+      },
+      "ticketId": "LAB-101",
+      "quoteBearingLookup": {
+        "ok": false,
+        "error": {
+          "code": "NOT_FOUND",
+          "message": "No ticket with this ID exists in the permitted project.",
+          "retryable": false
+        }
+      },
+      "otherProjectLookup": {
+        "ok": false,
+        "error": {
+          "code": "NOT_FOUND",
+          "message": "No ticket with this ID exists in the permitted project.",
+          "retryable": false
+        }
+      },
+      "permissions": [
+        {
+          "role": "reader",
+          "operation": "private-table-read",
+          "denied": true,
+          "sqlState": "42501"
+        },
+        {
+          "role": "reader",
+          "operation": "base-table-read",
+          "denied": true,
+          "sqlState": "42501"
+        },
+        {
+          "role": "reader",
+          "operation": "ticket-mutation",
+          "denied": true,
+          "sqlState": "42501"
+        },
+        {
+          "role": "reader",
+          "operation": "report-insert",
+          "denied": true,
+          "sqlState": "42501"
+        },
+        {
+          "role": "reporter",
+          "operation": "ticket-mutation",
+          "denied": true,
+          "sqlState": "42501"
+        },
+        {
+          "role": "reporter",
+          "operation": "schema-create",
+          "denied": true,
+          "sqlState": "42501"
+        },
+        {
+          "role": "reporter",
+          "operation": "private-table-read",
+          "denied": true,
+          "sqlState": "42501"
+        },
+        {
+          "role": "reporter",
+          "operation": "report-delete",
+          "denied": true,
+          "sqlState": "42501"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "capturedAt": "2026-10-13T09:12:42.825Z",
+  "node": "v22.23.2",
+  "variant": "reference",
+  "evidence": {
+    "exercise": "E10",
+    "result": {
+      "ok": false,
+      "error": {
+        "code": "DATABASE_UNAVAILABLE",
+        "message": "Database operation failed. Confirm the lab backend is healthy, then retry with the same idempotency key.",
+        "retryable": true
+      }
+    },
+    "elapsedMs": 0,
+    "closedLoopbackPort": 52175,
+    "poolAfterFailure": {
+      "readerTotal": 0,
+      "reporterTotal": 0,
+      "waiting": 0
+    },
+    "healthyBackendTicketId": "LAB-101",
+    "note": "A kernel-selected unused high loopback port was reserved and closed by this harness. Acquisition failed with no retained client; the real lab backend remained healthy. No existing service was stopped. The separate DB integration test holds a lock to verify statement-timeout rollback and retry."
+  }
+}

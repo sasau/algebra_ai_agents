@@ -1,0 +1,147 @@
+{
+  "capturedAt": "2026-10-13T09:12:40.494Z",
+  "node": "v22.23.2",
+  "variant": "reference",
+  "evidence": {
+    "exercise": "E01",
+    "missing": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\"ok\":false,\"error\":{\"code\":\"NOT_FOUND\",\"message\":\"The requested path does not exist.\",\"retryable\":false}}"
+        }
+      ],
+      "structuredContent": {
+        "ok": false,
+        "error": {
+          "code": "NOT_FOUND",
+          "message": "The requested path does not exist.",
+          "retryable": false
+        }
+      },
+      "isError": true
+    },
+    "laterCallSucceeded": true,
+    "trace": [
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 1,
+          "method": "initialize",
+          "params": {
+            "protocolVersion": "2025-11-25",
+            "capabilities": {},
+            "clientInfo": {
+              "name": "raw-practice-02",
+              "version": "1.0.0"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "result": {
+            "protocolVersion": "2025-11-25",
+            "capabilities": {
+              "tools": {
+                "listChanged": true
+              },
+              "resources": {
+                "listChanged": true
+              },
+              "prompts": {
+                "listChanged": true
+              }
+            },
+            "serverInfo": {
+              "name": "workspace-lab",
+              "version": "1.0.0"
+            }
+          },
+          "jsonrpc": "2.0",
+          "id": 1
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 2,
+          "method": "tools/call",
+          "params": {
+            "name": "read_file",
+            "arguments": {
+              "path": "src/missing.ts"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"ok\":false,\"error\":{\"code\":\"NOT_FOUND\",\"message\":\"The requested path does not exist.\",\"retryable\":false}}"
+              }
+            ],
+            "structuredContent": {
+              "ok": false,
+              "error": {
+                "code": "NOT_FOUND",
+                "message": "The requested path does not exist.",
+                "retryable": false
+              }
+            },
+            "isError": true
+          },
+          "jsonrpc": "2.0",
+          "id": 2
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 3,
+          "method": "tools/call",
+          "params": {
+            "name": "read_file",
+            "arguments": {
+              "path": "src/tokenizer.ts"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"ok\":true,\"value\":{\"path\":\"src/tokenizer.ts\",\"content\":\"export type Token = { kind: \\\"number\\\" | \\\"operator\\\" | \\\"paren\\\"; value: string; line: number; column: number };\\n\\n/** A deliberately small arithmetic tokenizer. Ticket LAB-101 describes one bug. */\\nexport function tokenize(source: string): Token[] {\\n  const tokens: Token[] = [];\\n  let line = 1;\\n  let column = 1;\\n  let offset = 0;\\n  while (offset < source.length) {\\n    const char = source[offset]!;\\n    if (char === \\\" \\\" || char === \\\"\\\\t\\\") { offset += 1; column += 1; continue; }\\n    // Seeded bug: LF is handled, but the CR in a Windows CRLF pair is rejected.\\n    if (char === \\\"\\\\n\\\") { offset += 1; line += 1; column = 1; continue; }\\n    const number = source.slice(offset).match(/^\\\\d+(?:\\\\.\\\\d+)?/);\\n    if (number) {\\n      tokens.push({ kind: \\\"number\\\", value: number[0], line, column });\\n      offset += number[0].length; column += number[0].length; continue;\\n    }\\n    if (\\\"+-*/\\\".includes(char)) tokens.push({ kind: \\\"operator\\\", value: char, line, column });\\n    else if (\\\"()\\\".includes(char)) tokens.push({ kind: \\\"paren\\\", value: char, line, column });\\n    else throw new SyntaxError(`Unexpected character ${JSON.stringify(char)} at ${line}:${column}`);\\n    offset += 1; column += 1;\\n  }\\n  return tokens;\\n}\\n\",\"returnedBytes\":1201,\"totalBytes\":1201,\"truncated\":false,\"encoding\":\"utf-8\"}}"
+              }
+            ],
+            "structuredContent": {
+              "ok": true,
+              "value": {
+                "path": "src/tokenizer.ts",
+                "content": "export type Token = { kind: \"number\" | \"operator\" | \"paren\"; value: string; line: number; column: number };\n\n/** A deliberately small arithmetic tokenizer. Ticket LAB-101 describes one bug. */\nexport function tokenize(source: string): Token[] {\n  const tokens: Token[] = [];\n  let line = 1;\n  let column = 1;\n  let offset = 0;\n  while (offset < source.length) {\n    const char = source[offset]!;\n    if (char === \" \" || char === \"\\t\") { offset += 1; column += 1; continue; }\n    // Seeded bug: LF is handled, but the CR in a Windows CRLF pair is rejected.\n    if (char === \"\\n\") { offset += 1; line += 1; column = 1; continue; }\n    const number = source.slice(offset).match(/^\\d+(?:\\.\\d+)?/);\n    if (number) {\n      tokens.push({ kind: \"number\", value: number[0], line, column });\n      offset += number[0].length; column += number[0].length; continue;\n    }\n    if (\"+-*/\".includes(char)) tokens.push({ kind: \"operator\", value: char, line, column });\n    else if (\"()\".includes(char)) tokens.push({ kind: \"paren\", value: char, line, column });\n    else throw new SyntaxError(`Unexpected character ${JSON.stringify(char)} at ${line}:${column}`);\n    offset += 1; column += 1;\n  }\n  return tokens;\n}\n",
+                "returnedBytes": 1201,
+                "totalBytes": 1201,
+                "truncated": false,
+                "encoding": "utf-8"
+              }
+            }
+          },
+          "jsonrpc": "2.0",
+          "id": 3
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,21 @@
+# Selected failure demonstrations
+
+These are synthetic classroom reproductions of failure mechanisms. They are not assertions that the pinned SDK contains the demonstrated flaw. Normal server startup never imports a broken implementation. Each command chooses a named case, creates disposable synthetic data when needed, runs the bounded reference comparison, and removes its temporary data.
+
+Run `npm run lab:broken -- --case E03` from the lab directory. Other supported cases are `E02`, `E04`, `E07`, `E08`, `E09`, and `E11`. Use the commands and results as evidence; label supplied captures separately from your own captures.
+
+| Case | Deliberate failure | Bounded comparison and interpretation |
+| --- | --- | --- |
+| E02 | A fixed synthetic `tokenizer; printf LAB_CANARY` string is interpolated into a shell command and executes a second command. No external argument is accepted by the demonstration. | `run_tests` rejects that string as an invalid suite. The raw protocol security check reads the manifest's execution-attempt counter before rejection, after rejection, and after a valid same-session parser control: 0, 0, 1. Public calls use a fixed executable and argv with `shell: false`. |
+| E03 | `startsWith(root)` accepts the similarly named `fixture-private` directory; checking only a lexical path follows an external symlink. | The reference applies a separator-aware decision before and after `realpath`. It also refuses a parent escape and requires a regular file. All canaries are generated fake data. |
+| E04 | `Promise.race` returns after a deadline while the worker is still alive. The example then explicitly cleans up that deliberately leaked worker. | The supervised noisy worker ignores TERM and spawns a descendant. The runner drains output, retains at most 20,000 bytes, kills the process group, awaits close, and independently checks that the descendant PID disappears. The probe uses 600 ms; public `run_tests` uses 10 seconds. |
+| E07 | A synthetic ticket proposes an external canary read and report write. | A deterministic forbidden call is refused by the file boundary. No model is called; this is not evidence of a model refusing prompt injection. SQL parameter binding does not make the ticket prose trustworthy. |
+| E08 | A clean description is changed to contain an injected instruction after an initial snapshot. | Both exact descriptions and SHA-256 digests are returned. The changed server needs renewed review. The example never installs the poisoned description in an ordinary host. |
+| E09 | An explicitly selected stdio server prints a diagnostic banner on stdout before JSON-RPC. | The real pinned SDK client records a transport parse error and may recover. The fixed server discovers tools without that error. Other hosts can terminate the connection; do not invent one universal failure envelope. |
+| E11 | A fixed synthetic string is returned without a byte cap. | The reader reports actual total and returned UTF-8 bytes plus truncation. These counts do not claim a token count or a host-context limit. |
+
+The path boundary assumes no hostile concurrent actor can replace fixture entries between checking and opening them. The report store is owned by one workspace process and rejects oversized or malformed records. Multiple independent writers and hostile test source require stronger isolation. Process-tree cleanup is exercised on macOS/Linux; Windows users should use WSL2 for this lab rather than treating an unverified Windows descendant check as evidence.
+
+The execution-attempt counter is read-only to MCP callers and increments immediately before `spawn`. It is an observation of the instrumented server path, not an OS-level execution trace. A successful control proves that the measurement is active. Report existence is separate evidence: an absent report alone cannot prove that a process never started.
+
+`attacks/tool-calls.json` contains sample invalid calls. An E03 symlink and prefix sibling are created by the selected exercise, so no machine-specific absolute symlink is committed. `canaries/CANARY.txt` is deliberately fake and is outside the fixture reader's permitted root. Never substitute a real home directory, credential, or personal file.

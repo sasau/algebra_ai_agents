@@ -1,0 +1,8 @@
+{
+  "name": "Practice 02 expression workspace",
+  "ticket": "LAB-101",
+  "language": "TypeScript",
+  "suites": ["tokenizer", "parser", "all"],
+  "expectedFailingTests": ["tokenizer normalises CRLF line endings"],
+  "trust": "Supplied fixture source is trusted. This is a small expression parser, independent of the SQL capstone."
+}
