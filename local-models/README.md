@@ -1,5 +1,7 @@
 # Free local model backend for the course
 
+[Expanded Ollama tutorial](tutorial/README.md): what Ollama is, separate macOS/Windows setup, keyless local models versus hosted free-tier keys, six model choices, hardware planning, curl payloads/scripts and 17 deterministic checks plus bounded real smoke tests. Its standalone commands run inside `local-models/tutorial/`; this folder retains the supplied architecture backend.
+
 Run a real model on your own computer through **Ollama**, without a cloud API key. This folder supplies a reusable JavaScript adapter, a server/model check, a one-call native tool probe and transport tests. It has **zero external npm dependencies** and requires **Node >=22.12**. Required Practice 03 implementation checks also work entirely offline; a model download is optional for those checks.
 
 A local model can request a tool, but the application still owns tool permissions, dispatch, message history, evaluation and retries. A successful probe proves one correctly formed request; it does not prove that a model can complete the three Practice 03 acts. See the measured full-lab results and smaller-model comparisons in [Practice 03 LOCAL.md](../practice-03/LOCAL.md).

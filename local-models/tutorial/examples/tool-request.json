@@ -1,0 +1,23 @@
+{
+  "model": "qwen3.5:9b",
+  "messages": [
+    { "role": "system", "content": "Request exactly one read_file tool for src/slugify.ts. Do not answer with text or claim that a file was read." },
+    { "role": "user", "content": "Inspect src/slugify.ts. Start by requesting read_file for that exact path." }
+  ],
+  "tools": [{
+    "type": "function",
+    "function": {
+      "name": "read_file",
+      "description": "Request source inspection. This probe records the request and does not execute it.",
+      "parameters": {
+        "type": "object",
+        "properties": { "path": { "type": "string", "enum": ["src/slugify.ts"] } },
+        "required": ["path"],
+        "additionalProperties": false
+      }
+    }
+  }],
+  "stream": false,
+  "think": false,
+  "options": { "temperature": 0, "num_ctx": 8192, "num_predict": 512 }
+}
