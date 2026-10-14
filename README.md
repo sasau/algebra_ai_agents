@@ -8,6 +8,8 @@ algebra_ai_agents/
   practice-00/    Intro to LLMs — first API call, context, knobs, JSON
   practice-01/    What are agents? — guided comparisons, supplied tools and agent loop, independently verified container run
   practice-02/    Tools and MCP — shared reader, bounded workspace server, Docker-backed ticket store
+  practice-03/    Agent architectures — explicit loop, evidence-based retries, sequential delegation
+  local-models/   Shared free local backend — Ollama tutorial, doctor, tool probe and practice tests
   ...
 ```
 
@@ -38,6 +40,8 @@ touching the others.
 
 ## Getting started
 
+For a free local model backend, follow [local-models/README.md](local-models/README.md). It includes Ollama installation, model download/startup, a reusable loopback adapter, mock protocol tests and an actual inference probe. Run Practice 03 against that backend with `npm run verify:practice-03` from `local-models/`. Model probes and full architecture verification are reported separately.
+
 ```bash
 git clone https://github.com/sasau/algebra_ai_agents
 cd algebra_ai_agents/practice-00
@@ -55,6 +59,8 @@ cd java && ./gradlew checkSetup
 ```
 
 Practice 02 is TypeScript only and needs Node 22.12+, Claude Code, and Docker/Compose. Its core lab needs no API key. Start with [practice-02/README.md](practice-02/README.md); complete four safe TODOs and submit independently checked findings.
+
+Practice 03 is TypeScript only with three architecture TODOs. Its required offline checks need Node 22.12+ and no API key. Start with [practice-03/README.md](practice-03/README.md); [SETUP.md](practice-03/SETUP.md) covers startup and [LOCAL.md](practice-03/LOCAL.md) records actual Ollama inference separately from deterministic fixtures. Cloud integration is explicit and bounded.
 
 Follow `practice-00/README.md` for the full walkthrough — prerequisites,
 the three-act structure, the exercise table, and troubleshooting for both

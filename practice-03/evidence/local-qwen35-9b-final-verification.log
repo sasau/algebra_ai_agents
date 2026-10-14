@@ -1,0 +1,16 @@
+$ OLLAMA_HOST=http://127.0.0.1:11434 OLLAMA_MODEL=qwen3.5:9b npm run verify:local
+VERIFY_LOCAL PASS checks=3/3 calls=26 evidence=evidence/verify-local-2026-10-14T08-40-30-233Z-b32589ce.json
+real 30.02
+user 0.61
+sys 0.14
+
+Executed 2026-10-14 on Apple M4 Max, 128 GiB, macOS 26.7.1, Ollama 0.40.3.
+Model qwen3.5:9b safetensors/MLX, digest d63f830f28d515fefea546f213fca7a75e9dd5176ef51a6deabc952d1c99a911.
+Act 1 PASS: 5 parent calls; source 5/5; all architecture checkpoints passed.
+Act 2 PASS: 5 parent calls; successful first attempt; 0 reflection calls in this run.
+Act 3 PASS: 8 parent calls + 8 child calls = 16; 3 sequential child histories (3+3+2 calls), first 2 invalid reports rejected, third valid report; parent independently reran tests after delegation.
+Overall 26 calls; shared per-act budget 24 includes parent, child and reflection calls; child depth 1, child turn limits unchanged.
+An earlier retained stricter trial includes actual failed attempt -> one reflection call -> changed attempt success (Act 2, 13 calls).
+Frozen source hashes/configuration: local-qwen35-9b-frozen-run-metadata.json.
+Preserved per-act copies: local-qwen35-9b-final-act-{1,2,3}-reference-local.json.
+This is actual native local inference, not scripted fixtures. One passing run does not establish general reliability.

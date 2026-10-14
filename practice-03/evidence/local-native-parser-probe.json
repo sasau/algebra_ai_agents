@@ -1,0 +1,82 @@
+{
+  "purpose": "Native tool-argument quote preservation diagnostic; not a repair capability test.",
+  "inference": "real local",
+  "request": {
+    "model": "qwen3:8b",
+    "stream": false,
+    "think": false,
+    "options": {
+      "temperature": 0,
+      "num_ctx": 8192,
+      "num_predict": 512
+    },
+    "messages": [
+      {
+        "role": "system",
+        "content": "Call edit_file exactly once. Copy the supplied source text exactly, including every quote and the export. This is a transport diagnostic; do not repair the function."
+      },
+      {
+        "role": "user",
+        "content": "Path src/slugify.ts. Exact source:\nexport function slugify(value: string): string { return value.replace(/ /g, '-'); }\n"
+      }
+    ],
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "edit_file",
+          "description": "Replace source with exact provided content.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string"
+              },
+              "content": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "path",
+              "content"
+            ]
+          }
+        }
+      }
+    ]
+  },
+  "response": {
+    "model": "qwen3:8b",
+    "created_at": "2026-10-14T08:30:03.97326Z",
+    "message": {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_7304l5n0",
+          "function": {
+            "index": 0,
+            "name": "edit_file",
+            "arguments": {
+              "path": "src/slugify.ts",
+              "content": "export function slugify(value: string): string { return value.replace(/ /g, '-'); }"
+            }
+          }
+        }
+      ]
+    },
+    "done": true,
+    "done_reason": "stop",
+    "total_duration": 956891625,
+    "load_duration": 2546500,
+    "prompt_eval_count": 206,
+    "prompt_eval_cached_count": 3,
+    "prompt_eval_duration": 280774000,
+    "eval_count": 49,
+    "eval_duration": 666114000
+  },
+  "wall_seconds": 0.962,
+  "exact_content_match": false,
+  "content_match_ignoring_final_newline": true,
+  "finding": "Native arguments preserve both single quotes correctly; only the trailing newline was omitted. This probe does not repair source or establish model capability."
+}

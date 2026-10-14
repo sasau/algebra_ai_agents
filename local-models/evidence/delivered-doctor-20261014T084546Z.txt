@@ -1,0 +1,4 @@
+npm warn Unknown user config "always-auth" (//artifactory.ib-ci.com/artifactory/api/npm/npm-release/:always-auth). This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+npm notice run course-local-models@1.0.0 doctor
+npm notice run node scripts/doctor.mjs
+DOCTOR PASS inference=false server=0.40.3 model=qwen3.5:9b installed=true evidence=evidence/doctor-2026-10-14T08-45-46-631Z-4a1da936.json

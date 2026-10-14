@@ -1,0 +1,25 @@
+{
+  "recorded_at": "2026-10-14T08:32:36.993358+00:00",
+  "command": "OLLAMA_HOST=http://127.0.0.1:11434 OLLAMA_MODEL=qwen3.5:9b npm run verify:local",
+  "hardware": "Apple M4 Max, 128GiB unified memory, macOS26.7.1 arm64",
+  "ollama_version": "0.40.3",
+  "configuration": {
+    "stream": false,
+    "think": false,
+    "temperature": 0,
+    "num_ctx": 8192,
+    "num_predict": 2048,
+    "timeout_ms": 60000,
+    "model_call_budget_per_act": 24
+  },
+  "contract_note": "edit_file description clarified after failed Qwen3:8b run: preserve named export, balanced quotes, complete TypeScript source. No solution regex supplied; evaluator unchanged. Earlier candidates are not a controlled comparative benchmark.",
+  "sha256": {
+    "src/clients.ts": "5101b93ef9f8cf3f68857331dd2aaf530ddd554a93885e55f05923de68fa25fa",
+    "src/host.ts": "aab82971eda334c50398cc34835e4da369cd38d3121489ec0d302eadba12c6e6",
+    "src/lab.ts": "f63a3dba139c5630d08da14d3f86cd642439f5f71a0539ea2552842fc790c2a8",
+    "src/evaluator.ts": "d8a8cadf73433e768673eb1866238d1a9d3b7a8b9029765e208c768d2433c28f",
+    "reference/react-agent.ts": "fbb80107cd448e4a046cfffc404e40b4e32304fc7720547c80505a312a9371b9",
+    "reference/reflexion.ts": "c12861c3d8f53fc81a3bbd9a4d6589a25ff2ba094337d741d4ebf1f036e93d0b",
+    "reference/delegate.ts": "b5f21929ff7491e2854a08445803fc210f016dc6e0fe2d7f64de34396b2ea0cf"
+  }
+}

@@ -1,123 +1,1034 @@
 {
-  "date": "2026-10-14",
-  "scope": "Practice 01 guided code revision; isolated /tmp workspace",
-  "environment": {
-    "node": "22.23.2",
-    "npm": "12.0.2",
-    "java": "21.0.10",
-    "gradle": "9.7.1",
-    "claude_code_container": "2.1.283"
-  },
-  "checks": [
+  "date": "2026-10-14T07:43:21.004365+00:00",
+  "scope": "Practice 01 installed repository; offline verification",
+  "model_calls": 0,
+  "modules": [
     {
-      "command": "npm run typecheck (ts/)",
-      "result": "pass"
+      "suite": "parser-install",
+      "exit": 0,
+      "status": "pass",
+      "seconds": 5.43
     },
     {
-      "command": "npm test (ts/)",
-      "result": "pass",
-      "tests": 4
+      "suite": "ts-install",
+      "exit": 0,
+      "status": "pass",
+      "seconds": 1.63
     },
     {
-      "command": "npm run check (ts/)",
-      "result": "pass; offline, no model request"
+      "suite": "java-tests",
+      "exit": 0,
+      "status": "pass",
+      "seconds": 3.07
     },
     {
-      "command": "npm run tools:demo (ts/)",
-      "result": "pass; read OK, test/config writes refused, expected WHERE failure observed; exit 0"
+      "suite": "demos",
+      "exit": 0,
+      "status": "pass",
+      "seconds": 7.07
     },
     {
-      "command": "gradle test toolsDemo checkSetup (java/; offline cached Gradle in /tmp)",
-      "result": "pass",
-      "tests": 11
+      "suite": "evidence",
+      "exit": 0,
+      "status": "pass",
+      "seconds": 0.37
     },
     {
-      "command": "gradle test --tests ParserTest --rerun-tasks (fresh Act 1 copy)",
-      "result": "expected failure",
-      "tests": 2,
-      "passed": 1,
-      "failed": 1,
-      "error": "unexpected token WHERE at 1:17"
+      "suite": "missing-key",
+      "exit": 0,
+      "status": "pass",
+      "seconds": 5.82
     },
     {
-      "command": "npm test (fresh parser-ts copy, via both tool demos)",
-      "result": "expected failure",
-      "tests": 5,
-      "passed": 4,
-      "failed": 1,
-      "error": "unexpected token WHERE at 1:17"
+      "suite": "act1",
+      "exit": 0,
+      "status": "pass",
+      "seconds": 20.62
     },
     {
-      "command": "node --test docker/check-evidence.test.mjs",
-      "result": "pass",
-      "tests": 7
+      "suite": "agent-loops",
+      "exit": 0,
+      "status": "pass",
+      "seconds": 30.56
     },
     {
-      "command": "bash -n docker/{run,verify,break-it}.sh parser-java/workflow.sh",
-      "result": "pass"
+      "suite": "docker",
+      "exit": 0,
+      "status": "pass",
+      "seconds": 63.47
     },
     {
-      "command": "docker build -f docker/Dockerfile -t p01-bot <fresh target context>",
-      "result": "pass"
-    },
-    {
-      "command": "docker run --rm --network none p01-bot claude --version",
-      "result": "pass; 2.1.283"
-    },
-    {
-      "command": "docker/verify.sh offline fixture matrix",
-      "result": "pass",
-      "fixtures": [
-        {
-          "name": "baseline red",
-          "exit": 1
-        },
-        {
-          "name": "valid source-only repair",
-          "exit": 0
-        },
-        {
-          "name": "test tamper",
-          "exit": 1
-        },
-        {
-          "name": "deleted parser source",
-          "exit": 1
-        }
-      ]
-    },
-    {
-      "command": "workflow.sh offline fake-Gradle/fake-CLI integration fixtures",
-      "result": "pass",
-      "fixtures": [
-        {
-          "fixture": "red-summary-pass",
-          "exit": 1
-        },
-        {
-          "fixture": "red-summary-fail",
-          "exit": 2
-        },
-        {
-          "fixture": "build-fail",
-          "exit": 2
-        },
-        {
-          "fixture": "green",
-          "exit": 0
-        }
-      ]
+      "suite": "container-scripts",
+      "exit": 0,
+      "status": "pass",
+      "seconds": 64.85
     }
   ],
-  "preservation": {
-    "original_practice_files": "unchanged; SHA256 verified",
-    "parser_source_baselines": "unchanged and intentionally red",
-    "parser_test_sources": "unchanged"
+  "checks": [
+    {
+      "name": "prepare-act1",
+      "command": [
+        "node",
+        "scripts/prepare-run.mjs",
+        "act1"
+      ],
+      "cwd": "/Users/auscumlic/Development/algebra/practices/practice-01",
+      "exit": 0,
+      "expected_exit": 0,
+      "status": "pass",
+      "duration_seconds": 0.04,
+      "log": "prepare-act1.log"
+    },
+    {
+      "name": "java-parser-focused-baseline",
+      "command": [
+        "./gradlew",
+        "test",
+        "--tests",
+        "ParserTest",
+        "--rerun-tasks",
+        "--console=plain"
+      ],
+      "cwd": "/Users/auscumlic/Development/algebra/practices/practice-01/.runs/act1-UCH4QN/parser-java",
+      "exit": 1,
+      "expected_exit": 1,
+      "status": "pass",
+      "duration_seconds": 2.87,
+      "log": "java-parser-focused-baseline.log"
+    },
+    {
+      "name": "java-parser-full-baseline",
+      "command": [
+        "./gradlew",
+        "test",
+        "--rerun-tasks",
+        "--console=plain"
+      ],
+      "cwd": "/Users/auscumlic/Development/algebra/practices/practice-01/.runs/act1-UCH4QN/parser-java",
+      "exit": 1,
+      "expected_exit": 1,
+      "status": "pass",
+      "duration_seconds": 2.64,
+      "log": "java-parser-full-baseline.log"
+    },
+    {
+      "name": "prepare-act1-repair",
+      "command": [
+        "node",
+        "scripts/prepare-run.mjs",
+        "act1"
+      ],
+      "cwd": "/Users/auscumlic/Development/algebra/practices/practice-01",
+      "exit": 0,
+      "expected_exit": 0,
+      "status": "pass",
+      "duration_seconds": 0.03,
+      "log": "prepare-act1-repair.log"
+    },
+    {
+      "name": "java-parser-source-only-repair",
+      "command": [
+        "./gradlew",
+        "test",
+        "--rerun-tasks",
+        "--console=plain"
+      ],
+      "cwd": "/Users/auscumlic/Development/algebra/practices/practice-01/.runs/act1-inKr7T/parser-java",
+      "exit": 0,
+      "expected_exit": 0,
+      "status": "pass",
+      "duration_seconds": 2.85,
+      "log": "java-parser-source-only-repair.log"
+    },
+    {
+      "name": "workflow-red-summary-success",
+      "command": [
+        "./workflow.sh"
+      ],
+      "cwd": "/Users/auscumlic/Development/algebra/practices/practice-01/.runs/act1-UCH4QN/parser-java",
+      "exit": 1,
+      "expected_exit": 1,
+      "status": "pass",
+      "duration_seconds": 3.38,
+      "log": "workflow-red-summary-success.log"
+    },
+    {
+      "name": "workflow-red-summary-failure",
+      "command": [
+        "./workflow.sh"
+      ],
+      "cwd": "/Users/auscumlic/Development/algebra/practices/practice-01/.runs/act1-UCH4QN/parser-java",
+      "exit": 2,
+      "expected_exit": 2,
+      "status": "pass",
+      "duration_seconds": 2.77,
+      "log": "workflow-red-summary-failure.log"
+    },
+    {
+      "name": "workflow-missing-key",
+      "command": [
+        "./workflow.sh"
+      ],
+      "cwd": "/Users/auscumlic/Development/algebra/practices/practice-01/.runs/act1-UCH4QN/parser-java",
+      "exit": 2,
+      "expected_exit": 2,
+      "status": "pass",
+      "duration_seconds": 2.68,
+      "log": "workflow-missing-key.log"
+    },
+    {
+      "name": "workflow-green",
+      "command": [
+        "./workflow.sh"
+      ],
+      "cwd": "/Users/auscumlic/Development/algebra/practices/practice-01/.runs/act1-inKr7T/parser-java",
+      "exit": 0,
+      "expected_exit": 0,
+      "status": "pass",
+      "duration_seconds": 2.84,
+      "log": "workflow-green.log"
+    },
+    {
+      "name": "workflow-build-failure",
+      "command": [
+        "./workflow.sh"
+      ],
+      "cwd": "/Users/auscumlic/Development/algebra/practices/practice-01/.runs/verification-hd35uhkk/workflow-build-fixture",
+      "exit": 2,
+      "expected_exit": 2,
+      "status": "pass",
+      "duration_seconds": 0.45,
+      "log": "workflow-build-failure.log"
+    },
+    {
+      "name": "docker-build-cli-fixture",
+      "command": [
+        "/opt/homebrew/bin/docker",
+        "build",
+        "-f",
+        "/Users/auscumlic/Development/algebra/practices/practice-01/.runs/verification-hd35uhkk/cli-image-context/Dockerfile.cli-fixture",
+        "-t",
+        "p01-cli-fixture-87334",
+        "/Users/auscumlic/Development/algebra/practices/practice-01/.runs/verification-hd35uhkk/cli-image-context"
+      ],
+      "exit": 0,
+      "expected_exit": 0,
+      "status": "pass",
+      "duration_seconds": 42.74,
+      "log": "docker-build-cli-fixture.log",
+      "mode": "offline CLI fixture; real Docker; no network"
+    },
+    {
+      "name": "container-run-success",
+      "command": [
+        "./run.sh"
+      ],
+      "exit": 0,
+      "expected_exit": 0,
+      "status": "pass",
+      "duration_seconds": 7.85,
+      "log": "container-run-success.log",
+      "mode": "offline CLI fixture; real Docker; no network"
+    },
+    {
+      "name": "container-run-quoted-goal-and-archive",
+      "command": [
+        "./run.sh"
+      ],
+      "exit": 0,
+      "expected_exit": 0,
+      "status": "pass",
+      "duration_seconds": 6.75,
+      "log": "container-run-quoted-goal-and-archive.log",
+      "mode": "offline CLI fixture; real Docker; no network"
+    },
+    {
+      "name": "container-break-it-budget",
+      "command": [
+        "./break-it.sh"
+      ],
+      "exit": 0,
+      "expected_exit": 0,
+      "status": "pass",
+      "duration_seconds": 7.1,
+      "log": "container-break-it-budget.log",
+      "mode": "offline CLI fixture; real Docker; no network"
+    },
+    {
+      "name": "container-invalid-turns",
+      "command": [
+        "./run.sh"
+      ],
+      "exit": 1,
+      "expected_exit": 1,
+      "status": "pass",
+      "duration_seconds": 0.02,
+      "log": "container-invalid-turns.log",
+      "mode": "offline CLI fixture; real Docker; no network"
+    },
+    {
+      "name": "container-invalid-budget",
+      "command": [
+        "./run.sh"
+      ],
+      "exit": 1,
+      "expected_exit": 1,
+      "status": "pass",
+      "duration_seconds": 0.04,
+      "log": "container-invalid-budget.log",
+      "mode": "offline CLI fixture; real Docker; no network"
+    },
+    {
+      "name": "container-invalid-output",
+      "command": [
+        "./run.sh"
+      ],
+      "exit": 1,
+      "expected_exit": 1,
+      "status": "pass",
+      "duration_seconds": 0.04,
+      "log": "container-invalid-output.log",
+      "mode": "offline CLI fixture; real Docker; no network"
+    },
+    {
+      "name": "ts-check",
+      "command": [
+        "npm",
+        "run",
+        "check"
+      ],
+      "cwd": "/Users/auscumlic/Development/algebra/practices/practice-01/ts",
+      "exit": 0,
+      "expected_exit": 0,
+      "status": "pass",
+      "assertions": {
+        "ALL CHECKS PASSED": true,
+        "no API call made": true
+      },
+      "duration_seconds": 0.21,
+      "log": "ts-check.log"
+    },
+    {
+      "name": "ts-tools-demo",
+      "command": [
+        "npm",
+        "run",
+        "tools:demo"
+      ],
+      "cwd": "/Users/auscumlic/Development/algebra/practices/practice-01/ts",
+      "exit": 0,
+      "expected_exit": 0,
+      "status": "pass",
+      "assertions": {
+        "DEMO PASSED": true,
+        "unexpected token WHERE": true
+      },
+      "duration_seconds": 1.21,
+      "log": "ts-tools-demo.log"
+    },
+    {
+      "name": "java-check",
+      "command": [
+        "./gradlew",
+        "checkSetup",
+        "--console=plain"
+      ],
+      "cwd": "/Users/auscumlic/Development/algebra/practices/practice-01/java",
+      "exit": 0,
+      "expected_exit": 0,
+      "status": "pass",
+      "assertions": {
+        "ALL CHECKS PASSED": true,
+        "no API call made": true
+      },
+      "duration_seconds": 2.31,
+      "log": "java-check.log"
+    },
+    {
+      "name": "java-tools-demo",
+      "command": [
+        "./gradlew",
+        "toolsDemo",
+        "--console=plain"
+      ],
+      "cwd": "/Users/auscumlic/Development/algebra/practices/practice-01/java",
+      "exit": 0,
+      "expected_exit": 0,
+      "status": "pass",
+      "assertions": {
+        "DEMO PASSED": true,
+        "unexpected token WHERE": true
+      },
+      "duration_seconds": 3.31,
+      "log": "java-tools-demo.log"
+    },
+    {
+      "name": "prepare-docker",
+      "command": [
+        "node",
+        "scripts/prepare-run.mjs",
+        "act3"
+      ],
+      "exit": 0,
+      "expected_exit": 0,
+      "status": "pass",
+      "duration_seconds": 0.03,
+      "log": "prepare-docker.log"
+    },
+    {
+      "name": "docker-build",
+      "command": [
+        "docker",
+        "build",
+        "-f",
+        "/Users/auscumlic/Development/algebra/practices/practice-01/docker/Dockerfile",
+        "-t",
+        "p01-bot",
+        "/Users/auscumlic/Development/algebra/practices/practice-01/.runs/act3-iwFwea"
+      ],
+      "exit": 0,
+      "expected_exit": 0,
+      "status": "pass",
+      "duration_seconds": 0.58,
+      "log": "docker-build.log"
+    },
+    {
+      "name": "docker-cli-smoke",
+      "command": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "p01-bot",
+        "claude",
+        "--version"
+      ],
+      "exit": 0,
+      "expected_exit": 0,
+      "status": "pass",
+      "duration_seconds": 1.08,
+      "log": "docker-cli-smoke.log"
+    },
+    {
+      "name": "docker-trust-boundary-smoke",
+      "command": [
+        "docker",
+        "run",
+        "--rm",
+        "--network",
+        "none",
+        "--cap-drop",
+        "ALL",
+        "--security-opt",
+        "no-new-privileges",
+        "p01-bot",
+        "sh",
+        "-c",
+        "test \"$(id -u)\" -ne 0 && test -z \"$ANTHROPIC_API_KEY\" && test -d /work/node_modules && test -x /usr/bin/timeout && echo nonroot-no-key-tooling-ready"
+      ],
+      "exit": 0,
+      "expected_exit": 0,
+      "status": "pass",
+      "duration_seconds": 0.86,
+      "log": "docker-trust-boundary-smoke.log"
+    },
+    {
+      "name": "docker-verify-baseline-red",
+      "command": [
+        "./verify.sh"
+      ],
+      "exit": 1,
+      "expected_exit": 1,
+      "status": "pass",
+      "duration_seconds": 11.78,
+      "log": "docker-verify-baseline-red.log"
+    },
+    {
+      "name": "docker-verify-valid-source-fix",
+      "command": [
+        "./verify.sh"
+      ],
+      "exit": 0,
+      "expected_exit": 0,
+      "status": "pass",
+      "duration_seconds": 10.88,
+      "log": "docker-verify-valid-source-fix.log"
+    },
+    {
+      "name": "docker-verify-test-tamper",
+      "command": [
+        "./verify.sh"
+      ],
+      "exit": 1,
+      "expected_exit": 1,
+      "status": "pass",
+      "duration_seconds": 3.79,
+      "log": "docker-verify-test-tamper.log"
+    },
+    {
+      "name": "docker-verify-package-script-tamper",
+      "command": [
+        "./verify.sh"
+      ],
+      "exit": 1,
+      "expected_exit": 1,
+      "status": "pass",
+      "duration_seconds": 4.17,
+      "log": "docker-verify-package-script-tamper.log"
+    },
+    {
+      "name": "docker-verify-source-deleted",
+      "command": [
+        "./verify.sh"
+      ],
+      "exit": 1,
+      "expected_exit": 1,
+      "status": "pass",
+      "duration_seconds": 10.3,
+      "log": "docker-verify-source-deleted.log"
+    },
+    {
+      "name": "docker-verify-source-symlink",
+      "command": [
+        "./verify.sh"
+      ],
+      "exit": 1,
+      "expected_exit": 1,
+      "status": "pass",
+      "duration_seconds": 3.99,
+      "log": "docker-verify-source-symlink.log"
+    },
+    {
+      "name": "docker-verify-untrusted-git-and-deps",
+      "command": [
+        "./verify.sh"
+      ],
+      "exit": 0,
+      "expected_exit": 0,
+      "status": "pass",
+      "duration_seconds": 11.96,
+      "log": "docker-verify-untrusted-git-and-deps.log"
+    },
+    {
+      "name": "evidence-tests",
+      "command": [
+        "node",
+        "--test",
+        "check-evidence.test.mjs"
+      ],
+      "cwd": "/Users/auscumlic/Development/algebra/practices/practice-01/docker",
+      "exit": 0,
+      "expected_exit": 0,
+      "status": "pass",
+      "assertions": {
+        "# pass 7": true,
+        "# fail 0": true
+      },
+      "duration_seconds": 0.32,
+      "log": "evidence-tests.log"
+    },
+    {
+      "name": "shell-syntax",
+      "command": [
+        "bash",
+        "-n",
+        "docker/run.sh",
+        "docker/verify.sh",
+        "docker/break-it.sh",
+        "parser-java/workflow.sh"
+      ],
+      "cwd": "/Users/auscumlic/Development/algebra/practices/practice-01",
+      "exit": 0,
+      "expected_exit": 0,
+      "status": "pass",
+      "assertions": {},
+      "duration_seconds": 0.01,
+      "log": "shell-syntax.log"
+    },
+    {
+      "name": "java-tool-tests",
+      "command": [
+        "./gradlew",
+        "test",
+        "--rerun-tasks",
+        "--console=plain"
+      ],
+      "cwd": "/Users/auscumlic/Development/algebra/practices/practice-01/java",
+      "exit": 0,
+      "expected_exit": 0,
+      "status": "pass",
+      "assertions": {
+        "BUILD SUCCESSFUL": true
+      },
+      "duration_seconds": 3.04,
+      "log": "java-tool-tests.log"
+    },
+    {
+      "name": "ts-live-missing-key",
+      "command": [
+        "npm",
+        "run",
+        "check:live"
+      ],
+      "cwd": "/Users/auscumlic/Development/algebra/practices/practice-01/ts",
+      "exit": 1,
+      "expected_exit": 1,
+      "status": "pass",
+      "assertions": {
+        "ANTHROPIC_API_KEY is not set": true,
+        "no API call made": true
+      },
+      "duration_seconds": 0.22,
+      "log": "ts-live-missing-key.log"
+    },
+    {
+      "name": "ts-agent-missing-key",
+      "command": [
+        "npm",
+        "run",
+        "agent"
+      ],
+      "cwd": "/Users/auscumlic/Development/algebra/practices/practice-01/ts",
+      "exit": 1,
+      "expected_exit": 1,
+      "status": "pass",
+      "assertions": {
+        "ANTHROPIC_API_KEY is not set": true
+      },
+      "duration_seconds": 0.26,
+      "log": "ts-agent-missing-key.log"
+    },
+    {
+      "name": "java-live-missing-key",
+      "command": [
+        "./gradlew",
+        "checkSetup",
+        "-Plive",
+        "--console=plain"
+      ],
+      "cwd": "/Users/auscumlic/Development/algebra/practices/practice-01/java",
+      "exit": 1,
+      "expected_exit": 1,
+      "status": "pass",
+      "assertions": {
+        "ANTHROPIC_API_KEY is not set": true,
+        "no API call made": true
+      },
+      "duration_seconds": 2.91,
+      "log": "java-live-missing-key.log"
+    },
+    {
+      "name": "java-agent-missing-key",
+      "command": [
+        "./gradlew",
+        "agent",
+        "--console=plain"
+      ],
+      "cwd": "/Users/auscumlic/Development/algebra/practices/practice-01/java",
+      "exit": 1,
+      "expected_exit": 1,
+      "status": "pass",
+      "assertions": {
+        "ANTHROPIC_API_KEY is not set": true
+      },
+      "duration_seconds": 2.21,
+      "log": "java-agent-missing-key.log"
+    },
+    {
+      "name": "docker-missing-key",
+      "command": [
+        "./run.sh"
+      ],
+      "cwd": "/Users/auscumlic/Development/algebra/practices/practice-01/.runs/verification-hd35uhkk/missing-key-fixture/docker",
+      "exit": 1,
+      "expected_exit": 1,
+      "status": "pass",
+      "assertions": {
+        "ANTHROPIC_API_KEY is not set": true
+      },
+      "duration_seconds": 0.17,
+      "log": "docker-missing-key.log"
+    },
+    {
+      "name": "mock-java-setup",
+      "command": [
+        "./gradlew",
+        "offlineAgentFixture",
+        "--init-script",
+        "/Users/auscumlic/Development/algebra/practices/practice-01/.runs/verification-hd35uhkk/fixture.init.gradle",
+        "-Pfixture=setup",
+        "--console=plain"
+      ],
+      "exit": 0,
+      "expected_exit": 0,
+      "mock_calls": 1,
+      "expected_calls": 1,
+      "fixture_errors": [],
+      "status": "pass",
+      "duration_seconds": 3.17,
+      "log": "mock-java-setup.log",
+      "mode": "test-only Java SDK fake; production client unchanged"
+    },
+    {
+      "name": "mock-java-success",
+      "command": [
+        "./gradlew",
+        "offlineAgentFixture",
+        "--init-script",
+        "/Users/auscumlic/Development/algebra/practices/practice-01/.runs/verification-hd35uhkk/fixture.init.gradle",
+        "-Pfixture=success",
+        "--console=plain"
+      ],
+      "exit": 0,
+      "expected_exit": 0,
+      "mock_calls": 5,
+      "expected_calls": 5,
+      "fixture_errors": [],
+      "status": "pass",
+      "duration_seconds": 4.09,
+      "log": "mock-java-success.log",
+      "mode": "test-only Java SDK fake; production client unchanged"
+    },
+    {
+      "name": "mock-java-false-success",
+      "command": [
+        "./gradlew",
+        "offlineAgentFixture",
+        "--init-script",
+        "/Users/auscumlic/Development/algebra/practices/practice-01/.runs/verification-hd35uhkk/fixture.init.gradle",
+        "-Pfixture=false-success",
+        "--console=plain"
+      ],
+      "exit": 1,
+      "expected_exit": 1,
+      "mock_calls": 1,
+      "expected_calls": 1,
+      "fixture_errors": [],
+      "status": "pass",
+      "duration_seconds": 3.54,
+      "log": "mock-java-false-success.log",
+      "mode": "test-only Java SDK fake; production client unchanged"
+    },
+    {
+      "name": "mock-java-budget",
+      "command": [
+        "./gradlew",
+        "offlineAgentFixture",
+        "--init-script",
+        "/Users/auscumlic/Development/algebra/practices/practice-01/.runs/verification-hd35uhkk/fixture.init.gradle",
+        "-Pfixture=budget",
+        "--console=plain",
+        "-PfixtureSteps=3"
+      ],
+      "exit": 1,
+      "expected_exit": 1,
+      "mock_calls": 3,
+      "expected_calls": 3,
+      "fixture_errors": [],
+      "status": "pass",
+      "duration_seconds": 4.14,
+      "log": "mock-java-budget.log",
+      "mode": "test-only Java SDK fake; production client unchanged"
+    },
+    {
+      "name": "mock-java-max-tokens",
+      "command": [
+        "./gradlew",
+        "offlineAgentFixture",
+        "--init-script",
+        "/Users/auscumlic/Development/algebra/practices/practice-01/.runs/verification-hd35uhkk/fixture.init.gradle",
+        "-Pfixture=max-tokens",
+        "--console=plain"
+      ],
+      "exit": 1,
+      "expected_exit": 1,
+      "mock_calls": 1,
+      "expected_calls": 1,
+      "fixture_errors": [],
+      "status": "pass",
+      "duration_seconds": 3.53,
+      "log": "mock-java-max-tokens.log",
+      "mode": "test-only Java SDK fake; production client unchanged"
+    },
+    {
+      "name": "mock-java-api-error",
+      "command": [
+        "./gradlew",
+        "offlineAgentFixture",
+        "--init-script",
+        "/Users/auscumlic/Development/algebra/practices/practice-01/.runs/verification-hd35uhkk/fixture.init.gradle",
+        "-Pfixture=api-error",
+        "--console=plain"
+      ],
+      "exit": 1,
+      "expected_exit": 1,
+      "mock_calls": 1,
+      "expected_calls": 1,
+      "fixture_errors": [],
+      "status": "pass",
+      "duration_seconds": 3.54,
+      "log": "mock-java-api-error.log",
+      "mode": "test-only Java SDK fake; production client unchanged"
+    },
+    {
+      "name": "mock-ts-setup",
+      "command": [
+        "npm",
+        "run",
+        "check:live"
+      ],
+      "exit": 0,
+      "expected_exit": 0,
+      "mock_calls": 1,
+      "expected_calls": 1,
+      "fixture_errors": [],
+      "status": "pass",
+      "duration_seconds": 0.76,
+      "log": "mock-ts-setup.log",
+      "mode": "local HTTP fixture through TypeScript SDK"
+    },
+    {
+      "name": "mock-ts-success",
+      "command": [
+        "npm",
+        "run",
+        "agent"
+      ],
+      "exit": 0,
+      "expected_exit": 0,
+      "mock_calls": 5,
+      "expected_calls": 5,
+      "fixture_errors": [],
+      "status": "pass",
+      "duration_seconds": 1.84,
+      "log": "mock-ts-success.log",
+      "mode": "local HTTP fixture through TypeScript SDK"
+    },
+    {
+      "name": "mock-ts-false-success",
+      "command": [
+        "npm",
+        "run",
+        "agent"
+      ],
+      "exit": 1,
+      "expected_exit": 1,
+      "mock_calls": 1,
+      "expected_calls": 1,
+      "fixture_errors": [],
+      "status": "pass",
+      "duration_seconds": 1.44,
+      "log": "mock-ts-false-success.log",
+      "mode": "local HTTP fixture through TypeScript SDK"
+    },
+    {
+      "name": "mock-ts-budget",
+      "command": [
+        "npm",
+        "run",
+        "agent",
+        "--",
+        "--max-steps",
+        "3"
+      ],
+      "exit": 1,
+      "expected_exit": 1,
+      "mock_calls": 3,
+      "expected_calls": 3,
+      "fixture_errors": [],
+      "status": "pass",
+      "duration_seconds": 1.51,
+      "log": "mock-ts-budget.log",
+      "mode": "local HTTP fixture through TypeScript SDK"
+    },
+    {
+      "name": "mock-ts-max-tokens",
+      "command": [
+        "npm",
+        "run",
+        "agent"
+      ],
+      "exit": 1,
+      "expected_exit": 1,
+      "mock_calls": 1,
+      "expected_calls": 1,
+      "fixture_errors": [],
+      "status": "pass",
+      "duration_seconds": 1.44,
+      "log": "mock-ts-max-tokens.log",
+      "mode": "local HTTP fixture through TypeScript SDK"
+    },
+    {
+      "name": "mock-ts-api-error",
+      "command": [
+        "npm",
+        "run",
+        "agent"
+      ],
+      "exit": 1,
+      "expected_exit": 1,
+      "mock_calls": 1,
+      "expected_calls": 1,
+      "fixture_errors": [],
+      "status": "pass",
+      "duration_seconds": 1.46,
+      "log": "mock-ts-api-error.log",
+      "mode": "local HTTP fixture through TypeScript SDK"
+    },
+    {
+      "name": "parser-ci",
+      "command": [
+        "npm",
+        "ci",
+        "--no-audit",
+        "--no-fund"
+      ],
+      "cwd": "/Users/auscumlic/Development/algebra/practices/practice-01/parser-ts",
+      "exit": 0,
+      "expected_exit": 0,
+      "status": "pass",
+      "assertions": {},
+      "duration_seconds": 3.64,
+      "log": "parser-ci.log"
+    },
+    {
+      "name": "parser-typecheck",
+      "command": [
+        "npm",
+        "run",
+        "typecheck"
+      ],
+      "cwd": "/Users/auscumlic/Development/algebra/practices/practice-01/parser-ts",
+      "exit": 0,
+      "expected_exit": 0,
+      "status": "pass",
+      "assertions": {},
+      "duration_seconds": 0.7,
+      "log": "parser-typecheck.log"
+    },
+    {
+      "name": "parser-baseline",
+      "command": [
+        "npm",
+        "test"
+      ],
+      "cwd": "/Users/auscumlic/Development/algebra/practices/practice-01/parser-ts",
+      "exit": 1,
+      "expected_exit": 1,
+      "status": "pass",
+      "assertions": {
+        "4 passed": true,
+        "1 failed": true,
+        "unexpected token WHERE at 1:17": true
+      },
+      "duration_seconds": 1.05,
+      "log": "parser-baseline.log"
+    },
+    {
+      "name": "ts-ci",
+      "command": [
+        "npm",
+        "ci",
+        "--no-audit",
+        "--no-fund"
+      ],
+      "cwd": "/Users/auscumlic/Development/algebra/practices/practice-01/ts",
+      "exit": 0,
+      "expected_exit": 0,
+      "status": "pass",
+      "assertions": {},
+      "duration_seconds": 0.65,
+      "log": "ts-ci.log"
+    },
+    {
+      "name": "ts-typecheck",
+      "command": [
+        "npm",
+        "run",
+        "typecheck"
+      ],
+      "cwd": "/Users/auscumlic/Development/algebra/practices/practice-01/ts",
+      "exit": 0,
+      "expected_exit": 0,
+      "status": "pass",
+      "assertions": {},
+      "duration_seconds": 0.74,
+      "log": "ts-typecheck.log"
+    },
+    {
+      "name": "ts-tool-tests",
+      "command": [
+        "npm",
+        "test"
+      ],
+      "cwd": "/Users/auscumlic/Development/algebra/practices/practice-01/ts",
+      "exit": 0,
+      "expected_exit": 0,
+      "status": "pass",
+      "assertions": {
+        "# pass 4": true,
+        "# fail 0": true
+      },
+      "duration_seconds": 0.2,
+      "log": "ts-tool-tests.log"
+    }
+  ],
+  "protected_parser_files_unchanged": true,
+  "live_skipped": [
+    "provider credentials/network/model availability",
+    "interactive Claude Code skill and agent behavior",
+    "unattended real-model repair and stopping behavior"
+  ],
+  "fixture_limits": "Scripted responses verify harness behavior. They do not measure model ability or real CLI spending/turn enforcement.",
+  "environment": {
+    "node": "v22.23.2",
+    "npm": "12.0.2",
+    "java": "Temurin 21.0.10",
+    "gradle": "9.7.1",
+    "docker_client": "29.9.0",
+    "docker_server": "29.2.1",
+    "claude_code_container": "2.1.283",
+    "os": "macOS arm64"
   },
+  "counts": {
+    "command_checks": 58,
+    "unit_tests": 22,
+    "unit_tests_by_suite": {
+      "typescript_tool_policy": 4,
+      "java_tool_policy": 11,
+      "evidence_integrity": 7
+    },
+    "scripted_agent_scenarios": 12,
+    "workflow_scenarios": 5,
+    "docker_verifier_scenarios": 7
+  },
+  "baseline": {
+    "java_focused": {
+      "passed": 1,
+      "failed": 1
+    },
+    "java_full": {
+      "passed": 4,
+      "failed": 1
+    },
+    "typescript_full": {
+      "passed": 4,
+      "failed": 1
+    },
+    "expected_error": "unexpected token WHERE at 1:17"
+  },
+  "preservation": {
+    "all_original_tracked_files_unchanged_before_recording_results": true,
+    "parser_source_and_test_baselines_unchanged": true,
+    "existing_evidence_preserved": true,
+    "production_client_unchanged": true
+  },
+  "artifacts": ".runs/verification-hd35uhkk/results.json",
   "limitations": [
-    "No paid model calls were made. SDK end-to-end repair, workflow text generation and unattended model execution remain untested.",
-    "Tool path allowlists do not sandbox source executed by the host test process.",
-    "Docker agent runtime retains API credentials and outbound network access; generated logs must be reviewed before sharing.",
-    "CLI dollar budget uses client estimates and is not an exact provider billing ceiling."
+    "No provider call was made; credentials, TLS/provider access and real model performance remain unverified.",
+    "Interactive Claude Code skill selection and repair require a real model and were skipped.",
+    "Docker shell orchestration used a test-only CLI replacement; real Claude turn/spend enforcement and forever-goal stopping behavior were skipped.",
+    "Tool allowlists do not sandbox source executed by host tests; the live Docker bot would retain its key and outbound network access."
   ]
 }

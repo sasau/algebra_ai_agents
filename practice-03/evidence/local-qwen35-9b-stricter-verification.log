@@ -1,0 +1,14 @@
+$ OLLAMA_HOST=http://127.0.0.1:11434 OLLAMA_MODEL=qwen3.5:9b npm run verify:local
+VERIFY_LOCAL FAIL checks=1/3 calls=26 evidence=evidence/verify-local-2026-10-14T08-36-28-182Z-1d0b7689.json
+  Act 1: CHECKPOINT_FAILED: protocolComplete (evidence/act-1-reference-local-2026-10-14T08-36-07-783Z-4e15a0b4.json)
+  Act 3: MISSING_SUCCESSFUL_CHILD_REPORT (evidence/act-3-reference-local-2026-10-14T08-36-28-182Z-7309eaa2.json)
+real 26.29
+user 0.82
+sys 0.18
+
+Executed 2026-10-14 on Apple M4 Max, 128 GiB, macOS 26.7.1, Ollama 0.40.3.
+Act1 source passed5/5 atturn7, but loop reachedturnlimit before a no-tool completion reply.
+Act2 PASS13calls: firstattempt failed, one actual reflection call produced a lesson, secondattempt changed the saved source and passed.
+Act3 validrole but maxTurns5 exceeded allowed4; no child ran, so correct contract failure despite green source.
+The preserved per-act files use the local-qwen35-9b-stricter- prefix.
+This is actual native local inference, not scripted fixtures.

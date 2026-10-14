@@ -1,0 +1,8 @@
+npm warn Unknown user config "always-auth" (//artifactory.ib-ci.com/artifactory/api/npm/npm-release/:always-auth). This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+npm notice run course-local-models@1.0.0 verify:practice-03
+npm notice run node scripts/verify-practice-03.mjs
+npm warn Unknown user config "always-auth" (//artifactory.ib-ci.com/artifactory/api/npm/npm-release/:always-auth). This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+npm notice run practice-03-agent-architectures@1.0.0 verify:local
+npm notice run node --import tsx scripts/verify.ts local
+VERIFY_LOCAL PASS checks=3/3 calls=22 evidence=evidence/verify-local-2026-10-14T08-46-15-159Z-718b4427.json
+VERIFY_PRACTICE_03 PASS inference=true evidence=evidence/verify-practice-03-2026-10-14T08-46-15-166Z-01d375a7.json

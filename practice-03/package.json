@@ -1,0 +1,29 @@
+{
+  "name": "practice-03-agent-architectures",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "doctor": "node --import tsx scripts/doctor.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "node --import tsx --test tests/*.test.ts",
+    "fixture:test": "node --import tsx --test fixture/test/*.test.ts",
+    "verify:offline": "node --import tsx scripts/verify.ts offline",
+    "verify:student": "node --import tsx scripts/verify.ts student",
+    "verify:completed-student": "node --import tsx scripts/completed-student.ts",
+    "verify:local": "node --import tsx scripts/verify.ts local",
+    "verify:cloud": "node --import tsx scripts/verify.ts cloud",
+    "act:1": "node --import tsx scripts/act.ts 1",
+    "act:2": "node --import tsx scripts/act.ts 2",
+    "act:3": "node --import tsx scripts/act.ts 3"
+  },
+  "devDependencies": {
+    "@types/node": "26.6.0",
+    "tsx": "4.23.15",
+    "typescript": "7.0.2",
+    "esbuild": "0.28.2"
+  }
+}

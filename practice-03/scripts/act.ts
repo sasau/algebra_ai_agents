@@ -1,0 +1,10 @@
+import { runAct, type Implementation } from '../src/lab.js';
+const args=process.argv.slice(2),act=Number(args[0]);
+const option=(key:string,fallback:string)=>{const i=args.indexOf(key);return i<0?fallback:args[i+1];};
+const impl=option('--impl','starter') as Implementation,client=option('--client','offline');
+if(!['starter','reference'].includes(impl)||!['offline','local'].includes(client))throw new Error('Use --impl starter|reference --client offline|local');
+if(args.includes('--unsolvable')&&act!==2)throw new Error('--unsolvable is only valid for Act 2');
+const result=await runAct(act,impl,client,{impossible:args.includes('--unsolvable')});
+console.log(`ACT_${act} ${result.passed?'PASS':'FAIL'} client=${client} calls=${result.calls} evidence=${result.evidence}`);
+if(result.error)console.log(result.error);
+process.exitCode=result.passed?0:1;

@@ -367,3 +367,24 @@ Exact dependency versions and lockfiles are supplied. Use `npm ci`; do not
 upgrade dependencies during the lab. Model availability, prices and Claude Code
 CLI behavior can change; consult official documentation when a pinned version
 is unavailable.
+
+## 8. Verify the companion code without an API key
+
+To check the repository itself, use Python 3 with the normal Node/JDK/Bash
+prerequisites. These checks install dependencies and exercise both tracks with
+controlled local responses. They preserve the supplied bug and tests and create
+new ignored verification reports.
+
+```bash
+cd "$P01_ROOT"
+python3 scripts/verify-offline.py
+# Include image build, trusted verifier and container-script fixtures:
+python3 scripts/verify-offline.py --docker
+```
+
+The default command needs no Docker daemon or provider credentials. The Docker
+option needs a running daemon. These are regression checks; complete the lab's
+model experiments when model access is available. Scripted responses verify tool
+handling and stopping logic; real model behavior remains a separate check.
+See the detailed
+[verification report](https://github.com/sasau/algebra_ai_agents/blob/main/practice-01/docs/validation.md).

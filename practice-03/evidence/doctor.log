@@ -1,0 +1,5 @@
+npm warn Unknown user config "always-auth" (//artifactory.ib-ci.com/artifactory/api/npm/npm-release/:always-auth). This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+npm notice run practice-03-agent-architectures@1.0.0 doctor
+npm notice run node --import tsx scripts/doctor.ts
+DOCTOR PASS node=22.23.2 tsx=installed
+Offline: no inference, no cloud key. Local: Ollama qwen2.5:3b at loopback :11434. Cloud: explicit opt-in.

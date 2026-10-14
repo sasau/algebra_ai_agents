@@ -1,0 +1,4 @@
+npm warn Unknown user config "always-auth" (//artifactory.ib-ci.com/artifactory/api/npm/npm-release/:always-auth). This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+npm notice run practice-03-agent-architectures@1.0.0 verify:cloud
+npm notice run node --import tsx scripts/verify.ts cloud --run-cloud
+VERIFY_CLOUD SKIP ANTHROPIC_API_KEY is absent evidence=evidence/verify-cloud-2026-10-14T08-45-50-967Z-8192fae7.json

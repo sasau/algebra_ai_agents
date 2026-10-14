@@ -1,0 +1,5 @@
+{
+  "status": "SKIP",
+  "inference": false,
+  "reason": "requires explicit --run-cloud"
+}

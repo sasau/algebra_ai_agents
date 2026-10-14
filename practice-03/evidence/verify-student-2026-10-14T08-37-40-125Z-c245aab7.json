@@ -1,0 +1,45 @@
+{
+  "status": "FAIL",
+  "inference": false,
+  "disposable": true,
+  "starterUnchanged": true,
+  "starterHashes": {
+    "react-agent.ts": "d023009b89f45301e154d2ce3b9d4482b3d158afc158f68ec262e3a6a4bd92b1",
+    "reflexion.ts": "cc7572c46e62bfe3fdb7da308c872e3a50a0b9cb1f953fb527a41adfa9c6c1d9",
+    "delegate.ts": "c84589be4fc6bc66260245915a782a807503f7fa9a91434874f2115e5de820a2"
+  },
+  "results": [
+    {
+      "act": 1,
+      "scenario": "repair",
+      "passed": false,
+      "calls": 0,
+      "evidence": "evidence/act-1-starter-offline-2026-10-14T08-37-39-973Z-0285c855.json",
+      "error": "TODO_ACT_1: implement this architecture checkpoint"
+    },
+    {
+      "act": 2,
+      "scenario": "repair",
+      "passed": false,
+      "calls": 0,
+      "evidence": "evidence/act-2-starter-offline-2026-10-14T08-37-40-021Z-9e4da09b.json",
+      "error": "TODO_ACT_2: implement this architecture checkpoint"
+    },
+    {
+      "act": 3,
+      "scenario": "repair",
+      "passed": false,
+      "calls": 0,
+      "evidence": "evidence/act-3-starter-offline-2026-10-14T08-37-40-071Z-3b1c17e9.json",
+      "error": "TODO_ACT_1: implement this architecture checkpoint"
+    },
+    {
+      "act": 2,
+      "scenario": "unsolvable",
+      "passed": false,
+      "calls": 0,
+      "evidence": "evidence/act-2-starter-offline-unsolvable-2026-10-14T08-37-40-123Z-c5bf9a6a.json",
+      "error": "TODO_ACT_2: implement this architecture checkpoint"
+    }
+  ]
+}

@@ -1,0 +1,122 @@
+{
+  "checks": [
+    {
+      "check": "doctor",
+      "command": [
+        "npm",
+        "run",
+        "doctor"
+      ],
+      "expectedExit": 0,
+      "actualExit": 0,
+      "passed": true,
+      "evidence": "evidence/final-delivered-doctor-20261014T084541Z.txt"
+    },
+    {
+      "check": "typecheck",
+      "command": [
+        "npm",
+        "run",
+        "typecheck"
+      ],
+      "expectedExit": 0,
+      "actualExit": 0,
+      "passed": true,
+      "evidence": "evidence/final-delivered-typecheck-20261014T084541Z.txt"
+    },
+    {
+      "check": "infrastructure",
+      "command": [
+        "npm",
+        "test"
+      ],
+      "expectedExit": 0,
+      "actualExit": 0,
+      "passed": true,
+      "evidence": "evidence/final-delivered-infrastructure-20261014T084541Z.txt"
+    },
+    {
+      "check": "fixture",
+      "command": [
+        "npm",
+        "run",
+        "fixture:test"
+      ],
+      "expectedExit": 1,
+      "actualExit": 1,
+      "passed": true,
+      "evidence": "evidence/final-delivered-fixture-20261014T084541Z.txt"
+    },
+    {
+      "check": "reference-offline",
+      "command": [
+        "npm",
+        "run",
+        "verify:offline"
+      ],
+      "expectedExit": 0,
+      "actualExit": 0,
+      "passed": true,
+      "evidence": "evidence/final-delivered-reference-offline-20261014T084541Z.txt"
+    },
+    {
+      "check": "incomplete-student",
+      "command": [
+        "npm",
+        "run",
+        "verify:student"
+      ],
+      "expectedExit": 1,
+      "actualExit": 1,
+      "passed": true,
+      "evidence": "evidence/final-delivered-incomplete-student-20261014T084541Z.txt"
+    },
+    {
+      "check": "completed-student",
+      "command": [
+        "npm",
+        "run",
+        "verify:completed-student"
+      ],
+      "expectedExit": 0,
+      "actualExit": 0,
+      "passed": true,
+      "evidence": "evidence/final-delivered-completed-student-20261014T084541Z.txt"
+    },
+    {
+      "check": "cloud-absent",
+      "command": [
+        "npm",
+        "run",
+        "verify:cloud",
+        "--",
+        "--run-cloud"
+      ],
+      "expectedExit": 0,
+      "actualExit": 0,
+      "passed": true,
+      "evidence": "evidence/final-delivered-cloud-absent-20261014T084541Z.txt"
+    },
+    {
+      "check": "cloud-present-no-opt-in",
+      "command": [
+        "npm",
+        "run",
+        "verify:cloud"
+      ],
+      "expectedExit": 0,
+      "actualExit": 0,
+      "passed": true,
+      "evidence": "evidence/final-delivered-cloud-present-no-opt-in-20261014T084541Z.txt"
+    }
+  ],
+  "starterAndFixturePreserved": true,
+  "hashes": {
+    "starter/reflexion.ts": "cc7572c46e62bfe3fdb7da308c872e3a50a0b9cb1f953fb527a41adfa9c6c1d9",
+    "starter/react-agent.ts": "d023009b89f45301e154d2ce3b9d4482b3d158afc158f68ec262e3a6a4bd92b1",
+    "starter/delegate.ts": "c84589be4fc6bc66260245915a782a807503f7fa9a91434874f2115e5de820a2",
+    "fixture/test/slugify.test.ts": "77ff35b2c30192a6a63ff0959d977a82b30a14896f96e09a7385b9a647dd7119",
+    "fixture/src/slugify.ts": "9ace179047a8e362ed0680ff0b26b6295fe73b8339f4535bfb01f57449ea3d9a"
+  },
+  "realCloudInference": "SKIP: credential absent; present-key gate uses dummy sentinel only"
+}

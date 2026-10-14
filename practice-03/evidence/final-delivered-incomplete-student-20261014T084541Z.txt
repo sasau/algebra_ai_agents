@@ -1,0 +1,8 @@
+npm warn Unknown user config "always-auth" (//artifactory.ib-ci.com/artifactory/api/npm/npm-release/:always-auth). This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+npm notice run practice-03-agent-architectures@1.0.0 verify:student
+npm notice run node --import tsx scripts/verify.ts student
+VERIFY_STUDENT FAIL checks=0/4 calls=0 evidence=evidence/verify-student-2026-10-14T08-45-49-744Z-d2d56cc4.json
+  Act 1: TODO_ACT_1: implement this architecture checkpoint (evidence/act-1-starter-offline-2026-10-14T08-45-49-605Z-21bc28d5.json)
+  Act 2: TODO_ACT_2: implement this architecture checkpoint (evidence/act-2-starter-offline-2026-10-14T08-45-49-657Z-c40d1d20.json)
+  Act 3: TODO_ACT_1: implement this architecture checkpoint (evidence/act-3-starter-offline-2026-10-14T08-45-49-701Z-a602b8e3.json)
+  Act 2: TODO_ACT_2: implement this architecture checkpoint (evidence/act-2-starter-offline-unsolvable-2026-10-14T08-45-49-742Z-4c3027e4.json)

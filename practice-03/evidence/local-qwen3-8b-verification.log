@@ -1,0 +1,13 @@
+$ OLLAMA_HOST=http://127.0.0.1:11434 OLLAMA_MODEL=qwen3:8b npm run verify:local
+VERIFY_LOCAL FAIL checks=0/3 calls=26 evidence=evidence/verify-local.json
+  Act 1: independent source tests failed (evidence/act-1-reference-local.json)
+  Act 2: TRUNCATED_RESPONSE (evidence/act-2-reference-local.json)
+  Act 3: independent source tests failed (evidence/act-3-reference-local.json)
+real 93.92
+user 0.54
+sys 0.15
+
+Executed 2026-10-14 on Apple M4 Max, 128 GiB, macOS 26.7.1, Ollama 0.40.3.
+Qwen3:8b Q4_K_M digest500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41.
+The preserved per-act files use the local-qwen3-8b- prefix.
+This is actual native local inference, not scripted fixtures.

@@ -1,0 +1,5 @@
+npm warn Unknown user config "always-auth" (//artifactory.ib-ci.com/artifactory/api/npm/npm-release/:always-auth). This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+npm notice run course-local-models@1.0.0 probe
+npm notice run node scripts/probe.mjs
+PROBE PASS inference=true calls=1 model=qwen3.5:9b elapsedMs=1911 evidence=evidence/probe-2026-10-14T08-45-48-670Z-3a3e2e4c.json
+This measures one tool request. It does not establish slugify repair or delegation capability.

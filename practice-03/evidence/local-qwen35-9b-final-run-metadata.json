@@ -1,0 +1,26 @@
+{
+  "recorded_at": "2026-10-14T08:36:03.182468+00:00",
+  "command": "OLLAMA_HOST=http://127.0.0.1:11434 OLLAMA_MODEL=qwen3.5:9b npm run verify:local",
+  "hardware": "Apple M4 Max, 128GiB unified memory, macOS26.7.1 arm64",
+  "ollama_version": "0.40.3",
+  "configuration": {
+    "stream": false,
+    "think": false,
+    "temperature": 0,
+    "num_ctx": 8192,
+    "num_predict": 2048,
+    "timeout_ms": 60000,
+    "model_call_budget_per_act": 24
+  },
+  "changes_since_first_9b_run": "Delegate literal role/sourcePath type+enum schemas and explicit successful-report-before-edit instruction; existing trusted cases now also check underscores per ASCII contract; explicit diagnostic labels. Grading still rejects missing child report; no source repair solution supplied.",
+  "sha256": {
+    "src/clients.ts": "5101b93ef9f8cf3f68857331dd2aaf530ddd554a93885e55f05923de68fa25fa",
+    "src/host.ts": "84ee51d0c2e8b01cd7c55aa0321fb8a5ad152bb07391e6d936b7dbb005b6fccb",
+    "src/lab.ts": "0d1ac094916a81675ff3a73cc3939c871af49701718849f165e5f43853a98e69",
+    "src/evaluator.ts": "d8a8cadf73433e768673eb1866238d1a9d3b7a8b9029765e208c768d2433c28f",
+    "trusted/acceptance.test.ts": "85e393af4aaf9005ad3234341e01443ce99dc15a8949b624e6a37adb0fbe61d5",
+    "reference/react-agent.ts": "fbb80107cd448e4a046cfffc404e40b4e32304fc7720547c80505a312a9371b9",
+    "reference/reflexion.ts": "c12861c3d8f53fc81a3bbd9a4d6589a25ff2ba094337d741d4ebf1f036e93d0b",
+    "reference/delegate.ts": "bb7b0909077aca82fb611d8a8f1afca868edfd78ef77797063b7d35158ad86ba"
+  }
+}

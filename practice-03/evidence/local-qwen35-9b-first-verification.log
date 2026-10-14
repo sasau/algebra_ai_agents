@@ -1,0 +1,14 @@
+$ OLLAMA_HOST=http://127.0.0.1:11434 OLLAMA_MODEL=qwen3.5:9b npm run verify:local
+VERIFY_LOCAL FAIL checks=2/3 calls=16 evidence=evidence/verify-local-2026-10-14T08-32-53-242Z-6c3a4d7d.json
+  Act 3: independent source tests failed (evidence/act-3-reference-local-2026-10-14T08-32-53-241Z-d067e751.json)
+real 17.50
+user 0.56
+sys 0.12
+
+Executed 2026-10-14 on Apple M4 Max, 128 GiB, macOS 26.7.1, Ollama 0.40.3.
+Qwen3.5:9b safetensors/MLX digestd63f830f28d515fefea546f213fca7a75e9dd5176ef51a6deabc952d1c99a911.
+Act1 PASS5calls; Act2 PASS5calls first attempt, no reflection; Act3 FAIL6calls.
+Act3 independent source test passed, but delegation contract failed: role 'slugify expert' was rejected, no child ran.
+The terminal's generic 'independent source tests failed' line does not distinguish this missing-delegation failure.
+The preserved per-act files use the local-qwen35-9b-first- prefix.
+This is actual native local inference, not scripted fixtures.

@@ -1,0 +1,37 @@
+{
+  "recorded_at": "2026-10-14T08:40:01.491760+00:00",
+  "command": "OLLAMA_HOST=http://127.0.0.1:11434 OLLAMA_MODEL=qwen3.5:9b npm run verify:local",
+  "hardware": "Apple M4 Max, 128GiB unified memory, macOS26.7.1 arm64",
+  "ollama_version": "0.40.3",
+  "configuration": {
+    "stream": false,
+    "think": false,
+    "temperature": 0,
+    "num_ctx": 8192,
+    "num_predict": 2048,
+    "timeout_ms": 60000,
+    "model_call_budget_per_act": 24,
+    "act_1_turns": 7,
+    "act_2_attempts": 2,
+    "act_2_turns_per_attempt": 7,
+    "act_3_parent_turns": 8,
+    "child_turns_max": 4
+  },
+  "contract_note": "Explicit role/sourcePath and maxTurns1..4 (choose3) text/schema; actionable brief validation errors; acceptance includes collapsed underscore runs; preserve named export; stop with no-tool response after observed passing tests. No repair regex supplied. No increased budget or relaxed checkpoint.",
+  "sha256": {
+    "fixture/src/slugify.ts": "9ace179047a8e362ed0680ff0b26b6295fe73b8339f4535bfb01f57449ea3d9a",
+    "fixture/test/slugify.test.ts": "77ff35b2c30192a6a63ff0959d977a82b30a14896f96e09a7385b9a647dd7119",
+    "reference/delegate.ts": "bb7b0909077aca82fb611d8a8f1afca868edfd78ef77797063b7d35158ad86ba",
+    "reference/react-agent.ts": "fbb80107cd448e4a046cfffc404e40b4e32304fc7720547c80505a312a9371b9",
+    "reference/reflexion.ts": "c12861c3d8f53fc81a3bbd9a4d6589a25ff2ba094337d741d4ebf1f036e93d0b",
+    "src/clients.ts": "a076e0189286a23823fd95068102145a25543f0a3294fe8b8e70a14fe951a773",
+    "src/delegation-contract.ts": "ed9da641bf67df406bb140d2c2d723e2a1a453d678cd803a4f71cdcea4663dfa",
+    "src/disposable.ts": "723f1493e24cfd0643dbf9abe8ead424675d6da5ce33538444bf536abad8fc93",
+    "src/evaluator.ts": "d8a8cadf73433e768673eb1866238d1a9d3b7a8b9029765e208c768d2433c28f",
+    "src/host.ts": "3e3e812739854e2dfb2186bdbfa0b2e36b54d0d2360bf3bc62935d10785f95a4",
+    "src/lab.ts": "0d1ac094916a81675ff3a73cc3939c871af49701718849f165e5f43853a98e69",
+    "src/types.ts": "193117f115dc9c2ac7ef6aef1fda37b1704c5d036577610381bc4a5d9d4303d5",
+    "src/workspace.ts": "55365e65660c72b4475b51127f6d27941c2c68fab368798d8ec5b53f4baa107f",
+    "trusted/acceptance.test.ts": "d0ebcda5a92e6217f5cd9bb5912697b7ca5d99e2a565d382e9c41b8ca96c9dd8"
+  }
+}

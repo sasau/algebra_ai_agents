@@ -1,0 +1,28 @@
+{
+  "status": "FAIL",
+  "inference": true,
+  "results": [
+    {
+      "act": 1,
+      "scenario": "repair",
+      "passed": false,
+      "calls": 4,
+      "evidence": "evidence/act-1-reference-local.json",
+      "error": "TRUNCATED_RESPONSE"
+    },
+    {
+      "act": 2,
+      "scenario": "repair",
+      "passed": false,
+      "calls": 8,
+      "evidence": "evidence/act-2-reference-local.json"
+    },
+    {
+      "act": 3,
+      "scenario": "repair",
+      "passed": false,
+      "calls": 2,
+      "evidence": "evidence/act-3-reference-local.json"
+    }
+  ]
+}

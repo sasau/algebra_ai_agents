@@ -1,0 +1,188 @@
+npm warn Unknown user config "always-auth" (//artifactory.ib-ci.com/artifactory/api/npm/npm-release/:always-auth). This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+npm warn Unknown user config "always-auth" (//artifactory.ib-ci.com/artifactory/api/npm/npm-release/:always-auth). This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+npm notice run practice-03-agent-architectures@1.0.0 test
+npm notice run node --import tsx --test tests/*.test.ts
+TAP version 13
+# Subtest: assistant content and tool request precede the matching tool result
+ok 1 - assistant content and tool request precede the matching tool result
+  ---
+  duration_ms: 6.48425
+  type: 'test'
+  ...
+# Subtest: history rejects orphan, missing and duplicate tool results
+ok 2 - history rejects orphan, missing and duplicate tool results
+  ---
+  duration_ms: 0.304875
+  type: 'test'
+  ...
+# Subtest: multiple requests are all paired with explicit rejection and none executes
+ok 3 - multiple requests are all paired with explicit rejection and none executes
+  ---
+  duration_ms: 3.431292
+  type: 'test'
+  ...
+# Subtest: unknown tools and malformed arguments return observable errors
+ok 4 - unknown tools and malformed arguments return observable errors
+  ---
+  duration_ms: 2.218542
+  type: 'test'
+  ...
+# Subtest: writes reject protected tests, configs, absolute and traversal paths
+ok 5 - writes reject protected tests, configs, absolute and traversal paths
+  ---
+  duration_ms: 2.4245
+  type: 'test'
+  ...
+# Subtest: symlink source cannot be read or edited
+ok 6 - symlink source cannot be read or edited
+  ---
+  duration_ms: 3.493333
+  type: 'test'
+  ...
+# Subtest: source read and edit sizes are bounded
+ok 7 - source read and edit sizes are bounded
+  ---
+  duration_ms: 2.295416
+  type: 'test'
+  ...
+# Subtest: false completion claims do not establish source correctness
+ok 8 - false completion claims do not establish source correctness
+  ---
+  duration_ms: 49.733375
+  type: 'test'
+  ...
+# Subtest: truncated, invalid and reused request ids reject before dispatch
+ok 9 - truncated, invalid and reused request ids reject before dispatch
+  ---
+  duration_ms: 0.304666
+  type: 'test'
+  ...
+# Subtest: turn exhaustion stops and invalid limits reject
+ok 10 - turn exhaustion stops and invalid limits reject
+  ---
+  duration_ms: 3.644208
+  type: 'test'
+  ...
+# Subtest: provider timeout is bounded even when transport ignores abort
+ok 11 - provider timeout is bounded even when transport ignores abort
+  ---
+  duration_ms: 10.84875
+  type: 'test'
+  ...
+# Subtest: HTTP provider failures are reported without tool dispatch
+ok 12 - HTTP provider failures are reported without tool dispatch
+  ---
+  duration_ms: 7.752584
+  type: 'test'
+  ...
+# Subtest: local rejects remote endpoints and credential-bearing host URLs
+ok 13 - local rejects remote endpoints and credential-bearing host URLs
+  ---
+  duration_ms: 0.100584
+  type: 'test'
+  ...
+# Subtest: local request uses paired tool_name and never forwards cloud credentials
+ok 14 - local request uses paired tool_name and never forwards cloud credentials
+  ---
+  duration_ms: 0.621666
+  type: 'test'
+  ...
+# Subtest: offline runs with credentials absent and ignores dummy credentials when present
+ok 15 - offline runs with credentials absent and ignores dummy credentials when present
+  ---
+  duration_ms: 0.084041
+  type: 'test'
+  ...
+# Subtest: cloud requires a credential, uses only official endpoint and pairs tool use
+ok 16 - cloud requires a credential, uses only official endpoint and pairs tool use
+  ---
+  duration_ms: 0.328041
+  type: 'test'
+  ...
+# Subtest: cloud and local truncation remain explicit
+ok 17 - cloud and local truncation remain explicit
+  ---
+  duration_ms: 0.322542
+  type: 'test'
+  ...
+# Subtest: parent, child and reflection consume the same overall call budget
+ok 18 - parent, child and reflection consume the same overall call budget
+  ---
+  duration_ms: 3.056667
+  type: 'test'
+  ...
+# Subtest: failed attempt, feedback and changed retry preserve lessons but refresh histories
+ok 19 - failed attempt, feedback and changed retry preserve lessons but refresh histories
+  ---
+  duration_ms: 204.058125
+  type: 'test'
+  ...
+# Subtest: unsolvable evaluator exhausts exactly two attempts and stops
+ok 20 - unsolvable evaluator exhausts exactly two attempts and stops
+  ---
+  duration_ms: 197.258459
+  type: 'test'
+  ...
+# Subtest: delegate child has fresh role context, complete brief and read-only tools
+ok 21 - delegate child has fresh role context, complete brief and read-only tools
+  ---
+  duration_ms: 1.912625
+  type: 'test'
+  ...
+# Subtest: delegate rejects nested calls, invalid role, omitted and extra brief fields
+ok 22 - delegate rejects nested calls, invalid role, omitted and extra brief fields
+  ---
+  duration_ms: 1.348292
+  type: 'test'
+  ...
+# Subtest: delegate enforces sequential execution and validates structured return
+ok 23 - delegate enforces sequential execution and validates structured return
+  ---
+  duration_ms: 1.436042
+  type: 'test'
+  ...
+# Subtest: independent evaluator detects fixture failure and accepts all five completed checks
+ok 24 - independent evaluator detects fixture failure and accepts all five completed checks
+  ---
+  duration_ms: 76.740291
+  type: 'test'
+  ...
+# Subtest: evaluation blocks source writes and child processes outside its read-only permission
+ok 25 - evaluation blocks source writes and child processes outside its read-only permission
+  ---
+  duration_ms: 78.959833
+  type: 'test'
+  ...
+# Subtest: evaluation kills infinite loops and rejects early process exit completion
+ok 26 - evaluation kills infinite loops and rejects early process exit completion
+  ---
+  duration_ms: 5042.865208
+  type: 'test'
+  ...
+# Subtest: student verification copies preserve the incomplete starter
+ok 27 - student verification copies preserve the incomplete starter
+  ---
+  duration_ms: 8.642958
+  type: 'test'
+  ...
+# Subtest: oversized provider response and malformed local response fail explicitly
+ok 28 - oversized provider response and malformed local response fail explicitly
+  ---
+  duration_ms: 0.423792
+  type: 'test'
+  ...
+# Subtest: provider body timeout is bounded independently from successful headers
+ok 29 - provider body timeout is bounded independently from successful headers
+  ---
+  duration_ms: 16.506208
+  type: 'test'
+  ...
+1..29
+# tests 29
+# suites 0
+# pass 29
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5861.135542
