@@ -1,0 +1,4 @@
+RESULT map(u1)=Optional[Optional[ada@example.org]]
+RESULT flatMap(u1)=Optional[ada@example.org]
+RESULT flatMap(u2)=Optional.empty
+RESULT flatMap(missing)=Optional.empty

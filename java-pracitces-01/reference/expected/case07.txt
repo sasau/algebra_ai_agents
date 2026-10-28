@@ -1,0 +1,3 @@
+RESULT u1=Ada
+RESULT u9=MissingCustomerException: No customer: u9
+RESULT empty.get=NoSuchElementException

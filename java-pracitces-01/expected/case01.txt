@@ -1,0 +1,4 @@
+RESULT of=Ada
+RESULT ofNullable(null)=Optional.empty
+RESULT empty.isEmpty=true
+RESULT of(null)=NullPointerException

@@ -1,0 +1,3 @@
+RESULT cache-hit=Optional[cache Ada]; dbCalls=0
+RESULT database-hit=Optional[db Ada]; dbCalls=1
+RESULT missing=Optional.empty

@@ -1,0 +1,1 @@
+RESULT hello=Optional lab is ready.

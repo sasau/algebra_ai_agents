@@ -1,0 +1,14 @@
+package edu.algebra.optional.app;
+public final class Main {
+    public static void main(String[] args) {
+        if (args.length == 1 && args[0].equals("hello")) {
+            System.out.println("The executable JAR dispatches this hello command to app.Main.");
+            System.out.println("RESULT hello=Optional lab is ready.");
+        } else if (args.length == 1 && args[0].equals("--list")) {
+            // No case packages exist yet.
+        } else {
+            System.err.println("Usage: java -jar target/optional-lab.jar hello|--list|caseNN");
+            System.exit(2);
+        }
+    }
+}

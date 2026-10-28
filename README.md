@@ -9,9 +9,23 @@ algebra_ai_agents/
   practice-01/    What are agents? — guided comparisons, supplied tools and agent loop, independently verified container run
   practice-02/    Tools and MCP — shared reader, bounded workspace server, Docker-backed ticket store
   practice-03/    Agent architectures — explicit loop, evidence-based retries, sequential delegation
+  java-pracitces-01/  Java Optional — create Maven project, prompts, skills, main examples and JUnit
   local-models/   Shared free local backend — Ollama tutorial, doctor, tool probe and practice tests
   ...
 ```
+
+## Extra Java practice
+
+[java-pracitces-01](java-pracitces-01/README.md) teaches **Optional only** through
+focused Claude prompts. Build the first example slowly: implement, add code
+explanations, run manually, ask Claude to connect actual output to source, then
+check expected behaviour in another prompt. Students create their first Java
+specialist, Maven project, skills and CLI, then reuse them for later examples.
+One 120-minute class covers creation, mapping and eager/lazy fallback; seven more
+cases are guided follow-up. JUnit is added after visible main examples.
+The kit supplies complete lesson conversations, fixed observations, wrapper seeds,
+inactive examples and a separate final reference. Start with the module README
+and WALKTHROUGH. Concurrency belongs in later practices.
 
 ## Two tracks, same exercises
 

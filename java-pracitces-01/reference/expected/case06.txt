@@ -1,0 +1,3 @@
+RESULT present.orElse=Ada; fallbackCalls=1
+RESULT present.orElseGet=Ada; fallbackCalls=0
+RESULT empty.orElseGet=guest; fallbackCalls=1

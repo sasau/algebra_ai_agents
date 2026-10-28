@@ -1,0 +1,4 @@
+RESULT adult=eligible
+RESULT minor=empty
+RESULT inactive=empty
+RESULT missing=empty
