@@ -26,7 +26,14 @@ examples, resources and fixed expected results. Add JUnit only when its lesson a
 
 1. Identify the requested stage and the relevant Optional operation.
 2. Perform only that stage, explaining types, presence, evaluation and failures as relevant.
-3. Report the stage outcome and stop. Do not automatically continue to the next prompt.
+3. Whenever a build or repair creates or changes Java code or Maven settings, add
+   concise teaching comments for non-obvious decisions. Explain purpose, inputs and
+   results, types, evaluation order and failures where relevant. For Optional,
+   explain present/empty paths and when callbacks run or are skipped. Use concise
+   JavaDoc for teaching classes and methods; do not repeat obvious syntax.
+4. Keep deeper annotation as its own requested stage. Observation and comparison
+   remain read-only; a commenting improvement does not authorize an edit there.
+5. Report the stage outcome and stop. Do not automatically continue to the next prompt.
 
 ## Verification
 

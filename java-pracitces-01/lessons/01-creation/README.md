@@ -19,6 +19,34 @@ Optional.<String>empty();
 This is an explanatory excerpt. The full implementation uses public methods and a
 main in `edu.algebra.optional.case01creation`. 
 
+## What we will build
+
+Build a small console program about names that may be present or missing.
+`case01` is the exercise name and the argument that selects it in the launcher.
+The example inputs are written directly in Java, so there is no case-data input file.
+
+Write these three methods, each returning `Optional<String>`:
+
+| Method to write | In plain language | Example result |
+|---|---|---|
+| `requiredName(String name)` | A name must be supplied. | `"Ada"` gives a present Optional; null throws. |
+| `nullableName(String name)` | The incoming name may be missing. | null gives an empty Optional. |
+| `emptyName()` | Return no name deliberately. | An empty Optional, rather than a null container. |
+
+Write a `main` that calls these methods, explains each input/operation/outcome,
+and prints results calculated from the calls. Catch the deliberate
+`requiredName(null)` failure so the demonstration can finish successfully.
+
+Files and responsibilities:
+
+- Create `src/main/java/edu/algebra/optional/case01creation/Main.java` with the methods and demo main.
+- Update `src/main/java/edu/algebra/optional/app/Main.java` to route `case01` to this demo and list it in `--list`.
+- This README contains the full prompts, one stage at a time.
+- The supplied `expected/case01.txt` is used for later comparison, not as program input. Its complete contents appear in stage5 below.
+
+The sequence is understand → build → explain → run → compare. Package first;
+do not claim a successful run or expected-result check until those later stages.
+
 ## 1. Build an informative example
 
 ```text
@@ -85,6 +113,20 @@ what incorrect code did; it does not by itself establish the intended behaviour.
 
 ## 5. Compare with expected behaviour in a separate prompt
 
+The entire supplied `expected/case01.txt` is:
+
+```text
+RESULT of=Ada
+RESULT ofNullable(null)=Optional.empty
+RESULT empty.isEmpty=true
+RESULT of(null)=NullPointerException
+```
+
+Compare these four stable lines with a fresh run. Additional explanatory stdout
+is allowed. Require exit0 and empty stderr. Do not have the Java program read
+this file or hardcode its lines as results; actual values come from method calls.
+Keep the fixture fixed. JUnit tests are introduced later.
+
 ```text
 Check case01 against the expected results in expected/case01.txt.
 Use fresh execution evidence; rebuild and rerun if the source changed.
@@ -93,15 +135,6 @@ Show a table: expected result, actual result, pass/fail and the Java rule involv
 Require exit code 0 and empty stderr. Report missing, extra or different RESULT lines.
 Do not edit source or expected files in this check. Report defects for a separate repair prompt.
 Explain what this check establishes and which inputs remain untested.
-```
-
-Expected observation lines:
-
-```text
-RESULT of=Ada
-RESULT ofNullable(null)=Optional.empty
-RESULT empty.isEmpty=true
-RESULT of(null)=NullPointerException
 ```
 
 Optional.empty() is an object representing absence. A null Optional variable would introduce a separate, unintended missing-container state.

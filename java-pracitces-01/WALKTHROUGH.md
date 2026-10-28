@@ -7,8 +7,11 @@ students can inspect inputs, Optional operations and outcomes in the terminal.
 ## 0–20 minutes: first specialist and project
 
 1. [Create java-tutor](prompts/00-create-java-tutor.md). Read the seven sections and tools.
-2. [Build the Maven shell](prompts/01-bootstrap-build.md), then
-   [explain its generated structure](prompts/02-bootstrap-explain.md).
+2. [Build the Maven shell](prompts/01-bootstrap-build.md). Then
+   [save a commenting policy in java-tutor](prompts/01a-java-tutor-comments.md):
+   future builds and repairs include useful explanations by default. Read the
+   agent-file diff before [annotating the current structure](prompts/02-bootstrap-explain.md)
+   in a separate prompt. Observation and comparison remain read-only.
 3. Run hello manually once. Then ask Claude to [observe and trace startup](prompts/03-bootstrap-observe.md).
 4. In another prompt, [check hello against its fixture](prompts/04-bootstrap-check.md).
 5. [Create the bootstrap skill](prompts/05-bootstrap-skill.md), inspect it, then

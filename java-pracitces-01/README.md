@@ -37,10 +37,15 @@ If you created `.claude/agents/` after starting Claude, exit and run
 `claude --continue` from the same project to reload definitions and resume the
 conversation. See the [agent-file loading documentation](https://code.claude.com/docs/en/sub-agents#write-subagent-files).
 
+Read the [Optional problem and complete API guide](OPTIONAL-API.md) for the class
+declaration, method signatures and links to the later worked examples. It is a
+reference map; keep building one example at a time.
+
 ## The learning sequence
 
 1. Create our first specialist, `java-tutor`, using the seven-section agent template.
-2. Build the Maven shell, explain it, observe hello and check its expected result
+2. Build the Maven shell, [save the commenting policy](prompts/01a-java-tutor-comments.md)
+   in java-tutor, explain the shell, observe hello and check its expected result
    through separate prompts. Extract a bootstrap skill.
 3. Complete case01 slowly: build → explain code → student manual run → Claude
    run/source trace → expected-result check. Repair only if needed, then reobserve/check.
