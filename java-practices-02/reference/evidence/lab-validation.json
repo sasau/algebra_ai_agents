@@ -1,0 +1,34 @@
+{
+  "lifecycle": {
+    "exit": 0,
+    "stderrEmpty": true,
+    "stdout": "jdk21-lifecycle.stdout.txt"
+  },
+  "races": {
+    "exit": 0,
+    "stderrEmpty": true,
+    "stdout": "jdk21-races.stdout.txt"
+  },
+  "orchestration": {
+    "exit": 0,
+    "stderrEmpty": true,
+    "stdout": "jdk21-orchestration.stdout.txt"
+  },
+  "dining": {
+    "exit": 0,
+    "stderrEmpty": true,
+    "stdout": "jdk21-dining.stdout.txt"
+  },
+  "compare": {
+    "exit": 0,
+    "stderrEmpty": true,
+    "stdout": "jdk21-compare.stdout.txt"
+  },
+  "junit": {
+    "tests": 16,
+    "failures": 0,
+    "errors": 0,
+    "skips": 0,
+    "jdk": "21.0.10"
+  }
+}

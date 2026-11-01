@@ -1,0 +1,8 @@
+[CONCEPT] An increment is a read, calculation and write. Volatile visibility does not make the whole sequence atomic.
+[SETUP] Start at zero; a barrier forces both workers to read zero before either writes snapshot + 1.
+RESULT lostUpdate=1
+[INTERPRET] Both writes contain one. The forced demonstration exposes a lost update without relying on chance.
+[REPAIR] Use the same monitor for the complete increment, then compare a single AtomicInteger update.
+RESULT synchronized=2000
+RESULT atomic=2000
+[VALIDATE] SharedStateTest requires the forced value one and 20,000 protected increments for its larger test inputs.

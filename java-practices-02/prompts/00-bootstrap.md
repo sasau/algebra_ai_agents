@@ -1,0 +1,1 @@
+Use the maven-boilerplate skill to create an empty Maven project in workspace. Keep Java release 21, UTF-8, pinned plugins and JUnit 5 test scope. Explain the generated files. Do not add a main class, tests or concurrency examples and do not execute a build yet.

@@ -1,0 +1,55 @@
+[CONCEPT] Pi needs Fi and F(i+1)%5. Each fork has one owner while eating.
+[SETUP] Force all five first forks to be held before any worker attempts its second fork: this forms circular wait.
+[RECOVERY] Interrupt every demonstration worker before joining any; finally releases all acquired locks.
+RESULT circular=Snapshot[heldFirstForks=5, workersStopped=true]
+[REPAIR] Every philosopher acquires the lower-numbered fork first. P4 therefore takes F0 before F4.
+[EXECUTE] Run three meals per philosopher on virtual threads. The following events are recorded by actual workers.
+P0 HUNGRY
+P2 HUNGRY
+P1 HUNGRY
+P3 HUNGRY
+P4 HUNGRY
+P0 EATING F0+F1
+P2 EATING F2+F3
+P2 THINKING
+P2 HUNGRY
+P0 THINKING
+P2 EATING F2+F3
+P0 HUNGRY
+P0 EATING F0+F1
+P2 THINKING
+P2 HUNGRY
+P2 EATING F2+F3
+P0 THINKING
+P0 HUNGRY
+P2 THINKING
+P3 EATING F3+F4
+P1 EATING F1+F2
+P3 THINKING
+P3 HUNGRY
+P1 THINKING
+P3 EATING F3+F4
+P1 HUNGRY
+P1 EATING F1+F2
+P3 THINKING
+P3 HUNGRY
+P1 THINKING
+P3 EATING F3+F4
+P1 HUNGRY
+P1 EATING F1+F2
+P3 THINKING
+P1 THINKING
+P0 EATING F0+F1
+P0 THINKING
+P4 EATING F4+F0
+P4 THINKING
+P4 HUNGRY
+P4 EATING F4+F0
+P4 THINKING
+P4 HUNGRY
+P4 EATING F4+F0
+P4 THINKING
+RESULT meals=[3, 3, 3, 3, 3]
+[SAFETY] Each eating section checks exclusive fork ownership; a violation raises an error through the task Future.
+[LIMIT] Event order can vary. Global lock order prevents deadlock but these finite runs do not prove starvation freedom.
+[VALIDATE] DiningPhilosophersTest checks recovery and four meals per philosopher on both thread strategies.

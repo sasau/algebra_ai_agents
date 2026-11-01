@@ -1,0 +1,1 @@
+Use java-concurrency-reviewer. Read the current lesson acceptance criteria, current workspace source and the fresh execution evidence. Check the invariant, failure path and cleanup separately from timing. Report PASS, FAIL or NOT VERIFIED with evidence and limitations. Do not edit or repair code. Run additional checks only if explicitly requested.

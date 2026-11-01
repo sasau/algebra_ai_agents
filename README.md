@@ -10,6 +10,7 @@ algebra_ai_agents/
   practice-02/    Tools and MCP — shared reader, bounded workspace server, Docker-backed ticket store
   practice-03/    Agent architectures — explicit loop, evidence-based retries, sequential delegation
   java-pracitces-01/  Java Optional — create Maven project, prompts, skills, main examples and JUnit
+  java-practices-02/  Java concurrency — supplied plans, narrated JUnit, thread experiments and Claude HTML explanations
   local-models/   Shared free local backend — Ollama tutorial, doctor, tool probe and practice tests
   ...
 ```
@@ -25,7 +26,14 @@ One 120-minute class covers creation, mapping and eager/lazy fallback; seven mor
 cases are guided follow-up. JUnit is added after visible main examples.
 The kit supplies complete lesson conversations, fixed observations, wrapper seeds,
 inactive examples and a separate final reference. Start with the module README
-and WALKTHROUGH. Concurrency belongs in later practices.
+and WALKTHROUGH. Continue with [Java concurrency Practice02](java-practices-02/README.md).
+
+[java-practices-02](java-practices-02/README.md) teaches Java concurrency through
+illustrated problems and solutions, short copy/paste build-and-run actions and
+actual console observations. Classroom specifications supply the implementation
+details while prepared specialists and a Maven skill support the work. The Java 21
+reference retains 16 narrated JUnit tests, equal-work platform/virtual comparisons
+and dining philosophers with interruptible recovery and ordered fork locks.
 
 ## Two tracks, same exercises
 

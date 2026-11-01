@@ -1,0 +1,8 @@
+[CONCEPT] An executor owns task execution; the caller still owns collecting results, failures and cleanup.
+[SETUP] Three simulated shops return 1,200, 1,800 and 2,400 cents through two platform workers.
+RESULT cents=5400
+[WHY] The total is returned only after every Future succeeds. A task failure propagates; unfinished work has a batch deadline.
+[SETUP] A two-slot queue contains A and B. Taking A makes space for the producer to insert C.
+RESULT queue=[A, B, C]
+[LIMIT] The queue result establishes FIFO transfer; the latch before put(C) does not prove an exact blocking instant.
+[VALIDATE] OrchestrationTest asserts totals, FIFO, propagated IOException, deadline cancellation and executor termination.

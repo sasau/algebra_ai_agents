@@ -1,0 +1,15 @@
+{
+  "src/test/java/edu/algebra/concurrency/DiningPhilosophersTest.java": "261aa38338b039a25a18ea53bbac8536a8eb3f1450f6b0e73d57de9601912561",
+  "src/test/java/edu/algebra/concurrency/LifecycleTest.java": "b72d2a0c63444fc330547ccbbded98d0a49a360c35a6c589a319357a55a4a577",
+  "src/test/java/edu/algebra/concurrency/SharedStateTest.java": "27307b75dc40d0d64f9a209dd052afc8c343b6048f6b7374ecd14a625ce68bba",
+  "src/test/java/edu/algebra/concurrency/LessonConsole.java": "2bddcc04522265d7b6371b7c00a59feb7841e583d8b3352b18544c8d63645a83",
+  "src/test/java/edu/algebra/concurrency/ThreadComparisonTest.java": "0303b29310b38c3bd6ede3c1d69c68b43f85fd76d1996225b8c5c8b2204bb6ad",
+  "src/test/java/edu/algebra/concurrency/OrchestrationTest.java": "3ae50075ece995f9fbbe4822f5737dc614ef5d933e71f9d5ad0a5c5b81f45b4e",
+  "src/main/java/edu/algebra/concurrency/Workloads.java": "c523688e291f95a81c2887897ab84195a4d9fc457c62ab35d2ab48f4be6117a3",
+  "src/main/java/edu/algebra/concurrency/DiningPhilosophers.java": "2f984d828286a63939004556e1aad5d5f427e04f4d49a887fc9f6807e8b4ed2d",
+  "src/main/java/edu/algebra/concurrency/Lifecycle.java": "b2d0255ac8c0eaa9e6544c310bf4688e97d0788d88f3b8e8d9e5338d2f07f532",
+  "src/main/java/edu/algebra/concurrency/Main.java": "5bbe62654bd9d10c144d625367a4c560827f77915758b157fe409916aafebf84",
+  "src/main/java/edu/algebra/concurrency/Orchestration.java": "b241a4a309ec8615db273684469eb70055f6b224371ff588cf574b1608e17ec1",
+  "src/main/java/edu/algebra/concurrency/Races.java": "817aabda2582d24e4e97f17fa2f53f58fbfb27607feb41766fc42acf872f539e",
+  "pom.xml": "da25242bd03fc4c663cb35280a6497ce3547b10492c2913448e1504e6ce220c7"
+}

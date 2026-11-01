@@ -1,0 +1,425 @@
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective settings
+[WARNING] 'profiles.profile[artifactory].repositories.repository.id' must be unique but found duplicate repository with id artifactory.ib-ci.com @ /Users/auscumlic/.m2/settings.xml
+[WARNING] 
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] --------------------< edu.algebra:concurrency-lab >---------------------
+[INFO] Building concurrency-lab 1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] Loaded 24320 auto-discovered prefixes for remote repository central (prefixes-central.txt)
+[INFO] 
+[INFO] --- clean:3.4.1:clean (default-clean) @ concurrency-lab ---
+[INFO] Deleting /Users/auscumlic/Development/algebra/practices/java-practices-02/reference/target
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ concurrency-lab ---
+[INFO] skip non existing resourceDirectory /Users/auscumlic/Development/algebra/practices/java-practices-02/reference/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.14.0:compile (default-compile) @ concurrency-lab ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 6 source files with javac [debug release 21] to target/classes
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ concurrency-lab ---
+[INFO] skip non existing resourceDirectory /Users/auscumlic/Development/algebra/practices/java-practices-02/reference/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.14.0:testCompile (default-testCompile) @ concurrency-lab ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 6 source files with javac [debug release 21] to target/test-classes
+[INFO] 
+[INFO] --- surefire:3.5.3:test (default-test) @ concurrency-lab ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running edu.algebra.concurrency.DiningPhilosophersTest
+
+================================================================
+[TEST] Circular wait: observe five held first forks, then stop every demonstration worker
+[ENV] Java 21.0.10; test caller=main
+[CONCEPT] Deadlock comes from a resource cycle, not merely from a slow or timed-out program.
+[SETUP] Pi acquires Fi, then waits for F(i+1)%5. A latch ensures all five first forks are held.
+[RECOVERY] The demonstration interrupts all workers before joining any; each worker releases acquired forks in finally.
+[OBSERVED] Snapshot[heldFirstForks=5, workersStopped=true]
+[ASSERT] held first forks: expected=5; observed=5
+[WHY] The coordinated ownership snapshot establishes the cycle; no second fork can be obtained.
+[ASSERT] all demonstration workers stopped: expected=true; observed=true
+[WHY] A teaching deadlock must recover and leave no demonstration worker alive after returning.
+[PASS] Circular wait: observe five held first forks, then stop every demonstration worker — all assertions completed successfully.
+
+================================================================
+[TEST] Global lock order: every philosopher completes four meals without sharing a held fork
+[ENV] Java 21.0.10; test caller=main
+[CONCEPT] Every philosopher takes min(left,right), then max(left,right), removing circular wait.
+[SETUP] Run five philosophers for four meals each on both platform and virtual threads.
+[DETAIL] P4 needs F4 and F0 but must acquire F0 first; all other workers use the same numeric ordering.
+[EXECUTE] Platform-thread dinner
+[ACTUAL EVENT] P0 HUNGRY
+[ACTUAL EVENT] P1 HUNGRY
+[ACTUAL EVENT] P2 HUNGRY
+[ACTUAL EVENT] P3 HUNGRY
+[ACTUAL EVENT] P4 HUNGRY
+[ACTUAL EVENT] P2 EATING F2+F3
+[ACTUAL EVENT] P0 EATING F0+F1
+[ACTUAL EVENT] P0 THINKING
+[ACTUAL EVENT] P2 THINKING
+[ACTUAL EVENT] P2 HUNGRY
+[ACTUAL EVENT] P0 HUNGRY
+[ACTUAL EVENT] P2 EATING F2+F3
+[ACTUAL EVENT] P2 THINKING
+[ACTUAL EVENT] P2 HUNGRY
+[ACTUAL EVENT] P2 EATING F2+F3
+[ACTUAL EVENT] P2 THINKING
+[ACTUAL EVENT] P2 HUNGRY
+[ACTUAL EVENT] P2 EATING F2+F3
+[ACTUAL EVENT] P2 THINKING
+[ACTUAL EVENT] P1 EATING F1+F2
+[ACTUAL EVENT] P3 EATING F3+F4
+[ACTUAL EVENT] P1 THINKING
+[ACTUAL EVENT] P3 THINKING
+[ACTUAL EVENT] P1 HUNGRY
+[ACTUAL EVENT] P3 HUNGRY
+[ACTUAL EVENT] P1 EATING F1+F2
+[ACTUAL EVENT] P3 EATING F3+F4
+[ACTUAL EVENT] P3 THINKING
+[ACTUAL EVENT] P3 HUNGRY
+[ACTUAL EVENT] P3 EATING F3+F4
+[ACTUAL EVENT] P1 THINKING
+[ACTUAL EVENT] P1 HUNGRY
+[ACTUAL EVENT] P1 EATING F1+F2
+[ACTUAL EVENT] P3 THINKING
+[ACTUAL EVENT] P3 HUNGRY
+[ACTUAL EVENT] P3 EATING F3+F4
+[ACTUAL EVENT] P1 THINKING
+[ACTUAL EVENT] P1 HUNGRY
+[ACTUAL EVENT] P1 EATING F1+F2
+[ACTUAL EVENT] P3 THINKING
+[ACTUAL EVENT] P1 THINKING
+[ACTUAL EVENT] P0 EATING F0+F1
+[ACTUAL EVENT] P0 THINKING
+[ACTUAL EVENT] P0 HUNGRY
+[ACTUAL EVENT] P0 EATING F0+F1
+[ACTUAL EVENT] P0 THINKING
+[ACTUAL EVENT] P0 HUNGRY
+[ACTUAL EVENT] P0 EATING F0+F1
+[ACTUAL EVENT] P0 THINKING
+[ACTUAL EVENT] P4 EATING F4+F0
+[ACTUAL EVENT] P4 THINKING
+[ACTUAL EVENT] P4 HUNGRY
+[ACTUAL EVENT] P4 EATING F4+F0
+[ACTUAL EVENT] P4 THINKING
+[ACTUAL EVENT] P4 HUNGRY
+[ACTUAL EVENT] P4 EATING F4+F0
+[ACTUAL EVENT] P4 THINKING
+[ACTUAL EVENT] P4 HUNGRY
+[ACTUAL EVENT] P4 EATING F4+F0
+[ACTUAL EVENT] P4 THINKING
+[ASSERT] meals for P0..P4: expected=[4, 4, 4, 4, 4]; observed=[4, 4, 4, 4, 4]
+[WHY] Each philosopher must make bounded progress in this run; a total alone could conceal a missed philosopher.
+[ASSERT] completed eating events: expected=20; observed=20
+[WHY] Five philosophers completing four meals must produce twenty observed eating entries.
+[SAFETY] Fork ownership was checked inside every eating section; a conflict raises AssertionError through its Future.
+[EXECUTE] Virtual-thread dinner
+[ACTUAL EVENT] P0 HUNGRY
+[ACTUAL EVENT] P0 EATING F0+F1
+[ACTUAL EVENT] P1 HUNGRY
+[ACTUAL EVENT] P2 HUNGRY
+[ACTUAL EVENT] P2 EATING F2+F3
+[ACTUAL EVENT] P3 HUNGRY
+[ACTUAL EVENT] P4 HUNGRY
+[ACTUAL EVENT] P2 THINKING
+[ACTUAL EVENT] P0 THINKING
+[ACTUAL EVENT] P2 HUNGRY
+[ACTUAL EVENT] P2 EATING F2+F3
+[ACTUAL EVENT] P0 HUNGRY
+[ACTUAL EVENT] P0 EATING F0+F1
+[ACTUAL EVENT] P2 THINKING
+[ACTUAL EVENT] P0 THINKING
+[ACTUAL EVENT] P2 HUNGRY
+[ACTUAL EVENT] P2 EATING F2+F3
+[ACTUAL EVENT] P0 HUNGRY
+[ACTUAL EVENT] P0 EATING F0+F1
+[ACTUAL EVENT] P2 THINKING
+[ACTUAL EVENT] P2 HUNGRY
+[ACTUAL EVENT] P2 EATING F2+F3
+[ACTUAL EVENT] P0 THINKING
+[ACTUAL EVENT] P0 HUNGRY
+[ACTUAL EVENT] P2 THINKING
+[ACTUAL EVENT] P3 EATING F3+F4
+[ACTUAL EVENT] P1 EATING F1+F2
+[ACTUAL EVENT] P3 THINKING
+[ACTUAL EVENT] P3 HUNGRY
+[ACTUAL EVENT] P3 EATING F3+F4
+[ACTUAL EVENT] P1 THINKING
+[ACTUAL EVENT] P1 HUNGRY
+[ACTUAL EVENT] P1 EATING F1+F2
+[ACTUAL EVENT] P3 THINKING
+[ACTUAL EVENT] P3 HUNGRY
+[ACTUAL EVENT] P1 THINKING
+[ACTUAL EVENT] P3 EATING F3+F4
+[ACTUAL EVENT] P1 HUNGRY
+[ACTUAL EVENT] P1 EATING F1+F2
+[ACTUAL EVENT] P3 THINKING
+[ACTUAL EVENT] P3 HUNGRY
+[ACTUAL EVENT] P3 EATING F3+F4
+[ACTUAL EVENT] P1 THINKING
+[ACTUAL EVENT] P1 HUNGRY
+[ACTUAL EVENT] P1 EATING F1+F2
+[ACTUAL EVENT] P1 THINKING
+[ACTUAL EVENT] P3 THINKING
+[ACTUAL EVENT] P0 EATING F0+F1
+[ACTUAL EVENT] P0 THINKING
+[ACTUAL EVENT] P4 EATING F4+F0
+[ACTUAL EVENT] P4 THINKING
+[ACTUAL EVENT] P4 HUNGRY
+[ACTUAL EVENT] P4 EATING F4+F0
+[ACTUAL EVENT] P4 THINKING
+[ACTUAL EVENT] P4 HUNGRY
+[ACTUAL EVENT] P4 EATING F4+F0
+[ACTUAL EVENT] P4 THINKING
+[ACTUAL EVENT] P4 HUNGRY
+[ACTUAL EVENT] P4 EATING F4+F0
+[ACTUAL EVENT] P4 THINKING
+[ASSERT] meals for P0..P4: expected=[4, 4, 4, 4, 4]; observed=[4, 4, 4, 4, 4]
+[WHY] Each philosopher must make bounded progress in this run; a total alone could conceal a missed philosopher.
+[ASSERT] completed eating events: expected=20; observed=20
+[WHY] Five philosophers completing four meals must produce twenty observed eating entries.
+[SAFETY] Fork ownership was checked inside every eating section; a conflict raises AssertionError through its Future.
+[LIMIT] Event order varies. These successful finite runs do not prove starvation freedom or scheduler fairness.
+[PASS] Global lock order: every philosopher completes four meals without sharing a held fork — all assertions completed successfully.
+
+================================================================
+[TEST] Dinner input: reject zero rounds before any philosopher starts
+[ENV] Java 21.0.10; test caller=main
+[SETUP] Request zero rounds; the lesson accepts 1..50 rounds.
+[EXPECT] IllegalArgumentException explains the valid range before any worker is created.
+[OBSERVED] IllegalArgumentException: rounds must be 1..50
+[PASS] Dinner input: reject zero rounds before any philosopher starts — all assertions completed successfully.
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.079 s -- in edu.algebra.concurrency.DiningPhilosophersTest
+[INFO] Running edu.algebra.concurrency.LifecycleTest
+
+================================================================
+[TEST] Lifecycle: start executes on the worker; a direct run stays on the caller
+[ENV] Java 21.0.10; test caller=main
+[CONCEPT] start creates another execution path; run is an ordinary method call.
+[SETUP] Create a platform worker named lesson-worker and capture Thread.currentThread().getName().
+[EXECUTE] Call startAndJoin; join waits for termination before the caller reads the result.
+[ASSERT] executing worker name: expected=lesson-worker; observed=lesson-worker
+[WHY] The name is obtained inside the task, so it identifies the thread that actually executed it.
+[EXECUTE] Call directRun from main; no new thread is started.
+[ASSERT] direct-call thread name: expected=main; observed=main
+[WHY] run executes on its caller. Its result must match the test caller, not the unstarted worker name.
+[INTERPRET] Successful join also establishes visibility of the worker actions to this caller.
+[LIMIT] This test checks ownership and completion; it makes no promise about which thread prints first.
+[PASS] Lifecycle: start executes on the worker; a direct run stays on the caller — all assertions completed successfully.
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in edu.algebra.concurrency.LifecycleTest
+[INFO] Running edu.algebra.concurrency.OrchestrationTest
+
+================================================================
+[TEST] Futures: collect every quote before returning the 5,400-cent total
+[ENV] Java 21.0.10; test caller=main
+[CONCEPT] Submitting a Callable creates pending work; collecting its Future establishes its outcome.
+[SETUP] Three independent shop quotes return 1,200, 1,800 and 2,400 cents on a pool of two workers.
+[ASSERT] sum of all successful quote results: expected=5400; observed=5400
+[WHY] The aggregator must read every Future. A partial total or successful submission alone is not completion.
+[LIMIT] The fixed pool bounds workers, but its default task queue is unbounded.
+[PASS] Futures: collect every quote before returning the 5,400-cent total — all assertions completed successfully.
+
+================================================================
+[TEST] Task failure: the quote aggregator exposes the worker's IOException
+[ENV] Java 21.0.10; test caller=main
+[CONCEPT] A worker exception must reach the coordinating caller rather than disappear in a Future.
+[SETUP] Inject a quote Callable that throws IOException with message shop unavailable.
+[EXPECT] collectQuotes must throw ExecutionException with the original IOException as its cause.
+[OBSERVED] ExecutionException caused by java.io.IOException: shop unavailable
+[ASSERT] original cause is preserved: expected=true; observed=true
+[WHY] The aggregator calls get on the Future, so the original shop failure remains available for diagnosis.
+[ASSERT] worker error message: expected=shop unavailable; observed=shop unavailable
+[WHY] A generic replacement exception would hide the information the caller needs.
+[PASS] Task failure: the quote aggregator exposes the worker's IOException — all assertions completed successfully.
+
+================================================================
+[TEST] BlockingQueue: removing A allows C to enter a full two-slot queue
+[ENV] Java 21.0.10; test caller=main
+[CONCEPT] A bounded queue applies backpressure and coordinates transfer without polling.
+[SETUP] Capacity is two. Prefill A and B; a producer attempts put(C); the consumer removes A.
+[ASSERT] FIFO transfer: expected=[A, B, C]; observed=[A, B, C]
+[WHY] Removing A frees capacity, producer completion makes C available, and FIFO ordering keeps B before C.
+[LIMIT] The pre-put latch signals progress to that line; it does not prove the producer was already blocked.
+[PASS] BlockingQueue: removing A allows C to enter a full two-slot queue — all assertions completed successfully.
+
+================================================================
+[TEST] Batch deadline: cancel unfinished quote work and release its blocked worker
+[ENV] Java 21.0.10; test caller=main
+[CONCEPT] A batch deadline limits waiting and requests cancellation of unfinished tasks.
+[SETUP] One shop waits on a latch. Set the batch deadline to one second; no sleep is used for coordination.
+[EXPECT] The real aggregator throws TimeoutException and its interruptible worker leaves its wait.
+[OBSERVED] TimeoutException: Quote batch deadline
+[ASSERT] worker actually started: expected=0; observed=0
+[WHY] The test exercised a running blocked task.
+[ASSERT] worker left its wait: expected=true; observed=true
+[WHY] Timed invokeAll cancels unfinished Futures; interruption reaches latch.await and cleanup completes.
+[LIMIT] A deadline is not a forced stop. A task that ignores interruption can still delay executor cleanup.
+[PASS] Batch deadline: cancel unfinished quote work and release its blocked worker — all assertions completed successfully.
+
+================================================================
+[TEST] Cancellation: cancel(true) interrupts a task and shutdown reaches termination
+[ENV] Java 21.0.10; test caller=main
+[CONCEPT] Interruption is a cooperative request, so observe both the request and task response.
+[SETUP] A worker announces it started and waits interruptibly on a latch.
+[ASSERT] task reached its start boundary: expected=true; observed=true
+[WHY] The test requests cancellation only after the worker is running.
+[ASSERT] cancellation accepted: expected=true; observed=true
+[WHY] The request targets an unfinished Future.
+[ASSERT] task observed interruption: expected=true; observed=true
+[WHY] An accepted request alone does not establish that the task responded.
+[ASSERT] Future is cancelled: expected=true; observed=true
+[WHY] The caller can observe the cancellation state.
+[ASSERT] executor terminated: expected=true; observed=true
+[WHY] A shutdown request must be followed by observed termination before this build step is validated.
+[PASS] Cancellation: cancel(true) interrupts a task and shutdown reaches termination — all assertions completed successfully.
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.020 s -- in edu.algebra.concurrency.OrchestrationTest
+[INFO] Running edu.algebra.concurrency.SharedStateTest
+
+================================================================
+[TEST] Monitor: the same synchronized boundary protects all 20,000 increments
+[ENV] Java 21.0.10; test caller=main
+[CONCEPT] Mutual exclusion protects the complete read-modify-write operation.
+[SETUP] Two workers perform 10,000 increments each through one synchronized monitor method.
+[ASSERT] monitor-protected counter: expected=20000; observed=20000
+[WHY] Every increment uses the same monitor; Future.get observes completion before the final read.
+[INTERPRET] The monitor supplies exclusive access and visibility. Protecting only the final assignment would be insufficient.
+[PASS] Monitor: the same synchronized boundary protects all 20,000 increments — all assertions completed successfully.
+
+================================================================
+[TEST] Lost update: a barrier forces two reads of zero before either write
+[ENV] Java 21.0.10; test caller=main
+[CONCEPT] Visibility is not atomicity: volatile count++ still reads, calculates and writes separately.
+[SETUP] Start at zero. Two workers each read the counter, then rendezvous at the same CyclicBarrier.
+[PREDICT] Both snapshots are zero, so both write one. The write order does not change the final value.
+[ASSERT] forced unsafe counter: expected=1; observed=1
+[WHY] This passing test establishes the deliberately demonstrated defect: two attempted increments lost one update.
+[LIMIT] The barrier forces this schedule. An uncoordinated loop that happens to return two would not prove safety.
+[PASS] Lost update: a barrier forces two reads of zero before either write — all assertions completed successfully.
+
+================================================================
+[TEST] AtomicInteger: one atomic update preserves all 20,000 increments
+[ENV] Java 21.0.10; test caller=main
+[CONCEPT] AtomicInteger.incrementAndGet is one atomic counter update.
+[SETUP] Keep the same two workers and 10,000 increments per worker; change only the protected operation.
+[ASSERT] atomic counter: expected=20000; observed=20000
+[WHY] Each atomic update includes the read and replacement, so competing increments cannot overwrite a shared old value.
+[LIMIT] An atomic counter does not make a larger multi-field business transaction atomic.
+[PASS] AtomicInteger: one atomic update preserves all 20,000 increments — all assertions completed successfully.
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.007 s -- in edu.algebra.concurrency.SharedStateTest
+[INFO] Running edu.algebra.concurrency.ThreadComparisonTest
+
+================================================================
+[TEST] Blocking tasks: every strategy completes equal work on the expected thread type
+[ENV] Java 21.0.10; test caller=main
+[CONCEPT] Execution strategy may change overlap and cost; it must not change results.
+[SETUP] Task ids 1..12 each wait 1 ms and return their id; the expected sum is 78.
+[POLICY] Sequential caller, three-worker platform pool, platform per task and virtual per task use the same body.
+[EXECUTE] Run SEQUENTIAL and wait for every result and executor cleanup.
+[OBSERVED] BLOCKING / SEQUENTIAL: completed=12; checksum=78; virtualTasks=0; peakActive=1; elapsed=15.267 ms
+[ASSERT] SEQUENTIAL completed tasks: expected=12; observed=12
+[WHY] Every submitted task must produce a result.
+[ASSERT] SEQUENTIAL checksum: expected=78; observed=78
+[WHY] The same numbered inputs require the same returned work.
+[ASSERT] SEQUENTIAL actual virtual tasks: expected=0; observed=0
+[WHY] Thread.isVirtual is captured inside each real task, not inferred from the selected label.
+[EXECUTE] Run PLATFORM_POOL and wait for every result and executor cleanup.
+[OBSERVED] BLOCKING / PLATFORM_POOL: completed=12; checksum=78; virtualTasks=0; peakActive=3; elapsed=7.155 ms
+[ASSERT] PLATFORM_POOL completed tasks: expected=12; observed=12
+[WHY] Every submitted task must produce a result.
+[ASSERT] PLATFORM_POOL checksum: expected=78; observed=78
+[WHY] The same numbered inputs require the same returned work.
+[ASSERT] PLATFORM_POOL actual virtual tasks: expected=0; observed=0
+[WHY] Thread.isVirtual is captured inside each real task, not inferred from the selected label.
+[EXECUTE] Run PLATFORM_PER_TASK and wait for every result and executor cleanup.
+[OBSERVED] BLOCKING / PLATFORM_PER_TASK: completed=12; checksum=78; virtualTasks=0; peakActive=12; elapsed=1.570 ms
+[ASSERT] PLATFORM_PER_TASK completed tasks: expected=12; observed=12
+[WHY] Every submitted task must produce a result.
+[ASSERT] PLATFORM_PER_TASK checksum: expected=78; observed=78
+[WHY] The same numbered inputs require the same returned work.
+[ASSERT] PLATFORM_PER_TASK actual virtual tasks: expected=0; observed=0
+[WHY] Thread.isVirtual is captured inside each real task, not inferred from the selected label.
+[EXECUTE] Run VIRTUAL_PER_TASK and wait for every result and executor cleanup.
+[OBSERVED] BLOCKING / VIRTUAL_PER_TASK: completed=12; checksum=78; virtualTasks=12; peakActive=12; elapsed=1.446 ms
+[ASSERT] VIRTUAL_PER_TASK completed tasks: expected=12; observed=12
+[WHY] Every submitted task must produce a result.
+[ASSERT] VIRTUAL_PER_TASK checksum: expected=78; observed=78
+[WHY] The same numbered inputs require the same returned work.
+[ASSERT] VIRTUAL_PER_TASK actual virtual tasks: expected=12; observed=12
+[WHY] Thread.isVirtual is captured inside each real task, not inferred from the selected label.
+[LIMIT] Elapsed times are observations. This unit test requires no speedup and claims no memory measurement.
+[PASS] Blocking tasks: every strategy completes equal work on the expected thread type — all assertions completed successfully.
+
+================================================================
+[TEST] Semaphore: twenty virtual tasks share at most two scarce-resource slots
+[ENV] Java 21.0.10; test caller=main
+[CONCEPT] Thread count and dependency capacity are separate policies.
+[SETUP] Create 20 virtual tasks but grant only two permits around active resource use.
+[OBSERVED] BLOCKING / VIRTUAL_PER_TASK: completed=20; checksum=210; virtualTasks=20; peakActive=2; elapsed=25.955 ms
+[ASSERT] completed tasks: expected=20; observed=20
+[WHY] Waiting for a permit must not discard tasks.
+[ASSERT] virtual tasks: expected=20; observed=20
+[WHY] Resource limiting must preserve the selected thread strategy.
+[ASSERT] resource peak: expected range=1..2; observed=2
+[ASSERT] resource concurrency remains within the limit: expected=true; observed=true
+[WHY] Only permit holders enter the instrumented section; finally releases their permits on every exit.
+[LIMIT] This bounds concurrent entry, not requests per second or total task admission.
+[PASS] Semaphore: twenty virtual tasks share at most two scarce-resource slots — all assertions completed successfully.
+
+================================================================
+[TEST] CPU tasks: changing thread strategy preserves the returned computation
+[ENV] Java 21.0.10; test caller=main
+[CONCEPT] More runnable threads do not add CPU cores. Verify equal work before interpreting performance.
+[SETUP] Use 12 ids and 1,000 arithmetic iterations each; retain the sequential checksum as the comparison baseline.
+[BASELINE] Sequential returned checksum=-5565026295003332162; signed long overflow is intentional.
+[OBSERVED] CPU / SEQUENTIAL: completed=12; checksum=-5565026295003332162; virtualTasks=0; peakActive=1; elapsed=0.076 ms
+[ASSERT] SEQUENTIAL completed CPU tasks: expected=12; observed=12
+[WHY] The computation must not omit work.
+[ASSERT] SEQUENTIAL CPU checksum: expected=-5565026295003332162; observed=-5565026295003332162
+[WHY] All modes compute and return the same values; no fixed relative-time assertion is valid here.
+[OBSERVED] CPU / PLATFORM_POOL: completed=12; checksum=-5565026295003332162; virtualTasks=0; peakActive=3; elapsed=0.399 ms
+[ASSERT] PLATFORM_POOL completed CPU tasks: expected=12; observed=12
+[WHY] The computation must not omit work.
+[ASSERT] PLATFORM_POOL CPU checksum: expected=-5565026295003332162; observed=-5565026295003332162
+[WHY] All modes compute and return the same values; no fixed relative-time assertion is valid here.
+[OBSERVED] CPU / PLATFORM_PER_TASK: completed=12; checksum=-5565026295003332162; virtualTasks=0; peakActive=1; elapsed=0.607 ms
+[ASSERT] PLATFORM_PER_TASK completed CPU tasks: expected=12; observed=12
+[WHY] The computation must not omit work.
+[ASSERT] PLATFORM_PER_TASK CPU checksum: expected=-5565026295003332162; observed=-5565026295003332162
+[WHY] All modes compute and return the same values; no fixed relative-time assertion is valid here.
+[OBSERVED] CPU / VIRTUAL_PER_TASK: completed=12; checksum=-5565026295003332162; virtualTasks=12; peakActive=2; elapsed=0.177 ms
+[ASSERT] VIRTUAL_PER_TASK completed CPU tasks: expected=12; observed=12
+[WHY] The computation must not omit work.
+[ASSERT] VIRTUAL_PER_TASK CPU checksum: expected=-5565026295003332162; observed=-5565026295003332162
+[WHY] All modes compute and return the same values; no fixed relative-time assertion is valid here.
+[LIMIT] These small unit workloads are for correctness. Use the separate warmup/median command for a timing experiment.
+[PASS] CPU tasks: changing thread strategy preserves the returned computation — all assertions completed successfully.
+
+================================================================
+[TEST] Input limits: reject an excessive task count before starting work
+[ENV] Java 21.0.10; test caller=main
+[SETUP] Request 257 tasks; the classroom runner supports at most 256 to bound native thread use.
+[EXPECT] Input validation rejects the call with IllegalArgumentException before executor creation.
+[OBSERVED] IllegalArgumentException: Use bounded task, work, pool and resource limits
+[PASS] Input limits: reject an excessive task count before starting work — all assertions completed successfully.
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.063 s -- in edu.algebra.concurrency.ThreadComparisonTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 16, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] 
+[INFO] --- jar:3.4.2:jar (default-jar) @ concurrency-lab ---
+[INFO] Building jar: /Users/auscumlic/Development/algebra/practices/java-practices-02/reference/target/concurrency-lab-1.0-SNAPSHOT.jar
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.425 s
+[INFO] Finished at: 2026-11-01T16:52:06+01:00
+[INFO] ------------------------------------------------------------------------

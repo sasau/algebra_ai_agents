@@ -1,0 +1,8 @@
+[CONCEPT] start schedules a worker; a direct run call executes on its caller.
+[SETUP] A platform worker named lesson-worker records its actual executing thread name.
+[EXECUTE] Start the worker and join it before reading its result.
+RESULT started=lesson-worker
+[WHY] join waits for termination and makes the worker's actions visible to this caller.
+[EXECUTE] Create a separate unstarted worker and call run directly from main
+RESULT directRun=main
+[VALIDATE] Run LifecycleTest: assertions compare the observed worker and caller names with their required values.
