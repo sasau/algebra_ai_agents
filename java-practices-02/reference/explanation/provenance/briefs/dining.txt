@@ -1,0 +1,36 @@
+Figure name: dining.
+Draw global ordering as a FIVE-EVENT numbered execution trace next to
+an appealing small round dinner illustration. Pi needs Fi and F(i+1)%5. Example
+tracks P0; P4 uses F0 then F4 (show this boundary rule explicitly).
+1 P0 hungry: F0 free, F1 free. 2 P0 acquires lower F0, ownsF0.
+3 P0 acquires higher F1, ownsF0+F1. 4 P0 EATS with both forks; neighbours
+P1 wait F1 and P4 wait F0; P2/P3 thinking in this illustrative snapshot.
+5 after eating: nested finally releases F1, then F0; both free.
+The dinner illustration is the static state AT STEP4: P0 visibly eating from a
+plate, P1 and P4 waiting, P2/P3 thinking, F0/F1 clearly owned by P0. Other forks
+may be free. Ownership links distinct from dashed wait requests.
+Animate actual eating using exactly ONE animateTransform on ONE orange spoon
+group, dur="3s", repeatCount="indefinite"; initial position explicit. Move spoon
+between P0 plate and mouth, do not animate labels or fork ownership. No other
+animation elements. All five trace events remain static; animation belongs only
+to illustrated step4, step5 is a later state, not simultaneous ownership.
+Global lower->higher order removes circular wait, not starvation proof.
+At least half width for five labelled steps; compact table illustration left or
+right. Max350 high; labels>=18. Avoid cartoon faces obscuring fork labels.
+Create a polished, informative native inline SVG in the existing course style.
+Use viewBox="0 0 940 330" unless another height is specified, never taller than 360.
+Use xmlns, role="img", a full-sentence aria-label, font-family="Inter,sans-serif".
+Exact palette: dark #1A1A2E, white #FAFAFE; neutral #7A7A8A/#B8B8C8;
+orange #FF6200/#FFF4ED/#C44E00; blue #0091FF/#E6F4FF/#0066BB;
+green #00C48C/#E6FAF3/#008866; purple #7B61FF/#F0EDFF/#5B41DF.
+Use dark text on pale cards, generous internal padding, consistent rounded cards,
+restrained icons and meaningful arrows. ALL labels >=18 units; heading 20-22.
+Do not squeeze prose into the art; use compact exact state labels and line breaks.
+Number actual events 1, 2, 3... prominently, with actor and state at each event.
+Make causality and before/after visible, not just a numbered list of abstract nouns.
+Use a suitable trace, resource drawing, memory snapshot, lane or ownership graph.
+Arrows mean execution order, result transfer or labelled ownership/wait requests.
+No connector through labels. No text overlap. Leave at least 14 units padding.
+IDs must start with the figure name and end in -pjava02. Define markers locally.
+No style, script, image, foreignObject, external files or tools. No animation except
+the specifically requested eating spoon. Return only SVG through the JSON schema.

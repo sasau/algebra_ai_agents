@@ -1,0 +1,32 @@
+Figure name: recovery.
+Draw numbered controlled deadlock recovery as five events with
+ownership changing. Initial five workers each hold Fi and request next fork.
+1 CALLER records heldFirstForks=5 (coordinated ownership snapshot).
+2 CALLER interrupts ALL FIVE workers BEFORE joining ANY worker.
+3 Each worker's lockInterruptibly or await observes interruption; finally unlocks
+only locks it actually acquired. Show first-fork ownership becoming free; not
+unconditional unlock of a second fork.
+4 CALLER joins each worker with bounded wait; then inspects isAlive on all.
+5 Return snapshot workersStopped=true only if none remain alive.
+Outcome: no demonstration thread left waiting, held forks released. Interruption
+is a cooperative request, not a force-kill or proof of termination. Include the
+explicit observation at5. An interrupted worker may acquire/release a second lock
+after neighbours release; do not claim every worker throws at the same point.
+Visual five-event recovery trace with caller/workers/resource states, max330.
+Create a polished, informative native inline SVG in the existing course style.
+Use viewBox="0 0 940 330" unless another height is specified, never taller than 360.
+Use xmlns, role="img", a full-sentence aria-label, font-family="Inter,sans-serif".
+Exact palette: dark #1A1A2E, white #FAFAFE; neutral #7A7A8A/#B8B8C8;
+orange #FF6200/#FFF4ED/#C44E00; blue #0091FF/#E6F4FF/#0066BB;
+green #00C48C/#E6FAF3/#008866; purple #7B61FF/#F0EDFF/#5B41DF.
+Use dark text on pale cards, generous internal padding, consistent rounded cards,
+restrained icons and meaningful arrows. ALL labels >=18 units; heading 20-22.
+Do not squeeze prose into the art; use compact exact state labels and line breaks.
+Number actual events 1, 2, 3... prominently, with actor and state at each event.
+Make causality and before/after visible, not just a numbered list of abstract nouns.
+Use a suitable trace, resource drawing, memory snapshot, lane or ownership graph.
+Arrows mean execution order, result transfer or labelled ownership/wait requests.
+No connector through labels. No text overlap. Leave at least 14 units padding.
+IDs must start with the figure name and end in -pjava02. Define markers locally.
+No style, script, image, foreignObject, external files or tools. No animation except
+the specifically requested eating spoon. Return only SVG through the JSON schema.

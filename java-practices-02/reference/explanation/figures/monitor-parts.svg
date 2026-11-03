@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 330" role="img" aria-label="Diagram of a synchronized block: thread A owns monitor M for the same lock object inside the protected braces, threads B and C are blocked at the entry gate with no arrival-order promise, and A's closing brace releases M so another contender may enter." font-family="Inter,sans-serif">
+<defs>
+<marker id="monitor-parts-ar-o-pjava02" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10z" fill="#C44E00"/></marker>
+<marker id="monitor-parts-ar-g-pjava02" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10z" fill="#008866"/></marker>
+</defs>
+<rect width="940" height="330" fill="#FAFAFE"/>
+<text x="14" y="26" font-size="21" font-weight="700" fill="#1A1A2E">Monitor parts: one lock, one owner</text>
+<rect x="14" y="44" width="302" height="224" rx="14" fill="#F0EDFF" stroke="#7B61FF" stroke-width="2"/>
+<path d="M40 74H32V212H40" fill="none" stroke="#C44E00" stroke-width="3"/>
+<g font-family="monospace" font-size="18" fill="#1A1A2E">
+<text x="50" y="90">synchronized (lock) <tspan fill="#C44E00" font-weight="700">{</tspan></text>
+<text x="70" y="128">read shared count;</text>
+<text x="70" y="166">calculate and write;</text>
+<text x="50" y="204" fill="#C44E00" font-weight="700">}</text></g>
+<text x="130" y="232" font-size="18" fill="#008866" font-weight="700">release M</text>
+<text x="50" y="258" font-size="18" font-weight="700" fill="#C44E00">protected block</text>
+<circle cx="250" cy="64" r="13" fill="#1A1A2E"/><text x="250" y="70" font-size="18" text-anchor="middle" fill="#FAFAFE">3</text>
+<rect x="350" y="44" width="240" height="224" rx="14" fill="#E6F4FF" stroke="#0091FF" stroke-width="2"/>
+<text x="368" y="76" font-size="20" font-weight="700" fill="#1A1A2E">Monitor M</text>
+<text x="368" y="102" font-size="18" fill="#1A1A2E">of object: lock</text>
+<circle cx="568" cy="62" r="13" fill="#1A1A2E"/><text x="568" y="68" font-size="18" text-anchor="middle" fill="#FAFAFE">1</text>
+<rect x="368" y="116" width="204" height="36" rx="10" fill="#E6FAF3" stroke="#00C48C" stroke-width="2"/>
+<text x="470" y="141" font-size="18" font-weight="700" text-anchor="middle" fill="#1A1A2E">owner = A</text>
+<rect x="368" y="164" width="204" height="86" rx="10" fill="#F0EDFF" stroke="#7B61FF" stroke-width="2"/>
+<text x="470" y="192" font-size="18" text-anchor="middle" fill="#1A1A2E">protected state</text>
+<text x="470" y="226" font-size="20" font-weight="700" text-anchor="middle" fill="#1A1A2E">count = 7</text>
+<line x1="590" y1="108" x2="590" y2="240" stroke="#FF6200" stroke-width="6"/>
+<path d="M64 200H348" stroke="#008866" stroke-width="3" fill="none" marker-end="url(#monitor-parts-ar-g-pjava02)"/>
+<circle cx="310" cy="178" r="13" fill="#1A1A2E"/><text x="310" y="184" font-size="18" text-anchor="middle" fill="#FAFAFE">5</text>
+<text x="602" y="112" font-size="18" fill="#C44E00" font-weight="700">acquire</text>
+<path d="M706 134H606" stroke="#C44E00" stroke-width="3" fill="none" stroke-dasharray="6 4" marker-end="url(#monitor-parts-ar-o-pjava02)"/><path d="M706 188H606" stroke="#C44E00" stroke-width="3" fill="none" stroke-dasharray="6 4" marker-end="url(#monitor-parts-ar-o-pjava02)"/>
+<path d="M600 122V146M600 176V200" stroke="#1A1A2E" stroke-width="4"/>
+<circle cx="648" cy="161" r="13" fill="#1A1A2E"/><text x="648" y="167" font-size="18" text-anchor="middle" fill="#FAFAFE">2</text>
+<rect x="690" y="44" width="236" height="224" rx="14" fill="#FFF4ED" stroke="#FF6200" stroke-width="2"/>
+<text x="706" y="76" font-size="20" font-weight="700" fill="#1A1A2E">Entry contenders</text>
+<circle cx="906" cy="62" r="0" fill="none"/>
+<circle cx="730" cy="134" r="22" fill="#FAFAFE" stroke="#C44E00" stroke-width="2"/><text x="730" y="141" font-size="20" font-weight="700" text-anchor="middle" fill="#1A1A2E">B</text>
+<circle cx="730" cy="188" r="22" fill="#FAFAFE" stroke="#C44E00" stroke-width="2"/><text x="730" y="195" font-size="20" font-weight="700" text-anchor="middle" fill="#1A1A2E">C</text>
+<text x="766" y="140" font-size="18" fill="#1A1A2E">BLOCKED</text>
+<text x="766" y="194" font-size="18" fill="#1A1A2E">BLOCKED</text>
+<text x="706" y="232" font-size="18" font-weight="700" fill="#1A1A2E">no arrival-order promise</text>
+<text x="706" y="256" font-size="18" fill="#008866">one enters after release</text>
+<circle cx="900" cy="108" r="13" fill="#1A1A2E"/><text x="900" y="114" font-size="18" text-anchor="middle" fill="#FAFAFE">4</text>
+<text x="14" y="302" font-size="18" fill="#1A1A2E">Instance synchronized method locks this; static synchronized locks the Class object.</text>
+<text x="14" y="322" font-size="18" fill="#1A1A2E">Entry area is conceptual, not a Java queue.</text>
+</svg>

@@ -1,0 +1,35 @@
+Figure name: semaphore-parts.
+Anatomy of Semaphore(2). Show PERMIT COUNTER initially2,
+resource region with2 admission slots, taskA/B inside each after successful
+acquire, and tasksC/D waiting for permits outside. Counter now0. Label
+acquire(): wait then decrement if successful; protected resource use between
+acquire and release; release(): increment, may enable a waiting task.
+Code bracket: permits.acquire(); try { useResource(); } finally { permits.release(); }
+Acquire is BEFORE try, so failed acquisition does not release. Label20 virtual
+tasks can exist while resource users<=2. Unlike Lock, Semaphore does not track
+ownership or enforce initial count as a maximum; correct pairing matters.
+No FIFO promise for default constructor. Parts not just abstract flow, height330.
+Create a polished, informative native inline SVG in the existing course style.
+Use viewBox="0 0 940 330" unless another height is specified, never taller than 360.
+Use xmlns, role="img", a full-sentence aria-label, font-family="Inter,sans-serif".
+Exact palette: dark #1A1A2E, white #FAFAFE; neutral #7A7A8A/#B8B8C8;
+orange #FF6200/#FFF4ED/#C44E00; blue #0091FF/#E6F4FF/#0066BB;
+green #00C48C/#E6FAF3/#008866; purple #7B61FF/#F0EDFF/#5B41DF.
+Use dark text on pale cards, generous internal padding, consistent rounded cards,
+restrained icons and meaningful arrows. ALL labels >=18 units; heading 20-22.
+Do not squeeze prose into the art; use compact exact state labels and line breaks.
+Use numbered callouts for named parts on anatomy figures; use numbered actual events on failure/repair traces.
+Make causality and before/after visible, not just a numbered list of abstract nouns.
+Use a suitable trace, resource drawing, memory snapshot, lane or ownership graph.
+Arrows mean execution order, result transfer or labelled ownership/wait requests.
+No connector through labels. No text overlap. Leave at least 14 units padding.
+IDs must start with the figure name and end in -pjava02. Define markers locally.
+No style, script, image, foreignObject, external files or tools. No animation except
+the specifically requested eating spoon. Return only SVG through the JSON schema.
+
+These figures INTRODUCE mechanism parts or explain failure/mitigation.
+Do not conflate queue of tasks with blocked thread contenders. Queue-like monitor
+entry drawing is conceptual with no FIFO guarantee. Use code braces to annotate
+protected regions where requested. Avoid more than8 short labels per panel.
+All numeric badges: dark #1A1A2E circle with white #FAFAFE number. Labels stay18+.
+No animation in these new figures. Follow exact Java21 semantics in the brief.

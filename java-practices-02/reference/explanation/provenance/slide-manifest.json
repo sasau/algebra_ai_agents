@@ -1,0 +1,529 @@
+[
+  {
+    "n": 1,
+    "title": "Java concurrency",
+    "lead": "Build small Java programs that make thread behaviour visible. First explain the problem and the Java mechanism that solves it, using a diagram and a concrete expected result. Then copy one build request, run the tests and console example, and connect the observed output to that mechanism. Study completion, shared state, task outcomes, virtual threads and competing resources.",
+    "figure": "\u2014",
+    "kind": "title"
+  },
+  {
+    "n": 2,
+    "title": "Concurrency \u2014 four problems Java must coordinate",
+    "lead": "A task is a unit of work; a thread is an execution path that performs it. Concurrency means tasks overlap in lifetime, while parallelism means they execute simultaneously. Overlap introduces four practical questions: when work is complete, who may update shared state, how outcomes reach the caller and how workers acquire scarce resources. Each example isolates one of these questions.",
+    "figure": "JC2.1",
+    "kind": "",
+    "figure_name": "java-problems"
+  },
+  {
+    "n": 3,
+    "title": "Practice sequence \u2014 one Java problem at a time",
+    "lead": "The core moves from one worker to shared counters, task batches and multiple resources. Each mechanism now starts with its parts and waiting points, followed by failures, mitigations and a worked execution. Then build, run and validate the example. Use additional failure cases for discussion or follow-up when a build needs more time. Queue implementation, extended failure tests and deeper CPU interpretation remain guided extensions.",
+    "figure": "\u2014",
+    "kind": ""
+  },
+  {
+    "n": 4,
+    "title": "Project setup \u2014 reuse the supplied tools",
+    "lead": "Use the prepared Maven skill and specialists from the practice kit. The tutor builds the selected Java feature and its tests; the reviewer verifies the result. Their detailed instructions already live in the repository. The generated workspace starts empty, while reference contains the completed instructor solution. The examples execute locally as ordinary Java programs and need no external service.",
+    "figure": "\u2014",
+    "kind": ""
+  },
+  {
+    "n": 5,
+    "title": "Thread lifecycle \u2014 obtain a completed result",
+    "lead": "A caller hands work to another thread but still needs a reliable result. Starting that worker and waiting for it are different operations. Build a small console example that records the actual executing thread name, then compare a started worker with a direct method call. The example isolates execution ownership, completion and visibility before any shared counter or thread pool is introduced.",
+    "figure": "\u2014",
+    "kind": "section"
+  },
+  {
+    "n": 6,
+    "title": "Thread \u2014 identify the task, worker and completion boundary",
+    "lead": "A Thread object represents an execution path; its Runnable body describes the work. Creating an unstarted object does not execute that body. Start makes the worker eligible to run, while join lets the caller wait for termination. The result is separate shared data. The diagram connects these parts to their Java calls before the example compares a started worker with a direct run call.",
+    "figure": "JC2.2",
+    "kind": "",
+    "figure_name": "thread-parts"
+  },
+  {
+    "n": 7,
+    "title": "Thread \u2014 an unfinished worker can keep join waiting",
+    "lead": "A worker that never terminates can keep a caller inside join forever. This illustrative loop has no circular resource dependency, so its failure is nontermination. Cancellation must be part of the worker design: use finite work units, check cancellation, and leave through cleanup. A bounded join limits how long the caller waits, then an explicit liveness check determines whether the worker actually stopped.",
+    "figure": "JC2.3",
+    "kind": "",
+    "figure_name": "thread-stall"
+  },
+  {
+    "n": 8,
+    "title": "Thread lifecycle \u2014 starting work does not finish it",
+    "lead": "We want a method that starts one worker and returns the name recorded inside its task. Calling start only makes that worker eligible to run; the caller continues immediately. If it reads the shared result too early, it can still find null. The problem is a missing completion boundary. The diagram shows one possible unsafe schedule; the source we will build must wait before returning the result.",
+    "figure": "JC2.4",
+    "kind": "",
+    "figure_name": "lifecycle-problem"
+  },
+  {
+    "n": 9,
+    "title": "Thread lifecycle \u2014 start work, join, then read",
+    "lead": "Calling start schedules run on the worker. The caller then invokes join, which waits for termination before it reads the recorded name. Successful join also establishes happens-before: worker actions become visible to that caller. A direct run call follows the caller\u2019s ordinary method stack and creates no second execution path. These are the two behaviours our console example will compare.",
+    "figure": "JC2.5",
+    "kind": "",
+    "figure_name": "lifecycle-solution"
+  },
+  {
+    "n": 10,
+    "title": "Thread lifecycle \u2014 build and run",
+    "lead": "Build the two cases from the diagram: a started worker returns lesson-worker after join, while a direct run records its caller. Copy the supplied request, then run the narrated test and lifecycle example.",
+    "figure": "\u2014",
+    "kind": ""
+  },
+  {
+    "n": 11,
+    "title": "Thread lifecycle \u2014 connect output to the Java feature",
+    "lead": "The completed reference reports lesson-worker for the started task and main for the direct call from Main. Both names are captured by Thread.currentThread inside the task body. LifecycleTest checks the worker result and compares directRun with the test caller\u2019s actual name. The output exposes execution ownership; the join operation supplies completion and visibility. No assertion depends on which thread prints first.",
+    "figure": "\u2014",
+    "kind": ""
+  },
+  {
+    "n": 12,
+    "title": "Shared state \u2014 preserve the counter invariant",
+    "lead": "Two workers incrementing one counter can overwrite each other even when every thread finishes successfully. First force a lost update so its cause is reproducible. Then protect the complete increment using a monitor and an atomic counter. The invariant is numerical: the final count must equal the total number of increments performed by both workers.",
+    "figure": "\u2014",
+    "kind": "section"
+  },
+  {
+    "n": 13,
+    "title": "Barrier and latch \u2014 name the participants and release condition",
+    "lead": "A CyclicBarrier lets a fixed number of peers meet at a reusable phase boundary. Our two counter workers finish their reads before either writes. A CountDownLatch instead counts one-shot signals down to zero; an awaiting caller continues only then. The participant count, waiting point and release condition are different parts of these mechanisms. Neither primitive collects a task value or reports its exception by itself.",
+    "figure": "JC2.6",
+    "kind": "",
+    "figure_name": "rendezvous-parts"
+  },
+  {
+    "n": 14,
+    "title": "Barrier and latch \u2014 missing signals need bounded failure handling",
+    "lead": "A missing participant can prevent a rendezvous from completing. If B fails before reaching a barrier, an untimed A can wait indefinitely. If a worker forgets its latch signal, the count may never reach zero. Use timed waits and observe task failures. A latch signal in finally can mean that a worker ended; Future results must still distinguish success from failure. A barrier timeout breaks that barrier phase and releases other waiters exceptionally.",
+    "figure": "JC2.7",
+    "kind": "",
+    "figure_name": "rendezvous-failure"
+  },
+  {
+    "n": 15,
+    "title": "Race condition \u2014 both workers can overwrite one update",
+    "lead": "An increment reads the old value, calculates its successor and writes it back. Two workers can both read zero, then both store one. A barrier makes both reads finish before either write, forcing this lost update. Declaring the field volatile gives visibility and ordering guarantees for individual accesses; it does not make the complete read-modify-write sequence indivisible.",
+    "figure": "JC2.8",
+    "kind": "",
+    "figure_name": "race"
+  },
+  {
+    "n": 16,
+    "title": "Lost update \u2014 build and run the forced schedule",
+    "lead": "Build only the forced lost update. Two workers read zero before either writes. The narrated test must observe one; then run races to inspect the same counter result. Add the repairs in the next step.",
+    "figure": "\u2014",
+    "kind": ""
+  },
+  {
+    "n": 17,
+    "title": "Synchronized \u2014 identify the monitor, block and blocked contenders",
+    "lead": "synchronized (lock) acquires the monitor associated with that particular object. Its braces enclose the protected block. One thread owns the monitor while other contenders wait to enter; their Java state is BLOCKED. Exiting the block normally or exceptionally releases the monitor. The same object must guard every access covered by the policy. The entry area below shows contenders, without promising their arrival order will be preserved.",
+    "figure": "JC2.9",
+    "kind": "",
+    "figure_name": "monitor-parts"
+  },
+  {
+    "n": 18,
+    "title": "Synchronized \u2014 an endless protected loop prevents entry",
+    "lead": "If A runs an unbounded loop while owning a monitor, B and C can remain blocked at entry. This is a monitor held indefinitely, without requiring a deadlock cycle. An interrupt does not automatically unlock the monitor or stop a loop that ignores cancellation. Move long computation or blocking work outside the critical section where the invariant permits it, and keep each protected update finite. Cancellation checks let the owner finish its work and leave.",
+    "figure": "JC2.10",
+    "kind": "",
+    "figure_name": "monitor-stall"
+  },
+  {
+    "n": 19,
+    "title": "Synchronized \u2014 opposite nested lock orders create a true deadlock",
+    "lead": "A deadlock occurs when dependencies form a cycle that prevents every participant from progressing. A owns M1 and waits for M2; B owns M2 and waits for M1. Neither reaches its release boundary. Require one global acquisition order, such as M1 before M2, or remove unnecessary nested locking. Then a waiting worker cannot hold the later resource that the owner still needs. Keep protected work finite as a separate requirement.",
+    "figure": "JC2.11",
+    "kind": "",
+    "figure_name": "monitor-cycle"
+  },
+  {
+    "n": 20,
+    "title": "Monitor \u2014 serialize the complete counter update",
+    "lead": "A monitor gives one worker exclusive entry to a synchronized operation. Protect the read, calculation and write with the same monitor. While A updates the counter, B waits outside that operation. After A releases the monitor, B reads the new value rather than the old zero. The numbered trace follows two increments; either worker may acquire first without changing the final total.",
+    "figure": "JC2.12",
+    "kind": "",
+    "figure_name": "monitor"
+  },
+  {
+    "n": 21,
+    "title": "AtomicInteger \u2014 identify the shared value and operation boundary",
+    "lead": "An AtomicInteger contains one shared integer and operations with specific guarantees. Get reads a value, set replaces it, and incrementAndGet increases it atomically and returns the new value. Both workers must address the same object. The boundary surrounds one operation, including the increment\u2019s read and update. It does not automatically surround a sequence of separate calls or protect an unrelated field. There is no monitor-entry queue exposed by this API.",
+    "figure": "JC2.13",
+    "kind": "",
+    "figure_name": "atomic-parts"
+  },
+  {
+    "n": 22,
+    "title": "AtomicInteger \u2014 separate checks and updates can still race",
+    "lead": "Atomic methods do not make an entire check-then-act sequence atomic. With one ticket left, A and B can each read one before either decrements; two atomic decrements then produce minus one. CompareAndSet can condition the update on the expected value: only one change from one to zero succeeds. A failed contender rereads and rechecks the condition. A monitor around the whole decision or a semaphore for admission can express the same required invariant.",
+    "figure": "JC2.14",
+    "kind": "",
+    "figure_name": "atomic-check-act"
+  },
+  {
+    "n": 23,
+    "title": "AtomicInteger \u2014 make one counter transition indivisible",
+    "lead": "AtomicInteger.incrementAndGet combines reading the counter and increasing it into one atomic operation. Concurrent calls take effect in a valid order even while their lifetimes overlap. In this trace A changes zero to one and B changes one to two. The caller waits for both tasks before checking the final count. The API supplies the atomic update without exposing intermediate local calculations.",
+    "figure": "JC2.15",
+    "kind": "",
+    "figure_name": "atomic"
+  },
+  {
+    "n": 24,
+    "title": "Atomicity \u2014 protect the complete increment",
+    "lead": "Mutual exclusion permits only one worker at a time inside a protected operation. A synchronized method uses one monitor to protect the entire increment and provides visibility at that boundary. AtomicInteger.incrementAndGet supplies an atomic update for one counter. Both approaches preserve the invariant when every counter access follows the same policy. Choose the guarantee required by the state being protected.",
+    "figure": "\u2014",
+    "kind": ""
+  },
+  {
+    "n": 25,
+    "title": "Counter repairs \u2014 build and run both solutions",
+    "lead": "Add the monitor and AtomicInteger repairs while preserving the forced race. Run tests with ten thousand increments per worker, then the console\u2019s smaller workload. Both protected variants must preserve every increment.",
+    "figure": "\u2014",
+    "kind": ""
+  },
+  {
+    "n": 26,
+    "title": "Counter results \u2014 visibility alone did not preserve the total",
+    "lead": "The reference console records one for the forced race and two thousand for each protected variant, using one thousand increments per worker. The larger unit tests each require twenty thousand. The important difference is the atomicity boundary: both correct variants protect the full update. The barrier makes the defect reproducible; join or Future completion ensures the final result is read after workers finish.",
+    "figure": "\u2014",
+    "kind": ""
+  },
+  {
+    "n": 27,
+    "title": "Work orchestration \u2014 collect every task outcome",
+    "lead": "A program requesting several independent results needs more than threads that happen to run. It must decide where tasks execute, collect values and failures, define a deadline and release its workers. Build a price aggregator for three simulated shops. The caller returns a total only after every required result has succeeded.",
+    "figure": "\u2014",
+    "kind": "section"
+  },
+  {
+    "n": 28,
+    "title": "ExecutorService \u2014 identify tasks, workers, queue and outcome receipts",
+    "lead": "An ExecutorService separates submitted work from the threads that execute it. Submit accepts a task and returns a Future receipt. A fixed pool reuses worker threads; pending tasks wait in its task queue until a worker is available. The caller can independently wait for the receipt\u2019s outcome. Queue entries are tasks, not waiting threads. The diagram also names the lifecycle boundary: stop accepting work, finish or cancel outstanding work, and observe termination.",
+    "figure": "JC2.16",
+    "kind": "",
+    "figure_name": "executor-parts"
+  },
+  {
+    "n": 29,
+    "title": "ExecutorService \u2014 bound the backlog and handle rejected work",
+    "lead": "Two busy workers do not bound the number of submitted tasks. With an unbounded queue, slow work can create growing latency and memory pressure. An illustrative ThreadPoolExecutor uses two workers and two queue slots, then rejects a fifth outstanding task through its AbortPolicy. The caller must handle that rejection, for example by returning a busy response or retrying within a deadline. Bounded admission makes overload visible while preserving the actual service capacity limit.",
+    "figure": "JC2.17",
+    "kind": "",
+    "figure_name": "executor-overload"
+  },
+  {
+    "n": 30,
+    "title": "ExecutorService \u2014 dependent tasks can exhaust their own pool",
+    "lead": "A parent task can deadlock a one-worker pool by submitting its child to that same pool and waiting for the child\u2019s Future. The child needs a worker, but the only worker belongs to the waiting parent. This thread-pool starvation deadlock is a dependency cycle. Submit independent tasks from the caller and collect them outside the exhausted pool, or perform the required child work directly. Adding a few workers does not remove arbitrary nested blocking dependencies.",
+    "figure": "JC2.18",
+    "kind": "",
+    "figure_name": "executor-starvation"
+  },
+  {
+    "n": 31,
+    "title": "Future \u2014 identify pending, successful, failed and cancelled outcomes",
+    "lead": "A Future is a receipt for an eventual outcome. Get can wait, return a value or throw an exception representing failure or cancellation. IsDone includes successful, failed and cancelled completion, so it cannot establish success alone. A timed get bounds that caller wait without automatically cancelling the task. Timed invokeAll has a different contract: it cancels unfinished tasks at the batch deadline. Our aggregator inspects cancellation before collecting values.",
+    "figure": "JC2.19",
+    "kind": "",
+    "figure_name": "future-parts"
+  },
+  {
+    "n": 32,
+    "title": "Cancellation \u2014 a cancelled Future can leave work running",
+    "lead": "A cancelled receipt can coexist with a task that still runs. Cancel with interruption requests cooperation; it does not forcibly terminate an arbitrary computation. If the task ignores interruption, executor close may continue waiting. Use finite work units, cancellation checks and interruptible operations where available, then release resources in finally. After requesting cancellation, observe termination through an appropriate bounded wait and handle a still-running worker explicitly.",
+    "figure": "JC2.20",
+    "kind": "",
+    "figure_name": "future-stuck"
+  },
+  {
+    "n": 33,
+    "title": "ExecutorService \u2014 submission and completion are separate",
+    "lead": "A Callable returns a value or throws an exception. An ExecutorService assigns tasks to workers; a Future represents an eventual outcome. Three quote lookups can share two platform workers, with the remaining task waiting for capacity. The caller collects each result through get. That operation exposes task failures and provides the documented visibility boundary for the completed work.",
+    "figure": "JC2.21",
+    "kind": "",
+    "figure_name": "executor"
+  },
+  {
+    "n": 34,
+    "title": "Quote aggregation \u2014 return a total only after all results",
+    "lead": "The console feature receives three simulated quotes: 1200, 1800 and 2400 cents. It runs them on a two-worker pool under one batch deadline and returns 5400 only after every Future succeeds. Timed invokeAll waits for the batch and cancels unfinished tasks when its deadline expires. The loop inspects cancellation and calls get so a failed shop cannot silently disappear from the total.",
+    "figure": "\u2014",
+    "kind": ""
+  },
+  {
+    "n": 35,
+    "title": "Quote aggregation \u2014 build and run",
+    "lead": "Build the three-shop aggregator using the executor and Future design. Its focused test requires 5400 cents; then run orchestration to inspect the total. Leave queue transfer for its own feature step.",
+    "figure": "\u2014",
+    "kind": ""
+  },
+  {
+    "n": 36,
+    "title": "Task outcomes \u2014 values, failures and deadlines reach the caller",
+    "lead": "A batch can return values, fail inside a task or reach its deadline. Future.get wraps task failures in ExecutionException, preserving the cause. Timed invokeAll cancels unfinished tasks; our aggregator converts that state into TimeoutException. Interruption requests cooperative cancellation, so cleanup must observe worker termination. The three branches below explain what the caller receives.",
+    "figure": "JC2.22",
+    "kind": "",
+    "figure_name": "task-outcomes"
+  },
+  {
+    "n": 37,
+    "title": "Platform and virtual threads \u2014 execute identical work",
+    "lead": "Many tasks spend most of their lifetime waiting rather than computing. Compare four strategies for the same numbered tasks: sequential execution, a platform pool, one platform thread per task and one virtual thread per task. First establish equal completed work and actual thread types, then measure elapsed time. A different execution policy must not change the application result.",
+    "figure": "\u2014",
+    "kind": "section"
+  },
+  {
+    "n": 38,
+    "title": "Virtual threads \u2014 identify task, Java thread, carrier and processor",
+    "lead": "A virtual-thread executor creates a Java virtual thread for each task. While executing, that virtual thread mounts on a platform carrier thread, which runs through an operating-system thread on available processor capacity. Supported waiting can unmount the virtual thread while preserving its identity and stack. Parked tasks sit outside the active carrier mapping. The scheduler can later mount a ready virtual thread on an available carrier, including a different one.",
+    "figure": "JC2.23",
+    "kind": "",
+    "figure_name": "virtual-parts"
+  },
+  {
+    "n": 39,
+    "title": "Virtual threads \u2014 distinguish pinning from resource-capacity limits",
+    "lead": "On Java 21, a virtual thread that blocks while inside synchronized can retain its carrier through pinning. Other runnable work cannot use that occupied carrier in the illustrated state. Keep protected updates short and move blocking work outside where correct; an explicit lock can suit Java 21 coordination. JDK 24 removes monitor-related pinning, while some native-code situations remain. Independently, cheap waiting still requires a semaphore or other policy around scarce dependencies.",
+    "figure": "JC2.24",
+    "kind": "",
+    "figure_name": "virtual-pinning"
+  },
+  {
+    "n": 40,
+    "title": "Virtual threads \u2014 waiting tasks can share carriers",
+    "lead": "A virtual thread is a lightweight Java thread scheduled over platform carrier threads. A supported blocking operation can park it and release its carrier for other work. This makes many waiting tasks practical without dedicating an operating-system thread to each one. It does not accelerate an individual computation, add CPU cores or synchronize access to shared mutable state.",
+    "figure": "JC2.25",
+    "kind": "",
+    "figure_name": "virtual"
+  },
+  {
+    "n": 41,
+    "title": "Execution strategies \u2014 separate thread type from worker count",
+    "lead": "The comparison keeps the task body, identifiers and checksum identical. A pool of eight limits active workers, while both per-task strategies allow one thread for each submitted task. Including platform-per-task therefore helps separate a worker-count policy from the platform-versus-virtual implementation choice. Record Thread.currentThread().isVirtual inside the task to verify which strategy actually executed it.",
+    "figure": "\u2014",
+    "kind": ""
+  },
+  {
+    "n": 42,
+    "title": "Semaphore \u2014 identify permits, resource users and waiting tasks",
+    "lead": "A Semaphore keeps a permit counter. Successful acquire consumes a permit; when none remain, a caller waits before entering the resource operation. Release returns capacity and can enable a waiting task. The protected region is application code between those calls, so correct pairing is the application\u2019s responsibility. A semaphore differs from an ownership lock: it does not track which thread owns a permit or enforce the initial count as a maximum.",
+    "figure": "JC2.26",
+    "kind": "",
+    "figure_name": "semaphore-parts"
+  },
+  {
+    "n": 43,
+    "title": "Semaphore \u2014 leaks and extra releases break the capacity policy",
+    "lead": "A task that exits without returning its acquired permit can leave later callers waiting indefinitely. Release in finally after a successful acquire, so exceptional resource use still returns capacity. Conversely, if acquire was interrupted before success, releasing adds a permit that was never obtained. This can let too many tasks enter. The diagram shows both the counter state and the waiting tasks, making the missing or extra release visible.",
+    "figure": "JC2.27",
+    "kind": "",
+    "figure_name": "semaphore-leak"
+  },
+  {
+    "n": 44,
+    "title": "Semaphore \u2014 track permits, users and waiting tasks",
+    "lead": "A Semaphore supplies a fixed number of permits around a scarce dependency. Twenty virtual tasks can exist while only two enter the protected section at once. Follow the free-permit count as A and B enter, C waits, and A releases capacity. C enters only after successfully acquiring a permit. The unit test records peak simultaneous resource use and requires it to stay within two.",
+    "figure": "JC2.28",
+    "kind": "",
+    "figure_name": "semaphore"
+  },
+  {
+    "n": 45,
+    "title": "Semaphore \u2014 release after successful acquisition",
+    "lead": "A Semaphore supplies a fixed number of permits around a scarce dependency. Twenty virtual tasks can exist while only two enter the protected section at once. Acquire before using the resource and release in finally after acquisition succeeds. The unit test records peak simultaneous use and requires it to stay within two. Cheap waiting does not increase database or service capacity.",
+    "figure": "\u2014",
+    "kind": ""
+  },
+  {
+    "n": 46,
+    "title": "Timing experiment \u2014 compare equal work before elapsed time",
+    "lead": "Every strategy receives the same 120 tasks and simulated wait. Three warmup rounds prepare execution, then five measured rounds rotate mode order to reduce a fixed-order bias. Accept a sample only after result counts and checksums agree. Include startup, completion and cleanup in elapsed time; keep printing outside that timer. A separate CPU workload tests interpretation when work computes instead of waiting.",
+    "figure": "JC2.29",
+    "kind": "",
+    "figure_name": "experiment"
+  },
+  {
+    "n": 47,
+    "title": "Workload runner \u2014 build and run its unit tests",
+    "lead": "Build the four strategies with one task body. Run small blocking and CPU tests, verify actual thread types and check the two-permit resource bound. This step runs JUnit; the measurement route follows.",
+    "figure": "\u2014",
+    "kind": ""
+  },
+  {
+    "n": 48,
+    "title": "Thread comparison \u2014 add measurements and run",
+    "lead": "Add the comparison route to the validated runner. Run 120 identical tasks with 20 ms simulated waiting, three warmups and five measured rounds. Retain actual samples and medians; the full experiment can take half a minute.",
+    "figure": "\u2014",
+    "kind": ""
+  },
+  {
+    "n": 49,
+    "title": "Thread comparison \u2014 interpret the observed differences",
+    "lead": "This actual instructor run used Java 21.0.10 on an aarch64 Mac reporting sixteen processors. All strategies completed 120 tasks with matching checksums for each workload. The blocking case allows waits to overlap, while the pool admits only eight active workers. CPU samples include startup and instrumentation overhead. Use these numbers to explain this run; there is no required ranking or speedup.",
+    "figure": "\u2014",
+    "kind": ""
+  },
+  {
+    "n": 50,
+    "title": "Dining philosophers \u2014 coordinate multiple exclusive resources",
+    "lead": "A worker can hold one resource while waiting for another. If every worker does this in a cycle, none can progress. Dining philosophers makes that ownership problem visible with five workers and five forks. First construct and recover the circular wait; then impose one acquisition order and observe bounded meals with exclusive fork ownership.",
+    "figure": "\u2014",
+    "kind": "section"
+  },
+  {
+    "n": 51,
+    "title": "ReentrantLock \u2014 identify ownership, hold count and explicit release",
+    "lead": "A ReentrantLock has an owner and an acquisition count. Its owner can acquire it again; matching unlock calls reduce that count until the final release makes the lock available. Other contenders wait outside the protected operation. LockInterruptibly supports interruption during acquisition, and timed tryLock can report that acquisition failed. These calls make waiting policy explicit, while a finally block still supplies reliable release after success.",
+    "figure": "JC2.30",
+    "kind": "",
+    "figure_name": "lock-parts"
+  },
+  {
+    "n": 52,
+    "title": "Dining philosophers \u2014 each worker waits for its neighbour",
+    "lead": "Deadlock means a group of tasks cannot progress because each waits for another in that group. Philosopher Pi needs forks Fi and F(i+1)%5. If every philosopher holds Fi before requesting the next fork, their requests close a circular wait. We will coordinate that state deliberately, record five first forks held, then interrupt and join every worker so the demonstration can finish.",
+    "figure": "JC2.31",
+    "kind": "",
+    "figure_name": "deadlock"
+  },
+  {
+    "n": 53,
+    "title": "Interruption \u2014 recover the controlled circular wait",
+    "lead": "A classroom deadlock demonstration must finish safely. After coordinating five first-fork owners and their second-fork attempts, the caller interrupts every worker before joining any worker. Interruptible acquisition and finally blocks let workers stop waiting and release their actual locks. The caller then performs bounded joins and checks every worker\u2019s liveness. Interruption requests recovery; observing termination establishes that cleanup completed.",
+    "figure": "JC2.32",
+    "kind": "",
+    "figure_name": "recovery"
+  },
+  {
+    "n": 54,
+    "title": "Circular wait \u2014 build and run the recoverable failure",
+    "lead": "Build the recoverable circular wait. Run its test and dining route; both must report five first forks held and all demonstration workers stopped. Ordered dining is a separate step after explaining the solution.",
+    "figure": "\u2014",
+    "kind": ""
+  },
+  {
+    "n": 55,
+    "title": "Global lock order \u2014 acquire smaller fork before larger fork",
+    "lead": "A global lock order makes every worker acquire resources in the same strict order. Each philosopher takes the lower-numbered fork first and the higher-numbered fork second; P4 therefore takes F0 before F4. A cycle would require increasing numbers to return to a smaller starting point, which the rule forbids. The illustration shows P0 eating while neighbours wait for its exclusively owned forks.",
+    "figure": "JC2.33",
+    "kind": "",
+    "figure_name": "dining"
+  },
+  {
+    "n": 56,
+    "title": "ReentrantLock \u2014 release exactly the forks actually acquired",
+    "lead": "ReentrantLock supports explicit, interruptible acquisition. Nested finally blocks express ownership: once the first fork is held, the outer finally releases it even if waiting for the second is interrupted. The inner finally is entered only after the second acquisition succeeds. Eating happens while both forks are owned. This same ordered resource pattern applies to other operations needing multiple locks.",
+    "figure": "\u2014",
+    "kind": ""
+  },
+  {
+    "n": 57,
+    "title": "Ordered dining \u2014 build and run the solution",
+    "lead": "Add the ordered-lock solution and ownership checks. Run tests with four meals on both thread strategies, then the console example with three meals and real state events. Preserve the recoverable circular-wait demonstration.",
+    "figure": "\u2014",
+    "kind": ""
+  },
+  {
+    "n": 58,
+    "title": "Dining results \u2014 safety, completion and fairness are different",
+    "lead": "The completed reference reports five first forks held, stopped demonstration workers and ordered meal counts of three each. Tests use four meals per philosopher on both thread strategies and check fork exclusivity. These observations establish the exercised safety and completion invariants. Starvation means a worker repeatedly misses resources while others progress; global ordering alone does not promise that every scheduler serves every worker fairly.",
+    "figure": "\u2014",
+    "kind": ""
+  },
+  {
+    "n": 59,
+    "title": "Guided extensions \u2014 transfer work and interpret CPU limits",
+    "lead": "The core examples already coordinate completion, state, outcomes and resources. Extend them by transferring items through a bounded queue and by examining the separate CPU workload. These exercises reuse the existing project and tests. Their purpose is to explain backpressure and execution capacity, rather than introduce another agent workflow or application framework.",
+    "figure": "\u2014",
+    "kind": "section"
+  },
+  {
+    "n": 60,
+    "title": "BlockingQueue \u2014 identify buffer, producer, consumer and wait conditions",
+    "lead": "A BlockingQueue transfers items between producers and consumers. Capacity limits pending items in the buffer. Put waits for space when that buffer is full; take waits for an item when it is empty. The supplied ArrayBlockingQueue preserves first-in, first-out order. Its internal coordination lets a waiting operation release the internal queue lock. An unrelated external monitor is unnecessary for these basic thread-safe operations.",
+    "figure": "JC2.34",
+    "kind": "",
+    "figure_name": "queue-parts"
+  },
+  {
+    "n": 61,
+    "title": "BlockingQueue \u2014 an external monitor can close a deadlock cycle",
+    "lead": "An external monitor can defeat otherwise correct queue coordination. With a full queue, producer P holds appLock and waits inside put for space. Consumer C needs appLock before it can take an item, so C cannot free that space. Put releases the queue\u2019s internal lock while waiting, but it does not release appLock. Remove the unrelated outer monitor from blocking queue calls; use timed offer or poll when a bounded wait and explicit failure policy are required.",
+    "figure": "JC2.35",
+    "kind": "",
+    "figure_name": "queue-outer-lock"
+  },
+  {
+    "n": 62,
+    "title": "BlockingQueue \u2014 a full buffer slows the producer",
+    "lead": "A BlockingQueue coordinates transfer between producers and consumers. With capacity two, A and B fill the queue; put(C) cannot complete until the consumer removes an item. This backpressure slows production when downstream capacity is exhausted. Queue handoff also supplies a visibility guarantee for transferred data. The example should return A, B and C in order without polling or sleep-based coordination.",
+    "figure": "JC2.36",
+    "kind": "",
+    "figure_name": "queue"
+  },
+  {
+    "n": 63,
+    "title": "Queue and failure cases \u2014 build and run",
+    "lead": "Add the capacity-two queue transfer and aggregator failure/cancellation tests. Run the five orchestration checks, then inspect 5400 cents and FIFO A/B/C in the console. Observe worker termination as cleanup evidence.",
+    "figure": "\u2014",
+    "kind": ""
+  },
+  {
+    "n": 64,
+    "title": "CPU work \u2014 runnable tasks share finite execution capacity",
+    "lead": "A CPU-bound task spends most of its lifetime computing. The illustration uses two CPU slots and four tasks to make execution capacity visible; the actual instructor machine reports sixteen processors. Both platform and virtual tasks compete for the machine\u2019s available execution time. Follow task completion and result collection before interpreting timings. Adding runnable tasks does not add cores, and the real scheduler may interleave them through time slicing.",
+    "figure": "JC2.37",
+    "kind": "",
+    "figure_name": "cpu"
+  },
+  {
+    "n": 65,
+    "title": "CPU work \u2014 keep calculated results observable",
+    "lead": "A CPU-bound task spends most of its lifetime computing. The CPU workload returns a calculated checksum so its work remains observable across strategies. If runnable tasks exceed available execution capacity, scheduling and contention can dominate. Virtual threads improve suitable waiting workloads, but do not supply more execution cores. Interpret the CPU samples separately from the simulated blocking results and retain identical work checks.",
+    "figure": "\u2014",
+    "kind": ""
+  },
+  {
+    "n": 66,
+    "title": "Java mechanisms \u2014 match each feature to its guarantee",
+    "lead": "Choose a coordination mechanism from the required invariant. Completion means work has ended; atomicity protects an update; result collection exposes values and failures; capacity policies limit concurrent use; lock order prevents a resource cycle. These guarantees compose, but none replaces the others. A virtual-thread executor changes how tasks execute while leaving the application responsible for shared-state correctness and dependency limits.",
+    "figure": "\u2014",
+    "kind": ""
+  },
+  {
+    "n": 67,
+    "title": "Final validation \u2014 run the complete narrated test suite",
+    "lead": "After the feature steps are complete, run the whole JUnit suite and retain its real assertion values. The supplied reference contains sixteen tests covering lifecycle, shared state, orchestration, thread strategies and philosophers. Console narration explains the setup, execution, expected and observed values, reasons and limits. A JUnit watcher prints the actual final verdict; printed teaching text never replaces assertions.",
+    "figure": "\u2014",
+    "kind": ""
+  },
+  {
+    "n": 68,
+    "title": "Primary sources \u2014 inspect the Java concurrency contracts",
+    "lead": "The Java contracts explain completion, visibility, failure and cleanup more precisely than timing observations alone. Use the Java 21 API documentation for the teaching baseline and the version-specific JEPs for virtual-thread behaviour. These references support the diagrams and code. The supplied execution evidence establishes what the reference actually did on its recorded runtime and machine.",
+    "figure": "\u2014",
+    "kind": ""
+  },
+  {
+    "n": 69,
+    "title": "Java contracts \u2014 inspect ownership, waiting and overload policies",
+    "lead": "Use these Java 21 contracts to distinguish the similar-looking waiting areas. A monitor has an owner and blocked entry contenders; an executor queue holds tasks; a semaphore controls permits; a blocking queue stores items. The documentation specifies exceptional outcomes, timeouts and release rules. The new failure diagrams are explanatory scenarios, while the supplied JUnit suite validates the actual reference implementation and its explicitly exercised invariants.",
+    "figure": "\u2014",
+    "kind": ""
+  },
+  {
+    "n": 70,
+    "title": "Build small examples; explain the Java mechanism",
+    "lead": "Use the diagrams to explain the problem and solution, then build and run the selected example. Connect the actual result to the Java feature that establishes its invariant. The supplied specialists and short classroom requests support the work; the subject of this practice is coordinated Java execution, shared state and resource ownership.",
+    "figure": "\u2014",
+    "kind": "section"
+  }
+]

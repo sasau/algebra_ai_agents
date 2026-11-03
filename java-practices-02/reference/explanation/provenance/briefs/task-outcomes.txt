@@ -1,0 +1,31 @@
+Figure name: task-outcomes.
+Draw three ALTERNATIVE numbered execution traces (rows), four
+events each, for collectQuotes; the rows are not one combined chronology.
+SUCCESS: 1 task returns1200 -> 2 invokeAll completes batch -> 3 get returns1200
+-> 4 caller adds value (full batch returns5400 only if every task succeeds).
+FAILURE: 1 task throws IOException -> 2 Future stores failure -> 3 get throws
+ExecutionException(cause=IOException) -> 4 caller fails batch, no partial total.
+DEADLINE: 1 some task still running -> 2 timed invokeAll deadline cancels it
+-> 3 caller sees isCancelled -> 4 caller throws TimeoutException.
+Below branch rows a cleanup strip: cancelled Future != worker stopped;
+interruption requested -> cooperative exit -> executor close can complete.
+If a task ignores interruption, close may keep waiting. No guarantee that a
+cancelled future proves task stopped. Use short wrapped text, 18-unit minimum,
+exact types. Height330. Keep cause/exception names legible with enough widths.
+Create a polished, informative native inline SVG in the existing course style.
+Use viewBox="0 0 940 330" unless another height is specified, never taller than 360.
+Use xmlns, role="img", a full-sentence aria-label, font-family="Inter,sans-serif".
+Exact palette: dark #1A1A2E, white #FAFAFE; neutral #7A7A8A/#B8B8C8;
+orange #FF6200/#FFF4ED/#C44E00; blue #0091FF/#E6F4FF/#0066BB;
+green #00C48C/#E6FAF3/#008866; purple #7B61FF/#F0EDFF/#5B41DF.
+Use dark text on pale cards, generous internal padding, consistent rounded cards,
+restrained icons and meaningful arrows. ALL labels >=18 units; heading 20-22.
+Do not squeeze prose into the art; use compact exact state labels and line breaks.
+Number actual events 1, 2, 3... prominently, with actor and state at each event.
+Make causality and before/after visible, not just a numbered list of abstract nouns.
+Use a suitable trace, resource drawing, memory snapshot, lane or ownership graph.
+Arrows mean execution order, result transfer or labelled ownership/wait requests.
+No connector through labels. No text overlap. Leave at least 14 units padding.
+IDs must start with the figure name and end in -pjava02. Define markers locally.
+No style, script, image, foreignObject, external files or tools. No animation except
+the specifically requested eating spoon. Return only SVG through the JSON schema.

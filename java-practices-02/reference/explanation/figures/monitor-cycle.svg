@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 330" role="img" aria-label="Left: thread A owns M1, B owns M2, then A requests M2 and B requests M1, forming a wait-for cycle where neither reaches release. Right: both threads lock M1 then M2, so B waits without owning M2 while A holds both, and no cycle forms." font-family="Inter,sans-serif">
+<defs>
+<marker id="monitor-cycle-ms-pjava02" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0L10,5L0,10z" fill="#1A1A2E"/></marker>
+<marker id="monitor-cycle-md-pjava02" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0L10,5L0,10z" fill="#C44E00"/></marker>
+</defs>
+<rect width="940" height="330" fill="#FAFAFE"/>
+<rect x="14" y="46" width="450" height="252" rx="14" fill="#FFF4ED" stroke="#FF6200" stroke-width="2"/>
+<text x="34" y="74" font-size="20" font-weight="700" fill="#1A1A2E">Deadlock: A M1→M2, B M2→M1</text>
+<g font-size="18" fill="#1A1A2E" font-weight="600">
+<rect x="44" y="92" width="110" height="44" rx="10" fill="#E6F4FF" stroke="#0091FF" stroke-width="2"/><text x="99" y="120" text-anchor="middle">Thread A</text>
+<rect x="310" y="92" width="110" height="44" rx="10" fill="#F0EDFF" stroke="#7B61FF" stroke-width="2"/><text x="365" y="120" text-anchor="middle">M2</text>
+<rect x="44" y="190" width="110" height="44" rx="10" fill="#F0EDFF" stroke="#7B61FF" stroke-width="2"/><text x="99" y="218" text-anchor="middle">M1</text>
+<rect x="310" y="190" width="110" height="44" rx="10" fill="#E6F4FF" stroke="#0091FF" stroke-width="2"/><text x="365" y="218" text-anchor="middle">Thread B</text>
+</g>
+<g stroke-width="3" fill="none">
+<path d="M99 136V188" stroke="#1A1A2E" marker-end="url(#monitor-cycle-ms-pjava02)"/>
+<path d="M365 190V138" stroke="#1A1A2E" marker-end="url(#monitor-cycle-ms-pjava02)"/>
+<path d="M154 114H308" stroke="#C44E00" stroke-dasharray="8 6" marker-end="url(#monitor-cycle-md-pjava02)"/>
+<path d="M310 212H156" stroke="#C44E00" stroke-dasharray="8 6" marker-end="url(#monitor-cycle-md-pjava02)"/>
+</g>
+<g fill="#1A1A2E"><circle cx="66" cy="163" r="12"/><circle cx="343" cy="163" r="12"/><circle cx="186" cy="94" r="12"/><circle cx="186" cy="236" r="12"/></g>
+<g font-size="18" fill="#FAFAFE" font-weight="700" text-anchor="middle"><text x="66" y="169">1</text><text x="343" y="169">2</text><text x="186" y="100">3</text><text x="186" y="242">3</text></g>
+<g font-size="18" fill="#1A1A2E">
+<text x="84" y="169">owns</text><text x="361" y="169">owns</text>
+<text x="204" y="100">waits</text><text x="204" y="242">waits</text>
+<text x="232" y="169" text-anchor="middle" font-weight="700" fill="#C44E00">never reach }</text>
+<text x="34" y="281">Interrupt won't abort the wait</text>
+</g>
+<rect x="476" y="46" width="450" height="252" rx="14" fill="#E6FAF3" stroke="#00C48C" stroke-width="2"/>
+<text x="496" y="74" font-size="20" font-weight="700" fill="#1A1A2E">Fix: one global order M1→M2</text>
+<rect x="670" y="84" width="236" height="130" rx="12" fill="#FAFAFE" stroke="#008866" stroke-width="2"/>
+<rect x="710" y="120" width="170" height="80" rx="10" fill="#F0EDFF" stroke="#7B61FF" stroke-width="2"/>
+<g font-size="18" fill="#1A1A2E" font-weight="600">
+<text x="684" y="108">M1</text><text x="726" y="166">M2</text>
+<rect x="490" y="92" width="100" height="44" rx="10" fill="#E6F4FF" stroke="#0091FF" stroke-width="2"/><text x="540" y="120" text-anchor="middle">A</text>
+<rect x="490" y="168" width="100" height="44" rx="10" fill="#FFF4ED" stroke="#FF6200" stroke-width="2"/><text x="540" y="196" text-anchor="middle">B</text>
+</g>
+<path d="M590 114H668" stroke="#1A1A2E" stroke-width="3" marker-end="url(#monitor-cycle-ms-pjava02)"/>
+<path d="M590 190H668" stroke="#C44E00" stroke-width="3" stroke-dasharray="8 6" marker-end="url(#monitor-cycle-md-pjava02)"/>
+<g font-size="18" fill="#1A1A2E">
+<text x="602" y="106">owns</text><text x="598" y="182">waits</text>
+<text x="496" y="248">B waits, owns no M2: no cycle</text>
+<text x="496" y="278">A releases M2, then M1</text>
+</g>
+<text x="470" y="322" font-size="18" fill="#1A1A2E" text-anchor="middle">Lock ordering removes this cycle; does not promise fairness.</text>
+</svg>

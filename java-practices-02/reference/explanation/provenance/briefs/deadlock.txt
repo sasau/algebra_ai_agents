@@ -1,0 +1,31 @@
+Figure name: deadlock.
+Draw an informative numbered construction of five-philosopher
+circular wait. Convention Pi needs Fi and F(i+1)%5. Three labelled stages:
+1 ACQUIRE FIRST: P0 owns F0; P1 F1; P2 F2; P3 F3; P4 F4.
+Use five clear ownership pair chips, solid ownership lines/legend.
+2 REQUEST SECOND after all first locks held: P0 wants F1 held by P1,
+P1 wants F2 held by P2, P2 wants F3 held by P3, P3 wants F4 held by P4,
+P4 wants F0 held by P0. Dashed wait arrows must not look like ownership.
+3 CYCLE: explicit wait-for graph P0 -> P1 -> P2 -> P3 -> P4 -> P0.
+Outcome: every first fork held, zero second forks available, nobody can eat.
+Prefer left numbered ownership/request matrix and right five-node circular
+wait-for graph with arrowheads and legend; retain informative states, no huge
+empty circle. Do not imply a timeout proves the cycle. Next slide teaches recovery.
+Max330 high; all five Pi/Fi links correct and fully readable.
+Create a polished, informative native inline SVG in the existing course style.
+Use viewBox="0 0 940 330" unless another height is specified, never taller than 360.
+Use xmlns, role="img", a full-sentence aria-label, font-family="Inter,sans-serif".
+Exact palette: dark #1A1A2E, white #FAFAFE; neutral #7A7A8A/#B8B8C8;
+orange #FF6200/#FFF4ED/#C44E00; blue #0091FF/#E6F4FF/#0066BB;
+green #00C48C/#E6FAF3/#008866; purple #7B61FF/#F0EDFF/#5B41DF.
+Use dark text on pale cards, generous internal padding, consistent rounded cards,
+restrained icons and meaningful arrows. ALL labels >=18 units; heading 20-22.
+Do not squeeze prose into the art; use compact exact state labels and line breaks.
+Number actual events 1, 2, 3... prominently, with actor and state at each event.
+Make causality and before/after visible, not just a numbered list of abstract nouns.
+Use a suitable trace, resource drawing, memory snapshot, lane or ownership graph.
+Arrows mean execution order, result transfer or labelled ownership/wait requests.
+No connector through labels. No text overlap. Leave at least 14 units padding.
+IDs must start with the figure name and end in -pjava02. Define markers locally.
+No style, script, image, foreignObject, external files or tools. No animation except
+the specifically requested eating spoon. Return only SVG through the JSON schema.

@@ -1,0 +1,36 @@
+Figure name: executor-parts.
+Main request: labelled anatomical drawing of ExecutorService.
+CALLER holds ExecutorService; submit(Callable) hands over TASK, returns Future
+receipt to caller. Middle executor boundary: a TASK QUEUE [C,D] and TWO platform
+WORKER THREADS W1 runningA, W2 runningB. Queue contains tasks, NOT waiting threads.
+Workers take queued tasks when free; idle worker can wait on empty queue.
+Right Future receipt: pending -> value/failure/cancelled; caller get() waits for
+outcome. Use arrows labelled submit/take/complete/get, not unexplained flow.
+Bottom lifecycle strip: accept tasks -> execute -> close/shutdown -> termination.
+Explicit config label newFixedThreadPool(2): two workers, UNBOUNDED task queue.
+Caller wait and queue wait are different boxes. Native code snippets submit/get
+beside their arrows. Parts numbered/callouts, height330,18+ labels.
+Create a polished, informative native inline SVG in the existing course style.
+Use viewBox="0 0 940 330" unless another height is specified, never taller than 360.
+Use xmlns, role="img", a full-sentence aria-label, font-family="Inter,sans-serif".
+Exact palette: dark #1A1A2E, white #FAFAFE; neutral #7A7A8A/#B8B8C8;
+orange #FF6200/#FFF4ED/#C44E00; blue #0091FF/#E6F4FF/#0066BB;
+green #00C48C/#E6FAF3/#008866; purple #7B61FF/#F0EDFF/#5B41DF.
+Use dark text on pale cards, generous internal padding, consistent rounded cards,
+restrained icons and meaningful arrows. ALL labels >=18 units; heading 20-22.
+Do not squeeze prose into the art; use compact exact state labels and line breaks.
+Use numbered callouts for named parts on anatomy figures; use numbered actual events on failure/repair traces.
+Make causality and before/after visible, not just a numbered list of abstract nouns.
+Use a suitable trace, resource drawing, memory snapshot, lane or ownership graph.
+Arrows mean execution order, result transfer or labelled ownership/wait requests.
+No connector through labels. No text overlap. Leave at least 14 units padding.
+IDs must start with the figure name and end in -pjava02. Define markers locally.
+No style, script, image, foreignObject, external files or tools. No animation except
+the specifically requested eating spoon. Return only SVG through the JSON schema.
+
+These figures INTRODUCE mechanism parts or explain failure/mitigation.
+Do not conflate queue of tasks with blocked thread contenders. Queue-like monitor
+entry drawing is conceptual with no FIFO guarantee. Use code braces to annotate
+protected regions where requested. Avoid more than8 short labels per panel.
+All numeric badges: dark #1A1A2E circle with white #FAFAFE number. Labels stay18+.
+No animation in these new figures. Follow exact Java21 semantics in the brief.

@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 330" role="img" aria-label="ReentrantLock anatomy: code acquires the lock before try, protects useFork, and unlocks in finally; the lock tracks owner A and hold count through reentry, while B and C wait outside and only the owner may unlock." font-family="Inter,sans-serif">
+<defs>
+<marker id="lock-parts-ar-pjava02" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0L10,5L0,10z" fill="#1A1A2E"/></marker>
+<marker id="lock-parts-ao-pjava02" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0L10,5L0,10z" fill="#C44E00"/></marker>
+</defs>
+<rect width="940" height="330" fill="#FAFAFE"/>
+<text x="16" y="24" font-size="21" font-weight="700" fill="#1A1A2E">ReentrantLock: acquire, use, release</text>
+<!-- code -->
+<rect x="16" y="38" width="290" height="278" rx="14" fill="#F0EDFF" stroke="#7B61FF" stroke-width="2"/>
+<text x="30" y="68" font-size="18" fill="#1A1A2E">fork.lockInterruptibly();</text>
+<circle cx="288" cy="62" r="11" fill="#1A1A2E"/><text x="288" y="68" font-size="18" text-anchor="middle" fill="#FAFAFE">1</text>
+<text x="30" y="98" font-size="18" fill="#1A1A2E">try {</text>
+<rect x="44" y="110" width="200" height="40" rx="8" fill="#FFF4ED" stroke="#FF6200" stroke-width="2"/>
+<text x="56" y="137" font-size="18" fill="#1A1A2E">useFork();</text>
+<circle cx="288" cy="130" r="11" fill="#1A1A2E"/><text x="288" y="136" font-size="18" text-anchor="middle" fill="#FAFAFE">2</text>
+<text x="30" y="178" font-size="18" fill="#1A1A2E">} finally {</text>
+<text x="44" y="204" font-size="18" fill="#1A1A2E">fork.unlock();</text>
+<circle cx="288" cy="198" r="11" fill="#1A1A2E"/><text x="288" y="204" font-size="18" text-anchor="middle" fill="#FAFAFE">3</text>
+<text x="30" y="230" font-size="18" fill="#1A1A2E">}</text>
+<text x="30" y="260" font-size="18" fill="#C44E00">Acquire BEFORE try,</text>
+<text x="30" y="284" font-size="18" fill="#C44E00">so finally unlocks only</text>
+<text x="30" y="306" font-size="18" fill="#C44E00">a lock you hold.</text>
+<!-- lock -->
+<rect x="326" y="38" width="300" height="278" rx="14" fill="#E6F4FF" stroke="#0091FF" stroke-width="2"/>
+<text x="342" y="66" font-size="18" font-weight="700" fill="#0066BB">fork lock object</text>
+<text x="342" y="92" font-size="18" fill="#1A1A2E">owner=A, holdCount=1</text>
+<rect x="342" y="106" width="268" height="44" rx="8" fill="#FAFAFE" stroke="#0091FF"/>
+<text x="354" y="134" font-size="18" fill="#1A1A2E">A reenters: holdCount=2</text>
+<rect x="342" y="160" width="268" height="44" rx="8" fill="#FAFAFE" stroke="#0091FF"/>
+<text x="354" y="188" font-size="18" fill="#1A1A2E">unlock: 1, STILL OWNED</text>
+<rect x="342" y="214" width="268" height="44" rx="8" fill="#E6FAF3" stroke="#00C48C"/>
+<text x="354" y="242" font-size="18" fill="#1A1A2E">last unlock: 0, FREE</text>
+<text x="342" y="284" font-size="18" fill="#1A1A2E">Not synchronized entry:</text>
+<text x="342" y="306" font-size="18" fill="#1A1A2E">explicit unlock, no FIFO claim</text>
+<path d="M306 130H326" stroke="#1A1A2E" stroke-width="2" marker-end="url(#lock-parts-ar-pjava02)"/>
+<!-- contenders -->
+<rect x="646" y="38" width="278" height="278" rx="14" fill="#FFF4ED" stroke="#FF6200" stroke-width="2"/>
+<text x="662" y="66" font-size="18" font-weight="700" fill="#C44E00">B, C wait outside</text>
+<rect x="662" y="80" width="64" height="36" rx="8" fill="#FAFAFE" stroke="#FF6200"/><text x="694" y="105" font-size="18" text-anchor="middle" fill="#1A1A2E">B</text>
+<rect x="738" y="80" width="64" height="36" rx="8" fill="#FAFAFE" stroke="#FF6200"/><text x="770" y="105" font-size="18" text-anchor="middle" fill="#1A1A2E">C</text>
+<path d="M662 98H640" stroke="#C44E00" stroke-width="2" marker-end="url(#lock-parts-ao-pjava02)"/>
+<text x="662" y="148" font-size="18" fill="#1A1A2E">lockInterruptibly:</text>
+<text x="662" y="170" font-size="18" fill="#1A1A2E">wait can be interrupted</text>
+<text x="662" y="200" font-size="18" fill="#1A1A2E">tryLock(timeout):</text>
+<text x="662" y="222" font-size="18" fill="#1A1A2E">false on timeout, so</text>
+<text x="662" y="244" font-size="18" fill="#1A1A2E">B has NO ownership,</text>
+<text x="662" y="266" font-size="18" fill="#1A1A2E">NO unlock by B</text>
+<text x="662" y="298" font-size="18" fill="#C44E00">Only owner may unlock</text>
+</svg>

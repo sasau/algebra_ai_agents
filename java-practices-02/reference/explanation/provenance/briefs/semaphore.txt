@@ -1,0 +1,31 @@
+Figure name: semaphore.
+Draw six numbered resource snapshots for a Semaphore(2), not a
+thread pool. 20 virtual tasks may exist; illustrate A/B/C only. Show two permit
+tokens, resource occupants and waiting task. Start free permits=2, inside=0.
+1 A acquire succeeds: free2 ->1, inside A (1).
+2 B acquire succeeds: free1 ->0, inside A+B (2).
+3 C attempts acquire: free0, C waits OUTSIDE; inside remains A+B (2).
+4 A finishes resource use and finally releases: free0 ->1; inside B (1).
+5 C acquires: free1 ->0, inside B+C (2).
+6 B and C finish and finally release their permits: free2, inside0.
+The trace assumes these acquisitions as one possible interleaving, no FIFO claim.
+Do not show a waiting task holding a permit. Only release after successful acquire.
+Visual numbered 3x2 snapshots with state chips, max330 high.
+Outcome: peak simultaneous resource use <=2; number of threads is independent.
+Create a polished, informative native inline SVG in the existing course style.
+Use viewBox="0 0 940 330" unless another height is specified, never taller than 360.
+Use xmlns, role="img", a full-sentence aria-label, font-family="Inter,sans-serif".
+Exact palette: dark #1A1A2E, white #FAFAFE; neutral #7A7A8A/#B8B8C8;
+orange #FF6200/#FFF4ED/#C44E00; blue #0091FF/#E6F4FF/#0066BB;
+green #00C48C/#E6FAF3/#008866; purple #7B61FF/#F0EDFF/#5B41DF.
+Use dark text on pale cards, generous internal padding, consistent rounded cards,
+restrained icons and meaningful arrows. ALL labels >=18 units; heading 20-22.
+Do not squeeze prose into the art; use compact exact state labels and line breaks.
+Number actual events 1, 2, 3... prominently, with actor and state at each event.
+Make causality and before/after visible, not just a numbered list of abstract nouns.
+Use a suitable trace, resource drawing, memory snapshot, lane or ownership graph.
+Arrows mean execution order, result transfer or labelled ownership/wait requests.
+No connector through labels. No text overlap. Leave at least 14 units padding.
+IDs must start with the figure name and end in -pjava02. Define markers locally.
+No style, script, image, foreignObject, external files or tools. No animation except
+the specifically requested eating spoon. Return only SVG through the JSON schema.

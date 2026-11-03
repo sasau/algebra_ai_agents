@@ -110,6 +110,17 @@ on Java 21. [Actual instructor evidence](reference/evidence/README.md) identifie
 checked source hashes and observations. [VALIDATION.md](VALIDATION.md) records
 the material checks; [EVIDENCE.md](EVIDENCE.md) is the student worksheet.
 
-Optional detailed reading: [illustrated lifecycle reference](reference/explanation/project.html).
+Optional detailed reading: [illustrated execution reference](reference/explanation/project.html).
 Submit source, tests, actual console evidence and a short explanation naming the
 Java feature and concurrency guarantee. Instructor output is not student evidence.
+
+## Graphical Java mechanisms — 2026-11-03
+
+The companion has 70 slides and 37 Claude-drawn diagrams. Mechanism introductions
+show parts, protected regions and waiting points; failure/mitigation panels lead
+into the numbered execution examples. Open the [detailed HTML reference](reference/explanation/project.html)
+or the [figure/slide index](reference/explanation/TRACES.md). All 16 preceding
+execution traces and the eating animation remain. The core is 120 minutes with
+additional failure cases for discussion/follow-up. Narrated Java tests and their
+retained validation evidence are unchanged. New failure diagrams are conceptual
+scenarios rather than extra runnable code or test claims.

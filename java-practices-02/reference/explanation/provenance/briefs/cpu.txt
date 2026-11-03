@@ -1,0 +1,31 @@
+Figure name: cpu.
+Draw four numbered events showing that virtual threads do not create
+CPU cores. Use an explicitly ILLUSTRATIVE machine with2 available CPU slots and
+four CPU tasks A/B/C/D (not the actual instructor machine's16 processors).
+1 prepare four identical loop workloads (taskId seeds differ; same task inputs
+across all execution strategies). 2 A+B run in the2 CPU slots; C+D runnable,
+waiting for execution capacity. 3 after A/B finish, C/D use the same slots;
+no new cores appear from adding virtual tasks. This is a simplified schedule;
+real scheduling can time-slice. 4 collect every computed checksum; compare equal
+results across strategies, then interpret elapsed time separately.
+Show small core/resource drawings and task state, not I/O parking; tasks are
+computing. Both platform and virtual strategies share machine CPU capacity.
+Signed-long overflow is intentional in the loop; no speed ranking promised.
+Max300 high, labels18-22, generous space.
+Create a polished, informative native inline SVG in the existing course style.
+Use viewBox="0 0 940 330" unless another height is specified, never taller than 360.
+Use xmlns, role="img", a full-sentence aria-label, font-family="Inter,sans-serif".
+Exact palette: dark #1A1A2E, white #FAFAFE; neutral #7A7A8A/#B8B8C8;
+orange #FF6200/#FFF4ED/#C44E00; blue #0091FF/#E6F4FF/#0066BB;
+green #00C48C/#E6FAF3/#008866; purple #7B61FF/#F0EDFF/#5B41DF.
+Use dark text on pale cards, generous internal padding, consistent rounded cards,
+restrained icons and meaningful arrows. ALL labels >=18 units; heading 20-22.
+Do not squeeze prose into the art; use compact exact state labels and line breaks.
+Number actual events 1, 2, 3... prominently, with actor and state at each event.
+Make causality and before/after visible, not just a numbered list of abstract nouns.
+Use a suitable trace, resource drawing, memory snapshot, lane or ownership graph.
+Arrows mean execution order, result transfer or labelled ownership/wait requests.
+No connector through labels. No text overlap. Leave at least 14 units padding.
+IDs must start with the figure name and end in -pjava02. Define markers locally.
+No style, script, image, foreignObject, external files or tools. No animation except
+the specifically requested eating spoon. Return only SVG through the JSON schema.

@@ -1,0 +1,30 @@
+Figure name: queue.
+Draw SIX numbered queue snapshots with visible FIFO slots (capacity2).
+Label one possible interleaving. 1 caller pre-fills [A,B], free slots0.
+2 producer signals aboutToPut latch, then attempts put(C); if still full, waits;
+show C outside full [A,B]. The latch alone does NOT prove it is already blocked.
+3 consumer take returnsA: queue[B,empty], output[A], free1.
+4 producer put(C) completes: queue[B,C], output[A], free0.
+5 caller awaits producer Future: insertion complete, queue[B,C].
+6 caller drainTo result: queue[empty,empty], output[A,B,C].
+Arrows show removeA and insertC into newly available slot, not overwrite of B.
+Preserve slots and FIFO order in every snapshot. Backpressure bounds pending
+items, not running tasks. No polling or sleep synchronization. Use 3x2 cards,
+number/actor/action and2 clear slot rectangles per card. Max330 high.
+Create a polished, informative native inline SVG in the existing course style.
+Use viewBox="0 0 940 330" unless another height is specified, never taller than 360.
+Use xmlns, role="img", a full-sentence aria-label, font-family="Inter,sans-serif".
+Exact palette: dark #1A1A2E, white #FAFAFE; neutral #7A7A8A/#B8B8C8;
+orange #FF6200/#FFF4ED/#C44E00; blue #0091FF/#E6F4FF/#0066BB;
+green #00C48C/#E6FAF3/#008866; purple #7B61FF/#F0EDFF/#5B41DF.
+Use dark text on pale cards, generous internal padding, consistent rounded cards,
+restrained icons and meaningful arrows. ALL labels >=18 units; heading 20-22.
+Do not squeeze prose into the art; use compact exact state labels and line breaks.
+Number actual events 1, 2, 3... prominently, with actor and state at each event.
+Make causality and before/after visible, not just a numbered list of abstract nouns.
+Use a suitable trace, resource drawing, memory snapshot, lane or ownership graph.
+Arrows mean execution order, result transfer or labelled ownership/wait requests.
+No connector through labels. No text overlap. Leave at least 14 units padding.
+IDs must start with the figure name and end in -pjava02. Define markers locally.
+No style, script, image, foreignObject, external files or tools. No animation except
+the specifically requested eating spoon. Return only SVG through the JSON schema.

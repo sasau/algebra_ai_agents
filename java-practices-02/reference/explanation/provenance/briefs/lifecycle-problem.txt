@@ -1,0 +1,28 @@
+Figure name: lifecycle-problem.
+Draw a numbered, two-lane timeline of ONE POSSIBLE schedule,
+not guaranteed behaviour. Initial shared result = null. Four numbered events in
+chronological left-to-right order: 1 CALLER worker.start(); 2 CALLER result.get()
+returns null, shared value stays null; 3 WORKER task begins on lesson-worker;
+4 WORKER result.set("lesson-worker"), shared null -> lesson-worker.
+Show the spawn connector from event1 to event3, and a clear missing-completion
+gap: event2 occurs BEFORE event4. Include final small state comparison:
+caller already observed null / worker later stored lesson-worker.
+No join here. This is an illustrative unsafe schedule, not a supplied unsafe
+method. Actor labels and numbered badges must remain readable, timeline <=330 high.
+Create a polished, informative native inline SVG in the existing course style.
+Use viewBox="0 0 940 330" unless another height is specified, never taller than 360.
+Use xmlns, role="img", a full-sentence aria-label, font-family="Inter,sans-serif".
+Exact palette: dark #1A1A2E, white #FAFAFE; neutral #7A7A8A/#B8B8C8;
+orange #FF6200/#FFF4ED/#C44E00; blue #0091FF/#E6F4FF/#0066BB;
+green #00C48C/#E6FAF3/#008866; purple #7B61FF/#F0EDFF/#5B41DF.
+Use dark text on pale cards, generous internal padding, consistent rounded cards,
+restrained icons and meaningful arrows. ALL labels >=18 units; heading 20-22.
+Do not squeeze prose into the art; use compact exact state labels and line breaks.
+Number actual events 1, 2, 3... prominently, with actor and state at each event.
+Make causality and before/after visible, not just a numbered list of abstract nouns.
+Use a suitable trace, resource drawing, memory snapshot, lane or ownership graph.
+Arrows mean execution order, result transfer or labelled ownership/wait requests.
+No connector through labels. No text overlap. Leave at least 14 units padding.
+IDs must start with the figure name and end in -pjava02. Define markers locally.
+No style, script, image, foreignObject, external files or tools. No animation except
+the specifically requested eating spoon. Return only SVG through the JSON schema.

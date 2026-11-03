@@ -1,90 +1,86 @@
 # Instructor validation — Java Practice02
 
-Current revision: 2026-11-01, Java-feature-first teaching.
+Current revision: 2026-11-03, graphical Java mechanism introductions and failures.
 
-## Java problem → solution → build/run → result
+## Teaching coverage
 
-The deck has 43 slides and 11 native SVG figures. Specialist-workflow teaching
-pages and prompt-by-prompt walkthroughs are removed. Lifecycle first establishes
-the desired result and missing-completion problem, then illustrates start/join
-and direct run. One short build-and-run page follows, then observed output and
-the named Java mechanisms. Other features follow the same structure.
-Nine classroom specifications keep implementation requirements in the repository;
-the long granular conversations and detailed HTML remain optional reference.
+70 slides, 37 Claude-authored native SVGs, one eating animation, 120 tagged minutes.
+The 16 preceding execution traces are preserved. Twenty-one new graphics show
+mechanism parts, protected regions, ownership, waiting conditions, failures and
+mitigations. The sequence remains problem → mechanism → worked execution → short
+copy/paste build/run → observed output. Extra failure panels support discussion
+or follow-up within the same 120-minute core; no agent-workflow pages were added.
 
-## Java validation retained without source changes
+Covered: thread completion/nontermination; barrier/latch signals; monitor entry,
+endless ownership and true circular deadlock; atomic operation boundaries and
+check-then-act races; executor queues, overload and pool starvation; Future
+outcomes and cooperative cancellation; virtual-thread carriers and pinning;
+semaphore admission, permit leaks and extra releases; explicit lock ownership;
+blocking queues and deadlock through an unrelated outer monitor.
 
-Canonical source: /Users/auscumlic/Development/algebra/practices/java-practices-02.
-Source/POM hashes match reference/evidence/checked-source-sha256.json exactly.
-No Java implementation, test or POM changed in this teaching revision.
-The recorded clean build `mvn -o -B clean verify` passed on Temurin 21.0.10,
-Maven 3.10.0: 16 tests, zero failures/errors/skips, exit0.
-Five classes contain 1 lifecycle, 3 shared-state, 5 orchestration, 4 comparison
-and 3 dining tests. Detailed narration and actual JUnit assertions are preserved.
+New broken cases are explicitly conceptual diagrams, not additional runnable
+unsafe code or tests. The original detailed lifecycle source walkthrough and
+actual console excerpts remain in the HTML reference, now with all 37 diagrams.
 
-Actual recorded CLI runs all exited 0 with empty stderr: lifecycle names
-lesson-worker/main; forced race 1 and protected counts 2000/2000; quotes 5400 and
-FIFO A/B/C; five first forks followed by stopped workers; ordered meals 3 each.
-The comparison ran 120 equal tasks with 20ms simulated waits, 3 warmups and 5 measured
-rounds, rotating mode order. Counts/checksums match within each workload and only
-virtual mode reports 120 virtual tasks. The deck labels its medians as actual
-instructor observations, never a universal ranking or required speedup.
+## Java validation retained; source unchanged
 
-Earlier bootstrap checks remain valid: empty project; nonempty-target refusal
-with unchanged hashes; malformed package rejected before writing. Zero-test
-normal verify and missing-focused-class verify deliberately failed. Setup-only
--DskipTests package succeeded with tests skipped and does not validate a feature.
-Actual full logs and machine-readable results remain in reference/evidence.
+Canonical module: /Users/auscumlic/Development/algebra/practices/java-practices-02.
+All 13 checked source/test/POM SHA-256 hashes match the retained checked-source
+manifest. No Java source, test or POM changed in this diagram/documentation work.
+The retained 2026-11-01 clean Maven verification on Temurin 21.0.10 passed all
+16 tests with zero failures/errors/skips. It was not rerun for this revision.
+Actual console narration and assertions remain in reference/evidence.
 
-## Static, browser and render checks
+The retained outcomes include worker/main lifecycle names, forced lost update 1,
+protected counters 2000/2000, quote total 5400, FIFO A/B/C, five first forks then
+stopped workers, and three ordered meals per philosopher. Timing checks require
+equal work and thread types, without a speed threshold. The empty Maven bootstrap
+still requires tests for a normal feature verification; setup alone is insufficient.
 
-Static gate PASS: 43 slides, 11 SVGs, 120 tagged minutes; verify 34/34 decks,
-lint 34/34, 498 links across 36 files, code width clean. Clarity, SVG and SVG-style
-prechecks are clean. No frozen shell or render baseline was changed.
+## Static, browser and render review
 
-Actual Playwright MCP inspected all 43 pages at 1600×900 and 1366×768 (86 page/viewport
-combinations), with stable screenshots at both sizes. No clipping, SVG text
-outside its viewBox or page JavaScript errors were observed. Updated action
-pages were inspected again after their copy was shortened.
+Static gate PASS: 70 slides, 37 SVGs, 120 minutes; verify 34/34 decks, lint 34/34,
+539 links across 36 files, code width clean. Clarity, SVG and SVG-style prechecks
+are clean. Frozen shell, template and render-baseline hashes remain unchanged.
 
-- 1600x900: 12 scaled pages, worst zoom 0.843, no clipping; 52 inherited contrast fingerprints in 4 course signatures.
-- 1366x768: 16 scaled pages, worst zoom 0.720, no clipping; 52 inherited contrast fingerprints in 4 course signatures.
+Actual Playwright MCP inspected all 70 slides at 1600×900 and 1366×768 (140
+page/viewport combinations), captured screenshots and checked figure labels.
+All 21 new figure slides were visually reviewed in contact sheets at both sizes;
+native SVGs were also reviewed. Native labels are at least 18 units, with no
+out-of-viewBox labels or text overlaps.
 
-Raw render gate remains **FAIL** because the supplementary deck has no baseline.
-Every reported colour signature occurs in existing course baselines; zero
-signatures are absent. Raw results are retained, not hidden by rebaselining.
-Retained figure pages were compared by mechanism after renumbering; the virtual
-thread and queue pages retain their prior minimum zoom. The earlier lifecycle
-diagram is replaced by separately illustrated problem and solution pages.
+- 1600×900: 39 scaled slides; minimum zoom 0.803; no clipping, outside labels, label overlaps or JavaScript errors.
+- 1366×768: 43 scaled slides; minimum zoom 0.685; no clipping, outside labels, label overlaps or JavaScript errors.
 
-The optional HTML reference was inspected at 1440px and 390px. It has no page
-overflow; diagrams scroll horizontally on narrow screens to preserve label size.
-Its opening explains the desired Java result and completion boundary, followed
-by source annotations and actual assertions. It no longer teaches agent handoffs.
+Comparison by slide title retains all 48 preceding pages. Forty-seven have no
+zoom reduction. The timing-experiment caption wraps after its longer figure
+number: zoom 0.898→0.877 and 0.766→0.749; the rest of that slide is identical.
+The new explanatory slides establish the current minimum zoom.
 
-## Claude figures and eating animation
+Raw render gate remains **FAIL** because this supplementary deck has no render
+baseline. Each viewport reports 79 contrast fingerprints in four colour
+signatures; all four occur in existing course baselines, with zero absent
+signatures. No baseline was changed. Raw gate and measurement evidence is retained.
 
-Four new actual Claude CLI/Sonnet-low calls generated Java-problems overview,
-lifecycle problem, lifecycle solution and task outcomes. Seven previously
-Claude-authored Java figures are preserved. Native SVG briefs/raw responses are
-in /private/tmp/course-java02-feature-first-20261101/claude. Local review fixed
-arrow routes, label collisions, contrast and exact failure/cancellation wording.
+HTML checked at 1440px and 390px: 37 figures, nine sections, no page overflow or
+missing local anchors. On the phone all 37 figures scroll horizontally.
+JC2.33 on slide 55 retains one 3-second repeating spoon animation.
+Multiple browser samples confirm movement and unchanged labels; previous/next
+keyboard navigation passed. Global fork ordering prevents deadlock, not starvation.
 
-Figure JC2.10 on slide 32 preserves the eating spoon animation: one animateTransform,
-duration 3s, repeat indefinitely, readable static fork ownership. Pi requires Fi
-and F(i+1)%5. Browser sampling confirms spoon movement while ownership labels stay
-fixed. It illustrates a valid state, not the live Java process. Finite dining
-tests do not prove starvation freedom or scheduler fairness.
+## Provenance, evidence and distribution
 
-## Artifact evidence
+- Actual configured Claude CLI authored all 37 SVGs; 21 new calls for this revision.
+- Exact briefs and reviewed SVGs are included in reference/explanation; the slide
+  map and local corrections preserve review history.
+- Raw new Claude responses: /private/tmp/course-java02-anatomy-20261103/claude.
+- Browser/native geometry, animation, HTML and preceding-slide comparison reports:
+  _kit/_work/java02/anatomy-20261103/ in the course repository.
+- Stable screenshots: /tmp/course-c-playwright/java02-anatomy-*.
+- Raw render/gate evidence: /private/tmp/course-java02-anatomy-20261103.
+- Canonical explanation/project.html and the course preview are byte-identical.
+- ZIP is rebuilt from canonical source, excluding workspace, target, measurements,
+  .git and Python caches. Every archived file is checked against canonical bytes.
+- Digest: summaries/session-java02.md, 12,854 bytes; plan and indexes agree.
 
-- Canonical classroom/ contains the copy-and-run feature specifications.
-- Canonical reference/evidence/ retains actual Java execution logs and hashes.
-- Canonical reference/explanation/project.html matches the course HTML preview.
-- Browser details: _kit/_work/java02/feature-first/browser-verified.json.
-- Stable screenshots: /tmp/course-c-playwright/java02-feature-*.
-- Raw render evidence: /private/tmp/course-java02-feature-first-20261101.
-- Portable ZIP is regenerated from canonical source, excluding workspace, target,
-  measurements and Python caches. All archived file bytes match source.
-
-No commit or push was made. Unrelated working-tree changes are preserved.
+No commit or push was made. Unrelated working-tree changes were preserved.

@@ -1,0 +1,32 @@
+Figure name: executor.
+Draw six numbered snapshots of quote aggregation with a fixed pool
+of TWO platform workers. A=1200, B=1800, C=2400 cents. Show actor and data each step.
+1 CALLER timed invokeAll submits A/B/C; owns batch deadline, waits inside invokeAll.
+2 POOL W1 executes A, W2 executes B; C waits in queue (queue is unbounded).
+3 W1 completes A=1200, then takes C; W2 still runs B. Label this representative
+schedule; actual completion order varies.
+4 B=1800 and C=2400 finish; all three Futures now successful; invokeAll returns
+the Futures in submission order [A,B,C], not completion order.
+5 CALLER get results in list order: total0 ->1200 ->3000 ->5400.
+6 CALLER leaves try-with-resources; executor closes; return total5400 after cleanup.
+Use 3x2 pale snapshot cards with labelled worker slots, waiting queue and Future
+values, connected in reading order. Do not imply submit returns the quote itself
+or get completes before invokeAll returns in this implementation. No agents.
+Each card~290x130; height330 max.
+Create a polished, informative native inline SVG in the existing course style.
+Use viewBox="0 0 940 330" unless another height is specified, never taller than 360.
+Use xmlns, role="img", a full-sentence aria-label, font-family="Inter,sans-serif".
+Exact palette: dark #1A1A2E, white #FAFAFE; neutral #7A7A8A/#B8B8C8;
+orange #FF6200/#FFF4ED/#C44E00; blue #0091FF/#E6F4FF/#0066BB;
+green #00C48C/#E6FAF3/#008866; purple #7B61FF/#F0EDFF/#5B41DF.
+Use dark text on pale cards, generous internal padding, consistent rounded cards,
+restrained icons and meaningful arrows. ALL labels >=18 units; heading 20-22.
+Do not squeeze prose into the art; use compact exact state labels and line breaks.
+Number actual events 1, 2, 3... prominently, with actor and state at each event.
+Make causality and before/after visible, not just a numbered list of abstract nouns.
+Use a suitable trace, resource drawing, memory snapshot, lane or ownership graph.
+Arrows mean execution order, result transfer or labelled ownership/wait requests.
+No connector through labels. No text overlap. Leave at least 14 units padding.
+IDs must start with the figure name and end in -pjava02. Define markers locally.
+No style, script, image, foreignObject, external files or tools. No animation except
+the specifically requested eating spoon. Return only SVG through the JSON schema.
