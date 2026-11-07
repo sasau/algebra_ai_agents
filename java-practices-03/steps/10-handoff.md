@@ -49,7 +49,7 @@ one concurrent update and one recovered checkpoint from their actual source.
 
 ```bash
 mvn -B verify
-git diff --check
+git diff --check -- . ':(exclude,glob)evidence/**/*.txt'
 ```
 
 Require actual passing assertions, zero failures/errors, zero skipped tests and

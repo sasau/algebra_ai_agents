@@ -3,8 +3,11 @@
 Start with this prepared plan and an empty Java project. The orchestrator creates
 the repository and Maven project in Step 01, then delegates one small change at a
 time. Each completed step has implementation, independent verification, durable
-evidence in `log.md`, and its own local Git commit. There is no completed server
-or hidden reference solution in this kit.
+evidence in `log.md`, and its own local Git commit. The starter ZIP contains
+only this specification, with no completed server. The main practices repository
+also has a separate `reference/` directory with the finished application, tests
+and run documentation. Open `reference/README.md` to run that solution; extract
+the starter ZIP when doing the build exercise from scratch.
 
 ## Prepare a fresh workspace
 
@@ -14,24 +17,34 @@ with terminal access. The course uses Claude Code and project agents in
 server and its tests do not call an LLM or need an API key. Maven needs access to
 Maven Central on its first build, or a populated local cache.
 
-From the root of a clone of `algebra_ai_agents`, copy the kit **outside that
-clone**. Choose a destination that does not already exist:
+Download `practice-java03.zip` from the course hub (locations are listed in
+[COURSE_LINKS.md](COURSE_LINKS.md)). Extract it **outside every existing Git
+repository**. Choose a destination that does not already exist. The archive
+includes all four hidden `.claude` agent profiles and excludes `reference/`.
+If you already extracted it into a fresh location, open that folder directly.
+
+On macOS, from the directory containing the downloaded archive:
 
 ```bash
-cp -R java-practices-03 ../java-practices-03-work
-cd ../java-practices-03-work
+unzip practice-java03.zip -d ../java-practices-03-work
+cd ../java-practices-03-work/java-practices-03
 java -version
 mvn -version
 git --version
 git rev-parse --show-toplevel
 ```
 
-The last command must fail with “not a git repository”. This is expected before
+On Windows PowerShell, extract first, then run the same version and Git checks:
+
+```powershell
+Expand-Archive practice-java03.zip ../java-practices-03-work
+Set-Location ../java-practices-03-work/java-practices-03
+```
+
+The Git check must fail with “not a git repository”. This is expected before
 Step 01. If it succeeds, choose a destination outside that existing repository.
-Do not initialize a nested repository in the practices checkout. Alternatively,
-download the course ZIP and extract `java-practices-03` outside every existing repository.
-On Windows, use your file manager to copy the complete folder, including
-`.claude`, or use `Copy-Item -Recurse java-practices-03 ..\java-practices-03-work` in PowerShell.
+Do not initialize a nested repository in the practices checkout. Use the
+starter archive rather than copying the whole module with its reference code.
 
 ## Start, observe, stop and resume
 
@@ -54,18 +67,27 @@ An interrupted step is resumed, not counted as complete. Only the orchestrator
 updates `log.md`, coordinates writers and makes commits. The workers propose
 changes; a worker's “done” message is not acceptance evidence.
 
+Run the orchestrator interactively so normal tool approvals have a person to
+answer them. A headless --print session needs an approval-capable host; without
+one, required commands can be denied even when authentication works. Do not
+work around this with permission bypass flags or blanket allow rules. If the
+run stops for permission, preserve its files and resume after normal approval
+is available. Workers run one at a time; their background acknowledgements do
+not count as completed work.
+
 ## Supplied artifacts and created artifacts
 
 | Supplied now | Created during the build |
 |---|---|
-| `plan.md`, `contracts/`, `steps/01`–`10` | `.git/`, `pom.xml`, `.gitignore` |
+| `plan.md`, `contracts/`, `steps/01`–`10` | `.git/`, `pom.xml`, `.gitignore`, `.gitattributes` |
 | `AGENTS.md`, `CLAUDE.md`, four agent definitions | `src/main/java/`, `src/test/java/` |
 | Kickoff, continuation, stop and resume prompts | Runnable JAR under `target/` |
 | Pending `log.md`, verification and recovery protocols | Step evidence and local commits |
 
 Each [step specification](steps/01-bootstrap.md) names its scope, files, tests,
 commands, expected results, evidence and commit message. The supplied interface
-contract is a design specification: its named Java classes do not exist yet.
+contract is a design specification: its named Java classes do not exist in
+the starter. The separate reference directory implements them.
 
 ## Finished application
 
@@ -75,7 +97,8 @@ logic, cookie sessions, session expiry, concurrency limits, tests and lifecycle.
 Use simple text responses and an in-memory store. This is a loopback classroom
 server; sessions are visit counters, with no login or authenticated identity.
 
-Final commands, **available only after their steps are built**:
+Run these commands from `reference/` for the supplied solution, or from your
+student project **after the corresponding steps are built**:
 
 ```bash
 mvn -B verify

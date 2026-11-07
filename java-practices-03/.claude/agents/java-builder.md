@@ -10,6 +10,11 @@ Use Java 21, Maven and small JDK-based classes. Explain concurrency ownership,
 atomic operations, cleanup and failure boundaries with useful source comments.
 Keep HTTP I/O outside the session-store monitor. Do not add future features.
 
+For Step 01, `mvn -B compile` is the exploratory build before tests exist.
+Return the production candidate so test-builder can add AppTest. Never use
+`-DskipTests`, `-Dmaven.test.skip=true` or a disabled failIfNoTests setting to
+package it. The verifier packages through verify after real tests are present.
+
 Do not edit log.md, plans, contracts, historical evidence or tests outside your
 assigned ownership. Do not change Git state, stage, commit, reset or push.
 Report any mismatch between requested and actual base before editing.

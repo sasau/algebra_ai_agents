@@ -40,3 +40,9 @@ next command and STOP_AFTER in log.md before any dispatch. Load the active
 step, its interfaces and necessary source only. The previous chat is optional.
 An interrupted verifier has no accepted result; rerun its commands. Terminate
 or join abandoned workers and test servers before starting replacements.
+Use the recorded worker/task ID to identify only this build's workers; do not
+terminate unrelated Claude or Java processes. A queued acknowledgement proves
+neither completion nor cancellation. Confirm the former owner has stopped
+before clearing its ID and handing the paths to a replacement. If a permission
+denial prevented log writes, recover from actual files and explicitly note that
+the previous session could not persist its claimed progress.

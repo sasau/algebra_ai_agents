@@ -16,7 +16,11 @@ step is in_progress/interrupted, preserve its partial work, inspect it and
 continue the same step. Do not reset or clean. If all earlier checkpoints are
 complete, open only the next eligible step and its needed interfaces.
 
-Use the supplied builder, test-builder and verifier roles. Apply the same
+Use the supplied builder, test-builder and verifier roles. Reconcile any recorded
+worker ID, stop or join abandoned workers, and wait for actual completion before
+handing ownership to another. A background acknowledgement or a pending approval
+is not a returned result. If permissions prevent a required action, record the
+limit and stop the attempt. Apply the same
 verification/evidence/commit rules as kickoff.md. Continue in dependency order
 through STOP_AFTER, then report the current checkpoint and stop. Do not push.
 ```

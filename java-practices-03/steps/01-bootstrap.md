@@ -12,13 +12,25 @@ with `git var GIT_AUTHOR_IDENT`. If identity is missing, request the student's
 name/email for repository-local configuration; never invent identity or change
 global Git settings. Then run `git init -b main` in this workspace.
 
-Create `pom.xml`, `.gitignore`, package `edu.algebra.http`, `App` and immutable
+Create `pom.xml`, `.gitignore`, `.gitattributes`, package `edu.algebra.http`,
+`App` and immutable
 `ServerConfig`. Pin the plugins/dependency versions from contracts/design.md,
 set compiler release 21, Surefire failIfNoTests=true, finalName
 java-03-http-server and the executable main manifest. App supports --help and
 parses --port; runtime startup is explicitly unavailable until Step 02. Do not
 add HTTP handlers, a session store or a framework. Ignore target/, cookies.txt,
 IDE/runtime files; retain instructions, log.md and textual evidence in Git.
+In `.gitattributes`, preserve raw transcript bytes even when Git's global
+autocrlf setting converts line endings:
+
+```gitattributes
+evidence/**/*.txt -text
+```
+
+Before AppTest exists, the implementation worker may run `mvn -B compile` as
+an exploratory check. Do not use `-DskipTests` or `-Dmaven.test.skip=true` to
+package an untested bootstrap. The test-builder adds AppTest before packaging
+through the required verify commands below. Keep failIfNoTests enabled.
 
 `AppTest` checks default port 8080, port 0, 1 and 65535, and rejects -1, 65536,
 non-numeric, missing and unknown arguments. Check --help does not open a socket.
@@ -28,11 +40,16 @@ Verify the packaged JAR in addition to JUnit: `java -jar
 target/java-03-http-server.jar --help` exits 0 and prints usage. An invalid
 argument exits 2. Save actual stdout/stderr and exits. This proves the manifest
 and command line work before adding HTTP. Record the initial base as UNBORN.
-The first commit includes the supplied kit, bootstrap source, tests and evidence.
+The first commit includes the supplied kit, bootstrap source, tests and
+evidence, including all four hidden `.claude/agents/*.md` profiles. After staging
+and before committing, inspect `git status --short --untracked-files=all` and
+`git ls-files -- .claude/agents`. Require the four profiles in the index and no
+unexpected untracked files. An explicit staging list must name `.claude/` too;
+a shell glob such as `*` omits it.
 
 ## Ownership
 
-- java-builder: pom.xml, .gitignore and src/main/java/edu/algebra/http/; preserve supplied kit files.
+- java-builder: pom.xml, .gitignore, .gitattributes and src/main/java/edu/algebra/http/; preserve supplied kit files.
 - test-builder: src/test/java/edu/algebra/http/ for AppTest.
 - verifier: new evidence/step-01/attempt-N/ files; no code or log edits.
 - orchestrator: log.md, diff review, explicit staging and the local commit.

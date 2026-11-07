@@ -31,6 +31,21 @@ Wait for each role to finish; if dispatch is asynchronous, wait for its actual
 completion and join/cancel it before handing file ownership to another role.
 Use sequential role fallback only if necessary and record that limitation.
 
+Enforce a dispatch guard: one active worker/task ID, one role and one scope.
+Record intent and the table row before dispatch; after acknowledgement, persist
+the actual ID with state running. A backgrounded/queued acknowledgement is not
+a returned candidate. Wait for the completion message and check the worker has
+stopped, record the returned result, then clear the active ID before the next
+role. Yield while waiting if the harness delivers results asynchronously.
+Never start a second worker to inspect, replace or hurry a pending one. Do not
+spawn generic helpers or nested orchestrators. Read worker status yourself.
+
+Complete the required preflight before delegating implementation. Run shell
+preflight commands separately; do not assign reserved shell variables such as
+status. If approval is pending, wait. If denied or unavailable, preserve work,
+record the actual failure and stop that attempt. A claim that intent was logged
+conceptually is not a persisted log. Do not route around permission denials.
+
 Record intent before dispatch and actual progress after worker returns. Run the
 checkpoint procedure exactly: focused checks + full regression + observations,
 review the diff, verified log + evidence, explicit staging, named local commit,

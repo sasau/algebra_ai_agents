@@ -11,6 +11,8 @@
 - Attempt: 0
 - Execution mode: not_started
 - Active writer: none
+- Active worker ID: none
+- Worker state: none
 - Changed files: none
 - Required checks: see steps/01-bootstrap.md
 - Open issues: none

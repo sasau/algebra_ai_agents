@@ -19,11 +19,18 @@ merely `verified` state. Update only the current step and append events.
 2. **Record intent.** Set the step to `in_progress`; save its base HEAD (or
    `UNBORN`), attempt number, writer, scope, required checks and next action in
    log.md. Keep the last observed committed checkpoint separately.
+   Update the active step's table row as well as the current-state header.
 3. **Implement and test.** Dispatch one writer at a time. Each receives step ID,
    base, exact files, required interfaces and checks. Record its result and
    actual file changes. A new attempt gets its own evidence directory.
    Wait for a worker to finish and stop writing before the next role starts;
    a background dispatch acknowledgement is not a completed candidate.
+   Store the returned worker/task ID and role in log.md. While it is active,
+   wait for its completion message; do not dispatch a replacement, a helper or
+   the next role. Record its actual return and clear the active ID only after
+   it has stopped. An approval prompt keeps that ownership in place.
+   If approval is denied or unavailable, record the failure and stop that
+   attempt; do not continue on unexecuted preflight or verification claims.
 4. **Verify independently.** The verifier reads the resulting code, runs the
    named focused test class(es), then `mvn -B verify`, plus the step's manual
    checks. Require exit 0, real assertions, tests > 0, skips = 0 and correct
@@ -32,13 +39,17 @@ merely `verified` state. Update only the current step and append events.
    before staging the checkpoint. No pipelines that hide Maven's
    exit status. A failed command sets `failed`, with repair owner and next action.
 5. **Prepare the checkpoint.** The orchestrator checks evidence and reviews
-   `git diff --check`, the diff and tests. Mark the current row `verified` and
+   the whitespace gate below, the diff and tests. Mark the current row `verified` and
    `checkpoint: this commit` in log.md, link its evidence, and record the intended
    commit message. Include all implementation, tests, docs, log and textual
    evidence. Exclude target/, cookies, IDE files and temporary runtime files.
 6. **Commit the reviewed files.** Use an explicit `git add -- <paths...>` list;
-   inspect `git diff --cached --stat` and `git diff --cached`. Commit with the
-   exact step message. Do not use blanket staging of unexpected files. On a
+   inspect `git diff --cached --stat` and `git diff --cached`, and run the
+   staged whitespace gate below. Commit with the
+   exact step message. In Step 01, confirm all four `.claude/agents/*.md`
+   profiles are in the index and inspect untracked files before committing,
+   as required by steps/01-bootstrap.md. Do not use blanket staging of
+   unexpected files. On a
    commit failure, keep the step `verified`, record the error, and stop or repair
    the commit; the next step is not eligible.
 7. **Confirm, then record.** After success, capture `git rev-parse HEAD`, check
@@ -70,3 +81,20 @@ any limitations. Failed attempts remain. A small Python subprocess wrapper or
 another exit-preserving runner may capture stdout/stderr; a success paragraph
 without executable evidence is insufficient. Never commit `.git/`, target/,
 private credentials, binary test reports or personal cookie jars.
+
+## Whitespace checks and verbatim command output
+
+Maven can emit trailing spaces in stdout. Preserve those bytes in textual
+command transcripts rather than editing evidence to satisfy a source check.
+Run the whitespace gate on application files, tests, Markdown and structured
+evidence; exclude only the verbatim `.txt` command outputs under evidence/:
+
+```bash
+git diff --check -- . ':(exclude,glob)evidence/**/*.txt'
+git diff --cached --check -- . ':(exclude,glob)evidence/**/*.txt'
+```
+
+Review every excluded transcript for relevance and private data before staging.
+The exclusion does not permit source whitespace errors or a failing test gate.
+If an unscoped check was run and failed on raw output, retain its real exit code
+and explain the scoped result; never report that the unscoped command passed.

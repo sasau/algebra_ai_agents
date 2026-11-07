@@ -16,9 +16,17 @@ checks/review to verifier. Keep writing workers sequential. Verify the focused
 tests, full Maven regression suite and specified manual observations. If any
 check fails, log it and repair the same step; do not advance or commit success.
 
+Keep exactly one worker active. Save the dispatched task ID in log.md and wait
+for its real completion message before starting the next role. A background
+acknowledgement is not completion. Never launch a helper or replacement while
+that worker is pending. If normal approval is unavailable, stop and report it;
+do not invent execution or change permission settings to continue.
+
 After verification, update log.md and evidence, review the exact staged diff,
 and make the step's named local commit. Confirm the commit and clean worktree
-before selecting another step. Follow workflow/checkpoints.md and recover a
+before writing the completion confirmation. That confirmation makes only log.md
+dirty; carry it into the next checkpoint as the protocol describes. Follow
+workflow/checkpoints.md and recover a
 partial commit boundary through workflow/recovery.md.
 
 Report the step, observed checks, commit hash and next action after every
