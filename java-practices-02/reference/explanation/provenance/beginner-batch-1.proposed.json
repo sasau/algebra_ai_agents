@@ -1,0 +1,137 @@
+{
+  "slides": [
+    {
+      "n": 1,
+      "title": "Java concurrency: making thread behaviour visible in small programs",
+      "lead": "This course builds small Java programs that make thread behaviour visible. A thread is one stream of code running inside a program. Each topic names the problem, shows the Java mechanism that solves it in a diagram, and gives an expected result. Then you copy one build request, run the tests and the console example, and match the output to the mechanism. Topics: completion, shared state, task outcomes, virtual threads and competing resources.",
+      "caption": "",
+      "boundary": ""
+    },
+    {
+      "n": 2,
+      "title": "Four problems Java must coordinate when tasks overlap",
+      "lead": "A task is code to perform. A thread runs code. The caller is the thread making a method call, and a worker is the thread running the assigned task. Concurrency means tasks overlap in time. Parallelism means they truly run at the same moment. Overlap raises four questions: when is work done, who may change shared data, how do results or failures reach the caller, and how do workers get scarce resources?",
+      "caption": "Read each numbered mini-trace separately. Its final state shows what guarantee the named Java mechanism must provide.",
+      "boundary": "Knowing when work finished, updating data safely, reporting failures and making progress each need their own check. A program that compiles successfully proves none of them."
+    },
+    {
+      "n": 3,
+      "title": "Practice sequence: one Java problem at a time, six phases",
+      "lead": "The course moves from one worker to shared counters, batches of tasks and several competing resources. Each mechanism is presented in the same order: its parts and waiting points, then what can fail and how to prevent it, then a worked step-by-step run. After that you build, run and check the example. Extra failure cases are for discussion or follow-up. Queue implementation, extended failure tests and deeper CPU analysis are guided extensions.",
+      "caption": "",
+      "boundary": "Phase minutes are suggested teaching time. Tests check correct behaviour. Elapsed-time measurements are not required to show any speedup."
+    },
+    {
+      "n": 4,
+      "title": "Project setup: reuse the supplied Maven skill and agents",
+      "lead": "The practice kit already contains a Maven skill and two helper agents. The tutor agent builds the chosen Java feature and its tests. The reviewer agent checks the result. Their detailed instructions are stored in the repository, so nothing needs configuring here. The generated workspace folder starts empty. The reference folder holds the finished instructor solution. Examples run locally as ordinary Java programs and need no outside service.",
+      "caption": "",
+      "boundary": "Use JDK 21 or newer and Maven 3.9 or newer. An empty project has no tests, so its normal verify step fails on purpose until the first feature adds tests."
+    },
+    {
+      "n": 5,
+      "title": "Thread lifecycle: getting a finished result from a worker",
+      "lead": "A caller can hand work to another thread, but it still needs a reliable result. Starting a worker and waiting for it are different actions. This section builds a small console example. The task records the name of the thread that actually runs it. You then compare a started worker with a plain method call. No shared counter or thread pool is involved yet.",
+      "caption": "",
+      "boundary": ""
+    },
+    {
+      "n": 6,
+      "title": "Thread constructor creates an unstarted worker object",
+      "lead": "Thread is a Java class that implements Runnable, meaning it can carry a task. This constructor takes the task and a name used when diagnosing problems. A constructor has no return type. The keyword new builds the object and gives back a reference stored in the worker variable. A platform thread is a Java thread normally backed by an operating-system thread. The new object is an unstarted platform thread, and its task has not run. The supplied source uses the equivalent builder. Both forms need a separate start call.",
+      "caption": "The declarations show the class and constructor parameters. The example passes a task and a name. Creating the object and starting it are separate steps.",
+      "boundary": "These are excerpts of Java 21 declarations. new Thread(task, name) makes a platform thread; the reference code uses Thread.ofPlatform().name(name).unstarted(task). A Thread may be started only once."
+    },
+    {
+      "n": 7,
+      "title": "Runnable lambda supplies the body of void run()",
+      "lead": "Runnable describes work through one abstract method named run. It takes no parameters and returns void, so run neither receives input nor returns a result. A functional interface has exactly one abstract method, and a lambda can implement it. Assigning the lambda to task defines the work but does not execute it. The empty parentheses match run's empty parameter list. The arrow introduces the implementation. The braces hold its statements.",
+      "caption": "The lambda provides the body that void run() requires. The caller decides whether to call it directly or hand it to a worker thread.",
+      "boundary": "Interface method run is implicitly public and abstract and declares no checked exception. A class can also implement Runnable and override public void run(). Runnable itself does not start a thread."
+    },
+    {
+      "n": 8,
+      "title": "Thread.start() runs on a new thread; run() and join() stay on the caller",
+      "lead": "A method declaration gives its return type, name, parameters and declared exceptions. The caller calls worker.start(), which returns void. It asks Java to start a new thread. Java then runs worker.run() on that new thread, and the default run calls task.run(). The caller does not wait. A direct worker.run() call here calls task.run() on the caller, with no new thread. worker.join() also returns void. The caller waits until the worker terminates. A successful join makes the worker's actions visible to the caller.",
+      "caption": "start() launches a separate thread, a direct run() stays on the caller, and join() makes the caller wait. None of them returns the task's result.",
+      "boundary": "In this example, call start() before join(). join() on an unstarted platform Thread returns immediately. A second start() throws IllegalThreadStateException. InterruptedException from join() means the waiting caller was interrupted. It does not cancel the worker."
+    },
+    {
+      "n": 9,
+      "title": "Timed join, interrupt and isAlive report different facts",
+      "lead": "join with a positive millisecond value limits how long the caller waits. Its void return does not say whether the thread ended or time ran out, so check isAlive afterward. interrupt() asks the target thread to cooperate. It never forces a stop. isInterrupted() reads the target's interrupt status without clearing it. A worker can check it between short pieces of work. isAlive() is true only after start and before termination.",
+      "caption": "The signatures separate commands from true-or-false questions. Request cancellation, let the worker cooperate, then check whether it terminated.",
+      "boundary": "join(0) waits without a time limit. isAlive() is also false before start, and it does not show success. A target blocked in sleep, wait or join can get InterruptedException with its interrupt status cleared. Other code must check the status itself."
+    },
+    {
+      "n": 10,
+      "title": "Task, worker and completion: which Java call does what",
+      "lead": "A Thread object stands for a separate thread of running code. Its Runnable body describes the work. Creating an unstarted Thread does not run that body. start() asks Java to run the body on a new worker thread. join() makes the caller wait until that worker terminates. The result lives in separate shared data. The diagram links each part to its call before the example compares a started worker with a direct run() call.",
+      "caption": "start() hands the work to a worker thread, and join() waits for its end. The caller reads the result only after the worker has completed successfully.",
+      "boundary": "The diagram uses stable Java APIs. A Thread can be started only once. A direct platform-thread run() call creates no second thread; it runs the task on the caller."
+    },
+    {
+      "n": 11,
+      "title": "A worker that never ends keeps join() waiting forever",
+      "lead": "If a worker never terminates, the caller can wait in join() forever. In this illustrative loop no resources wait on each other in a circle. The failure is simply that the loop never ends. Build stopping into the worker. Do finite pieces of work, check for an interrupt request, and exit through cleanup. A timed join limits the caller's wait. Then isAlive tells whether the worker really stopped.",
+      "caption": "The endless worker never finishes, so join() never gets its completion. The repaired worker cooperates with the stop request before the caller checks that it ended.",
+      "boundary": "This is an illustrative failure, not the finite lifecycle task in the supplied project. Interrupting and timed join cannot force an arbitrary worker to stop."
+    },
+    {
+      "n": 12,
+      "title": "Calling start() does not mean the work has finished",
+      "lead": "The goal is a method that starts one worker and returns the name the task recorded. start() only makes the worker ready to run, and the caller continues at once. If the caller reads the shared result too early, it can still see null. The missing piece is a wait for completion. The diagram shows one unsafe timing. The source built later waits before returning the result.",
+      "caption": "Steps 1–2 let the caller see null. Steps 3–4 store the name later. That late store cannot change the value the caller already read.",
+      "boundary": "This is one illustrative unsafe timing. Another timing may happen to return the value. Getting lucky with timing does not prove the work completed."
+    },
+    {
+      "n": 13,
+      "title": "Start the worker, join it, then read the result",
+      "lead": "start() asks Java to run the task on a new worker thread. The caller then calls join(), which waits until that worker terminates, and only then reads the recorded name. A successful join also guarantees visibility: the worker's changes can be seen by that caller. This guarantee is called happens-before. A direct run() call is an ordinary method call on the caller and creates no new thread. The console example compares these two behaviours.",
+      "caption": "Steps 2–5 show the caller waiting until the worker ends. Step 6 reads the finished result. The separate direct-call lane stays on the main thread.",
+      "boundary": "AtomicReference also makes its value visible, but it does not wait for completion. Plain join() has no deadline. Sleeping gives no guarantee that the work finished."
+    },
+    {
+      "n": 14,
+      "title": "Build and run the lifecycle example",
+      "lead": "Build the two cases from the diagram. A started worker returns lesson-worker after join(). A direct run() records its caller's thread name. Copy the supplied request into Claude. Then run the narrated test and the lifecycle example.",
+      "caption": "",
+      "boundary": "Copy the short request into Claude. The repository supplies the build details. The tests must pass before the example is accepted."
+    },
+    {
+      "n": 15,
+      "title": "Console output shows which thread ran each task",
+      "lead": "The reference output reports lesson-worker for the started task and main for the direct call from Main. Both names come from Thread.currentThread() inside the task body. LifecycleTest checks the worker result. It also compares directRun with the test caller's actual thread name. The output shows which thread ran the code. join() supplies completion and visibility. No check depends on which thread prints first.",
+      "caption": "",
+      "boundary": "Use a separate Thread object for the direct-call demonstration. A Java Thread can be started only once."
+    },
+    {
+      "n": 16,
+      "title": "Shared state: keep the counter equal to the increments",
+      "lead": "Two workers adding to one counter can overwrite each other's update even when both finish normally. First the lesson forces a lost update, so the cause can be repeated. Then it protects the whole increment with a monitor, which is a lock that lets one thread at a time run guarded code, and with an atomic counter. The rule to keep is numerical. The final count must equal all increments by both workers.",
+      "caption": "",
+      "boundary": ""
+    },
+    {
+      "n": 17,
+      "title": "CyclicBarrier and CountDownLatch: who waits, who signals",
+      "lead": "A CyclicBarrier makes a fixed number of peer threads wait for each other at a meeting point. It can be reused. In the counter example, both workers finish reading before either writes. A CountDownLatch counts one-time signals down to zero. A caller waiting on it continues only at zero. Each mechanism has a participant count, a waiting point and a release condition. Neither collects a task's value or reports its exception.",
+      "caption": "The barrier releases the waiting peers together. The latch releases an observer when the count reaches zero. The pictures show who waits and who supplies each signal.",
+      "boundary": "The lost-update example uses a barrier. The dining example uses latches. A completion signal does not prove the work succeeded, so check failures separately."
+    },
+    {
+      "n": 18,
+      "title": "CyclicBarrier and CountDownLatch need timeouts for missing signals",
+      "lead": "A missing participant can stop a meeting from completing. If B fails before reaching the barrier, an untimed A can wait forever. If a worker forgets its latch signal, the count may never reach zero. Use timed waits and check task failures. A latch signal in finally can mean the worker ended. Future results must still show success or failure. A barrier timeout breaks that barrier and releases other waiters with an exception.",
+      "caption": "A missing arrival or signal keeps the release condition false. Timeouts expose that failure. Cleanup and separate result checks finish the recovery.",
+      "boundary": "Other waiters at a broken barrier receive BrokenBarrierException. A timeout reports that coordination was incomplete. It does not do the missing work."
+    },
+    {
+      "n": 19,
+      "title": "Race condition: two workers overwrite one increment",
+      "lead": "An increment reads the old value, adds one and writes the new value back. Two workers can both read zero, then both write one. A barrier makes both reads finish before either write, which forces this lost update. A volatile field makes each single read or write visible and ordered between threads. It does not make the whole read-modify-write sequence happen as one indivisible step.",
+      "caption": "Steps 1–2 copy the shared zero into two local copies. Steps 3–4 calculate locally. Step 6 writes one again, so one increment is lost instead of two being counted.",
+      "boundary": "The reference deliberately forces this interleaving. An uncontrolled stress loop may return the expected count and hide the defect."
+    }
+  ]
+}

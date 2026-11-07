@@ -1,0 +1,123 @@
+{
+  "slides": [
+    {
+      "n": 58,
+      "title": "Build and run the circular wait that the program can recover from",
+      "lead": "This step builds a dining example in which five philosophers each pick up one fork and then wait forever for a second one. That is a circular wait: each worker waits for a resource held by the next. The example is built so it can recover. Run its test and the dining command. Both must report five first forks held and all demonstration workers stopped. The ordered solution comes later, after it is explained.",
+      "caption": "",
+      "boundary": "Copy the short request into Claude; the repository supplies the build details. The tests must pass before the example is accepted."
+    },
+    {
+      "n": 59,
+      "title": "Global lock order: take the smaller fork before the larger fork",
+      "lead": "A global lock order means every worker takes shared resources in the same fixed order. Each philosopher picks up the lower-numbered fork first and the higher-numbered fork second, so P4 takes F0 before F4. A circular wait would need numbers to climb and then return to a smaller one, which this rule forbids. In the picture, P0 is eating while its neighbours wait for forks P0 owns exclusively.",
+      "caption": "Steps 1–4 take F0 then F1 and eat; step 5 releases F1 then F0. The animated table shows step 4, where who owns each fork and who waits stay fixed.",
+      "boundary": "The animation is an illustrative snapshot, not live Java state. Lock ordering prevents circular deadlock, but it does not prove starvation freedom, meaning that no worker is ever repeatedly passed over."
+    },
+    {
+      "n": 60,
+      "title": "ReentrantLock with nested finally releases only forks actually acquired",
+      "lead": "ReentrantLock is a lock object a thread acquires and releases explicitly. lockInterruptibly() lets another thread's interrupt request end the wait with an exception. Once the first fork is held, the outer finally releases it even if waiting for the second fork is interrupted. The inner finally begins only after the second lock succeeds. eat() runs while both forks are owned. Other code needing several locks can follow the same ordered pattern.",
+      "caption": "",
+      "boundary": "Unlocking a fork this thread never acquired is an ownership error. Do not replace the nested structure with unconditional unlock calls."
+    },
+    {
+      "n": 61,
+      "title": "Build and run the ordered dining solution",
+      "lead": "This step adds the ordered-lock solution and checks that each fork has only one owner at a time. Run the tests with four meals per philosopher, once with platform threads and once with virtual threads. Then run the console example with three meals, which prints real state events. Keep the earlier recoverable circular-wait demonstration in place.",
+      "caption": "",
+      "boundary": "Copy the short request into Claude; the repository supplies the build details. The tests must pass before the example is accepted."
+    },
+    {
+      "n": 62,
+      "title": "Dining results: safety, completion and fairness are separate claims",
+      "lead": "The completed reference reports five first forks held, all demonstration workers stopped, and three meals for each philosopher. The tests use four meals per philosopher on both thread kinds and check that no fork has two owners. These results support the safety and completion claims that were tested. Starvation means one worker repeatedly misses resources while others keep going. Global ordering alone does not promise fair service for every worker.",
+      "caption": "",
+      "boundary": "Java features: ReentrantLock, interruption and Future outcomes. Concurrency concepts: exclusive ownership, circular wait and global resource ordering."
+    },
+    {
+      "n": 63,
+      "title": "Guided extensions: move items through a bounded queue, then study CPU limits",
+      "lead": "The core examples already cover waiting for completion, shared state, collecting task outcomes and limiting resources. Two extensions follow. First, move items through a bounded queue, one with a fixed maximum size. Second, examine a separate CPU-heavy workload. Both reuse the existing project and tests. They teach backpressure, where a full queue slows the producer, and how much work the CPUs can run at once.",
+      "caption": "",
+      "boundary": ""
+    },
+    {
+      "n": 64,
+      "title": "BlockingQueue: buffer, producers, consumers and what each waits for",
+      "lead": "A BlockingQueue passes items from producer threads, which add them, to consumer threads, which remove them. Its capacity limits how many items can wait in the buffer. put waits for space when the buffer is full. take waits for an item when it is empty. ArrayBlockingQueue keeps first-in, first-out order. A waiting call releases only the queue's own internal lock, so basic use needs no outer monitor.",
+      "caption": "The buffer holds items; producers and consumers wait for different conditions. Removing the head item makes room for a later insertion at the tail.",
+      "boundary": "Queue capacity limits waiting items, not every task in the application. Timed offer returns false and timed poll returns null on timeout, so the code must handle both."
+    },
+    {
+      "n": 65,
+      "title": "BlockingQueue: an outer monitor can create a deadlock cycle",
+      "lead": "An outer monitor can break queue coordination that is otherwise correct. Suppose the queue is full. Producer P holds appLock and waits inside put for space. Consumer C needs appLock before it can call take, so C cannot free any space. put releases the queue's internal lock while waiting, but never appLock. Remove the unrelated outer monitor from blocking queue calls. Use timed offer or poll when you need a limited wait and an explicit failure plan.",
+      "caption": "Producer and consumer form a cycle through the outer monitor and the full buffer. Without that outer lock, take makes space and put can finish.",
+      "boundary": "This is an illustrative failure, not the supplied queue example. A timeout reveals missing progress; handle the item or failure explicitly instead of silently dropping it."
+    },
+    {
+      "n": 66,
+      "title": "BlockingQueue: a full buffer makes the producer wait",
+      "lead": "A BlockingQueue coordinates handoff between producers and consumers. With capacity two, items A and B fill the queue, so put(C) cannot finish until the consumer removes an item. This slowing of the producer when downstream is full is called backpressure. Handing data through the queue also makes the producer's writes visible to the consumer. The example returns A, B and C in order, with no polling or sleep-based coordination.",
+      "caption": "Step 3 removes A and opens one slot; step 4 inserts C behind B. After the producer finishes, draining the queue gives the full first-in, first-out result A, B, C.",
+      "boundary": "A latch counted down just before put shows the producer reached that line, not that it is already blocked. Queue capacity does not limit all running tasks."
+    },
+    {
+      "n": 67,
+      "title": "Build and run the queue and failure-case examples",
+      "lead": "This step adds the capacity-two queue transfer and the tests for the aggregator's failure and cancellation cases. Run the five orchestration checks. Then read the console output for 5400 cents and the first-in, first-out order A, B, C. Also confirm that the workers have terminated, which shows cleanup happened.",
+      "caption": "",
+      "boundary": "Copy the short request into Claude; the repository supplies the build details. The tests must pass before the example is accepted."
+    },
+    {
+      "n": 68,
+      "title": "CPU work: runnable tasks share a limited number of processors",
+      "lead": "A CPU-bound task spends most of its time computing rather than waiting. The picture uses two CPU slots and four tasks to show limited capacity. The instructor's actual machine reports sixteen processors. Platform and virtual threads both compete for that processor time. Check that tasks finished and results were collected before reading any timings. More runnable tasks do not add cores. The real scheduler may switch among them in short time slices.",
+      "caption": "Four tasks reuse two illustrative execution slots. Step 4 compares finished checksums across strategies before any timing conclusion is accepted.",
+      "boundary": "This simplified schedule shows capacity, not a universal finishing order. The real workload gives identical inputs to every strategy and requires no speed ranking."
+    },
+    {
+      "n": 69,
+      "title": "CPU work: return a computed checksum so the work is visible",
+      "lead": "The CPU task returns a checksum, a number computed from its loop. Because every strategy must return the same value, we can see the work really happened. When runnable tasks outnumber available processors, scheduling and contention can dominate the time. Virtual threads help workloads that mostly wait, but they add no cores. Read the CPU samples apart from the simulated blocking results, and keep the identical-work checks.",
+      "caption": "",
+      "boundary": "Signed-long overflow is intentional and identical in every mode. Background activity and startup affect these samples; use JMH for a carefully designed microbenchmark."
+    },
+    {
+      "n": 70,
+      "title": "Java mechanisms: match each feature to the guarantee it gives",
+      "lead": "Pick a coordination tool by the guarantee the program needs. Completion means the work has ended. Atomicity means an update happens as one indivisible step. Result collection exposes values and failures. Capacity limits restrict how much runs at once. Lock order prevents a cycle of waiting. These guarantees work together, but none replaces another. A virtual-thread executor changes how tasks run, but you must still keep shared state correct and respect dependency limits.",
+      "caption": "",
+      "boundary": "Completion, safety and fairness are separate claims. The unit tests establish the specific behaviours they exercise, not every possible schedule."
+    },
+    {
+      "n": 71,
+      "title": "Final validation: run the whole narrated JUnit test suite",
+      "lead": "After the feature steps, run the entire JUnit suite and keep its real assertion values. The supplied reference has sixteen tests covering lifecycle, shared state, orchestration, thread strategies and philosophers. Console narration explains setup, what ran, expected and observed values, reasons and limits. A JUnit watcher prints the actual final verdict. Printed teaching text never replaces assertions.",
+      "caption": "",
+      "boundary": "A missing test, skipped check or old report does not validate a changed feature. After a repair, get fresh test and run evidence."
+    },
+    {
+      "n": 72,
+      "title": "Primary sources: read the official Java concurrency contracts",
+      "lead": "A contract is the official statement of what a Java API promises. The contracts describe completion, visibility, failure and cleanup more precisely than timing observations. Use the Java 21 API documentation as the teaching baseline. Use the version-specific JEPs, the official Java enhancement proposals, for virtual-thread behaviour. These sources support the diagrams and code. The supplied run evidence shows only what the reference did on its recorded runtime and machine.",
+      "caption": "",
+      "boundary": "Preview structured-concurrency APIs are outside this practice. Record the actual JDK version before interpreting scheduling or pinning."
+    },
+    {
+      "n": 73,
+      "title": "Java contracts: ownership, waiting and overload rules",
+      "lead": "These Java 21 contracts separate waiting places that look alike. A monitor has one owner, and other threads trying to enter are blocked. An executor queue holds tasks. A semaphore controls permits. A blocking queue stores items. The documentation states exceptions, timeouts and release rules. The new failure diagrams are explanatory scenarios. The supplied JUnit suite validates the real reference implementation and only the behaviours it exercises.",
+      "caption": "",
+      "boundary": "A timed wait limits that wait only. It does not cancel work, release another thread's monitor or prove termination."
+    },
+    {
+      "n": 74,
+      "title": "Build small examples and explain the Java mechanism",
+      "lead": "Use the diagrams to explain each problem and its solution. Then build and run the chosen example. Tie the actual result to the Java feature that guarantees it. The supplied specialists and short classroom requests support this work. The subject of the practice is coordinated Java execution, shared state and resource ownership.",
+      "caption": "",
+      "boundary": ""
+    }
+  ]
+}

@@ -11,6 +11,7 @@ algebra_ai_agents/
   practice-03/    Agent architectures — explicit loop, evidence-based retries, sequential delegation
   java-pracitces-01/  Java Optional — create Maven project, prompts, skills, main examples and JUnit
   java-practices-02/  Java concurrency — supplied plans, narrated JUnit, thread experiments and Claude HTML explanations
+  java-practices-03/       HTTP server — resumable Claude Code build, verified steps and local commits
   local-models/   Shared free local backend — Ollama tutorial, doctor, tool probe and practice tests
   ...
 ```
@@ -34,6 +35,15 @@ actual console observations. Classroom specifications supply the implementation
 details while prepared specialists and a Maven skill support the work. The Java 21
 reference retains 16 narrated JUnit tests, equal-work platform/virtual comparisons
 and dining philosophers with interruptible recovery and ordered fork locks.
+
+[java-practices-03](java-practices-03/README.md) builds a small HTTP server from an empty Java
+project using Claude Code. The kit supplies a finished plan, ten detailed
+build/verify steps, a native orchestrator, Java/test builders, verifier,
+progress log and kickoff/stop/resume prompts. Step 01 creates a fresh Git/Maven
+project outside this checkout; each verified feature gets its own local commit.
+The final design includes cookie sessions, concurrent handlers and an observed
+load check. Start with the module README and kickoff.md. The linked slides and
+portable ZIP are listed in java-practices-03/COURSE_LINKS.md.
 
 ## Two tracks, same exercises
 

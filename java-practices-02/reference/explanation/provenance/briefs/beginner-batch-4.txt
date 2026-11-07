@@ -1,0 +1,234 @@
+Rewrite this existing Java concurrency lesson for students who know ordinary
+Java classes/methods but have NEVER studied threads. Keep every numbered slide,
+its concrete example, API facts, limits, expected numerical results and taught
+mechanism. This is a wording revision, not a new lesson plan. No tools/delegation.
+
+Return plain text (no markdown/HTML) in schema. title: mechanism first, <=11words.
+lead: 50-75words normally, maximum85. Use short connected sentences and concrete
+actors/actions. caption: two sentences, about25-35words. boundary: normally25-45
+words, up to55 only when needed. Empty caption for slides without a figure; empty
+boundary on title/section slides. Keep full Java API spelling/case and parentheses.
+
+Define each unfamiliar concept with everyday meaning before relying on it. Explain
+who calls which method, who runs code, who waits, what changes and what can fail.
+Use caller=thread making a method call; worker=thread running the assigned work;
+task=code to perform. Explain these in slide2. Explain platform thread as Java
+thread normally backed by an OS thread before virtual comparison. Avoid shorthand
+such as execution path, operation boundary, invariant, candidate, resource policy,
+receipt, liveness, observable outcome, admission, cancellation cooperation without
+first explaining the actual action/state. If a technical name matters, define it
+in plain language then keep the precise name. Do not omit difficult concepts.
+First-person course voice is unnecessary. Keep prepared agents/setup brief.
+
+CRITICAL Thread semantics: for the plain platform Thread created with Runnable
+task, worker.start() asks Java to start a new thread. Java runs worker.run() on
+that new thread; the default Thread.run() calls task.run(). start() is NOT an
+ordinary direct call to task.run() on the caller. Direct worker.run() in this
+platform example calls task.run() on the CALLER, with no new thread. Explain this
+explicitly in slides6-10 and lifecycle pages. Calling virtual Thread.run directly
+does not execute its task, so do not generalize direct-run to virtual threads.
+Constructor/builder unstarted does not execute task. Each Thread starts once.
+join waits on CALLER for target termination, not worker waiting for caller. A
+successful join of a started worker establishes termination/visibility; join on
+an unstarted platform Thread returns immediately. None of start/run/join returns
+task result. Timed join can return while target alive; join(0) is untimed.
+isAlive false also before start. interrupt requests cooperation, never force-kill.
+
+Other critical facts: monitor entry contenders BLOCKED, not Object.wait waitset;
+endless monitor owner is indefinite blocking without necessarily deadlock cycle;
+all accesses must share same monitor; volatile is not an atomic increment;
+AtomicInteger does not make separate get/check/decrement one atomic decision;
+executor queue stores tasks, blocking queue stores items; fixed pools have an
+unbounded queue; one-worker parent+child get can deadlock; Future.get wraps failure
+in ExecutionException; cancelled Future.get throws CancellationException; this
+aggregator checks isCancelled then throws its OWN TimeoutException; timed get does
+not cancel, timed invokeAll cancels unfinished tasks; cancellation != worker stop;
+semaphore acquire BEFORE try, release in finally after success, no owner/max-cap
+enforcement; ReentrantLock only owner unlocks, timed tryLock false no ownership;
+Java21 synchronized blocking can pin virtual carriers; JDK24 JEP491 removes
+monitor-related pinning; native cases remain. Queue waiting releases INTERNAL
+lock, not unrelated outer monitor. Global fork order avoids circular deadlock,
+does not prove starvation freedom. Timing no universal speedup or speed assertions.
+Do not add unimplemented runtime/test claims. APIs/exceptions must stay exact.
+
+These slides are one consecutive chunk of a74-slide deck. Retain references to
+earlier definitions if the concept was introduced in preceding slides. The body
+and graphics stay; explain their meaning rather than restating boxes. Actual
+commands/actual logs must not be invented or changed. Here is the current copy:
+[
+  {
+    "n": 58,
+    "title": "Circular wait — build and run the recoverable failure",
+    "lead": "Build the recoverable circular wait. Run its test and dining route; both must report five first forks held and all demonstration workers stopped. Ordered dining is a separate step after explaining the solution.",
+    "figure": "—",
+    "kind": "",
+    "caption": "",
+    "boundary": "Copy the short request into Claude; the repository supplies the build details. Tests must pass before the example is accepted.",
+    "other_content": "Build and run · copy and pasteCircular wait — build and run the recoverable failureUse the Java specialist: build classroom/07-circular-wait.md\nin workspace. Run its narrated tests and example, then stop.cd workspace\nmvn -B -Dtest=DiningPhilosophersTest verify\njava -jar target/concurrency-lab-1.0-SNAPSHOT.jar dining"
+  },
+  {
+    "n": 59,
+    "title": "Global lock order — acquire smaller fork before larger fork",
+    "lead": "A global lock order makes every worker acquire resources in the same strict order. Each philosopher takes the lower-numbered fork first and the higher-numbered fork second; P4 therefore takes F0 before F4. A cycle would require increasing numbers to return to a smaller starting point, which the rule forbids. The illustration shows P0 eating while neighbours wait for its exclusively owned forks.",
+    "figure": "JC2.37",
+    "kind": "",
+    "figure_name": "dining",
+    "caption": "Steps 1–4 acquire F0 then F1 and eat; step 5 releases F1 then F0. The animated table shows step 4, with ownership and neighbour waits fixed.",
+    "boundary": "The animation is an illustrative snapshot, not live Java state. Lock ordering prevents deadlock but does not prove starvation freedom.",
+    "other_content": "Java concurrencyGlobal lock order — acquire smaller fork before larger forkFigure JC2.37 — Steps 1–4 acquire F0 then F1 and eat; step 5 releases F1 then F0. The animated table shows step 4, with ownership and neighbour waits fixed."
+  },
+  {
+    "n": 60,
+    "title": "ReentrantLock — release exactly the forks actually acquired",
+    "lead": "ReentrantLock supports explicit, interruptible acquisition. Nested finally blocks express ownership: once the first fork is held, the outer finally releases it even if waiting for the second is interrupted. The inner finally is entered only after the second acquisition succeeds. Eating happens while both forks are owned. This same ordered resource pattern applies to other operations needing multiple locks.",
+    "figure": "—",
+    "kind": "",
+    "caption": "",
+    "boundary": "Unlocking a fork that was never acquired is an ownership error. Do not replace the nested structure with unconditional releases.",
+    "other_content": "Java concurrencyReentrantLock — release exactly the forks actually acquiredint first = Math.min(left, right);\nint second = Math.max(left, right);\nforks[first].lockInterruptibly();\ntry {\n    forks[second].lockInterruptibly();\n    try { eat(); } // Illustrative protected operation.\n    finally { forks[second].unlock(); }\n} finally { forks[first].unlock(); }"
+  },
+  {
+    "n": 61,
+    "title": "Ordered dining — build and run the solution",
+    "lead": "Add the ordered-lock solution and ownership checks. Run tests with four meals on both thread strategies, then the console example with three meals and real state events. Preserve the recoverable circular-wait demonstration.",
+    "figure": "—",
+    "kind": "",
+    "caption": "",
+    "boundary": "Copy the short request into Claude; the repository supplies the build details. Tests must pass before the example is accepted.",
+    "other_content": "Build and run · copy and pasteOrdered dining — build and run the solutionUse the Java specialist: build classroom/08-ordered-dining.md\nin workspace. Run its narrated tests and example, then stop.cd workspace\nmvn -B -Dtest=DiningPhilosophersTest verify\njava -jar target/concurrency-lab-1.0-SNAPSHOT.jar dining"
+  },
+  {
+    "n": 62,
+    "title": "Dining results — safety, completion and fairness are different",
+    "lead": "The completed reference reports five first forks held, stopped demonstration workers and ordered meal counts of three each. Tests use four meals per philosopher on both thread strategies and check fork exclusivity. These observations establish the exercised safety and completion invariants. Starvation means a worker repeatedly misses resources while others progress; global ordering alone does not promise that every scheduler serves every worker fairly.",
+    "figure": "—",
+    "kind": "",
+    "caption": "",
+    "boundary": "Java features: ReentrantLock, interruption and Future outcomes. Concurrency concepts: exclusive ownership, circular wait and global resource ordering.",
+    "other_content": "Java concurrencyDining results — safety, completion and fairness are different# Actual completed-reference result fields:\nheldFirstForks=5, workersStopped=true\nRESULT meals=[3, 3, 3, 3, 3]SafetyNo two eating philosophers may own the same fork.Progress limitFinite completion checks do not establish indefinite starvation freedom."
+  },
+  {
+    "n": 63,
+    "title": "Guided extensions — transfer work and interpret CPU limits",
+    "lead": "The core examples already coordinate completion, state, outcomes and resources. Extend them by transferring items through a bounded queue and by examining the separate CPU workload. These exercises reuse the existing project and tests. Their purpose is to explain backpressure and execution capacity, rather than introduce another agent workflow or application framework.",
+    "figure": "—",
+    "kind": "section",
+    "caption": "",
+    "boundary": "",
+    "other_content": "Java Practice 02 · feature and concurrency conceptGuided extensions — transfer work and interpret CPU limits"
+  },
+  {
+    "n": 64,
+    "title": "BlockingQueue — identify buffer, producer, consumer and wait conditions",
+    "lead": "A BlockingQueue transfers items between producers and consumers. Capacity limits pending items in the buffer. Put waits for space when that buffer is full; take waits for an item when it is empty. The supplied ArrayBlockingQueue preserves first-in, first-out order. Its internal coordination lets a waiting operation release the internal queue lock. An unrelated external monitor is unnecessary for these basic thread-safe operations.",
+    "figure": "JC2.38",
+    "kind": "",
+    "figure_name": "queue-parts",
+    "caption": "The buffer contains items; producers and consumers wait on different conditions. Removing a head item creates capacity for a later insertion at the tail.",
+    "boundary": "Queue capacity bounds pending items rather than every task in the application. Timed offer and poll need explicit handling of false or null.",
+    "other_content": "Java concurrencyBlockingQueue — identify buffer, producer, consumer and wait conditionsFigure JC2.38 — The buffer contains items; producers and consumers wait on different conditions. Removing a head item creates capacity for a later insertion at the tail."
+  },
+  {
+    "n": 65,
+    "title": "BlockingQueue — an external monitor can close a deadlock cycle",
+    "lead": "An external monitor can defeat otherwise correct queue coordination. With a full queue, producer P holds appLock and waits inside put for space. Consumer C needs appLock before it can take an item, so C cannot free that space. Put releases the queue’s internal lock while waiting, but it does not release appLock. Remove the unrelated outer monitor from blocking queue calls; use timed offer or poll when a bounded wait and explicit failure policy are required.",
+    "figure": "JC2.39",
+    "kind": "",
+    "figure_name": "queue-outer-lock",
+    "caption": "Producer and consumer form a cycle through the external monitor and the full buffer. Without that outer lock, take opens space and put can complete.",
+    "boundary": "Illustrative failure, not the supplied queue example. A timeout exposes missing progress; handle the item or failure explicitly rather than dropping it silently.",
+    "other_content": "Java concurrencyBlockingQueue — an external monitor can close a deadlock cycleFigure JC2.39 — Producer and consumer form a cycle through the external monitor and the full buffer. Without that outer lock, take opens space and put can complete."
+  },
+  {
+    "n": 66,
+    "title": "BlockingQueue — a full buffer slows the producer",
+    "lead": "A BlockingQueue coordinates transfer between producers and consumers. With capacity two, A and B fill the queue; put(C) cannot complete until the consumer removes an item. This backpressure slows production when downstream capacity is exhausted. Queue handoff also supplies a visibility guarantee for transferred data. The example should return A, B and C in order without polling or sleep-based coordination.",
+    "figure": "JC2.40",
+    "kind": "",
+    "figure_name": "queue",
+    "caption": "Step 3 removes A and opens one slot; step 4 inserts C behind B. After producer completion, draining the queue produces the full FIFO result A, B, C.",
+    "boundary": "A latch immediately before put shows progress to that line, not proof that the producer is already blocked. Queue capacity does not bound all running tasks.",
+    "other_content": "Java concurrencyBlockingQueue — a full buffer slows the producerFigure JC2.40 — Step 3 removes A and opens one slot; step 4 inserts C behind B. After producer completion, draining the queue produces the full FIFO result A, B, C."
+  },
+  {
+    "n": 67,
+    "title": "Queue and failure cases — build and run",
+    "lead": "Add the capacity-two queue transfer and aggregator failure/cancellation tests. Run the five orchestration checks, then inspect 5400 cents and FIFO A/B/C in the console. Observe worker termination as cleanup evidence.",
+    "figure": "—",
+    "kind": "",
+    "caption": "",
+    "boundary": "Copy the short request into Claude; the repository supplies the build details. Tests must pass before the example is accepted.",
+    "other_content": "Build and run · copy and pasteQueue and failure cases — build and runUse the Java specialist: build classroom/09-queue-and-failures.md\nin workspace. Run its narrated tests and example, then stop.cd workspace\nmvn -B -Dtest=OrchestrationTest verify\njava -jar target/concurrency-lab-1.0-SNAPSHOT.jar orchestration"
+  },
+  {
+    "n": 68,
+    "title": "CPU work — runnable tasks share finite execution capacity",
+    "lead": "A CPU-bound task spends most of its lifetime computing. The illustration uses two CPU slots and four tasks to make execution capacity visible; the actual instructor machine reports sixteen processors. Both platform and virtual tasks compete for the machine’s available execution time. Follow task completion and result collection before interpreting timings. Adding runnable tasks does not add cores, and the real scheduler may interleave them through time slicing.",
+    "figure": "JC2.41",
+    "kind": "",
+    "figure_name": "cpu",
+    "caption": "Four tasks reuse two illustrative execution slots. Step 4 compares completed checksums across strategies before any timing conclusion is accepted.",
+    "boundary": "This simplified schedule explains capacity, not a universal completion order. The real workload uses identical task inputs across strategies and no required speed ranking.",
+    "other_content": "Java concurrencyCPU work — runnable tasks share finite execution capacityFigure JC2.41 — Four tasks reuse two illustrative execution slots. Step 4 compares completed checksums across strategies before any timing conclusion is accepted."
+  },
+  {
+    "n": 69,
+    "title": "CPU work — keep calculated results observable",
+    "lead": "A CPU-bound task spends most of its lifetime computing. The CPU workload returns a calculated checksum so its work remains observable across strategies. If runnable tasks exceed available execution capacity, scheduling and contention can dominate. Virtual threads improve suitable waiting workloads, but do not supply more execution cores. Interpret the CPU samples separately from the simulated blocking results and retain identical work checks.",
+    "figure": "—",
+    "kind": "",
+    "caption": "",
+    "boundary": "Signed-long overflow is intentional and identical across modes. Background activity and startup affect these samples; use JMH for a carefully designed microbenchmark.",
+    "other_content": "Java concurrencyCPU work — keep calculated results observablelong checksum = taskId;\nfor (int i = 0; i < cpuIterations; i++) {\n    checksum = checksum * 31 + i;\n}\nreturn checksum; // Equal returned work across all strategies."
+  },
+  {
+    "n": 70,
+    "title": "Java mechanisms — match each feature to its guarantee",
+    "lead": "Choose a coordination mechanism from the required invariant. Completion means work has ended; atomicity protects an update; result collection exposes values and failures; capacity policies limit concurrent use; lock order prevents a resource cycle. These guarantees compose, but none replaces the others. A virtual-thread executor changes how tasks execute while leaving the application responsible for shared-state correctness and dependency limits.",
+    "figure": "—",
+    "kind": "",
+    "caption": "",
+    "boundary": "Completion, safety and fairness are separate claims. The unit tests establish their specific exercised invariants, not every possible schedule.",
+    "other_content": "Java concurrencyJava mechanisms — match each feature to its guaranteeJava featureGuarantee used herestart / joinSeparate execution; then completion and visibility.synchronized / AtomicIntegerMutual exclusion or an atomic counter update.ExecutorService / FutureTask scheduling and observable outcomes.BlockingQueue / SemaphoreBounded transfer or bounded resource entry.Ordered ReentrantLock acquisitionExclusive forks without circular wait."
+  },
+  {
+    "n": 71,
+    "title": "Final validation — run the complete narrated test suite",
+    "lead": "After the feature steps are complete, run the whole JUnit suite and retain its real assertion values. The supplied reference contains sixteen tests covering lifecycle, shared state, orchestration, thread strategies and philosophers. Console narration explains the setup, execution, expected and observed values, reasons and limits. A JUnit watcher prints the actual final verdict; printed teaching text never replaces assertions.",
+    "figure": "—",
+    "kind": "",
+    "caption": "",
+    "boundary": "A missing test, skipped check or old report does not validate a changed feature. After a repair, obtain fresh test and run evidence.",
+    "other_content": "Java concurrencyFinal validation — run the complete narrated test suitecd workspace\nmvn -B verify\n\n# Keep your actual stdout, JDK version and test totals.\n# Optional detail: open reference/explanation/project.html."
+  },
+  {
+    "n": 72,
+    "title": "Primary sources — inspect the Java concurrency contracts",
+    "lead": "The Java contracts explain completion, visibility, failure and cleanup more precisely than timing observations alone. Use the Java 21 API documentation for the teaching baseline and the version-specific JEPs for virtual-thread behaviour. These references support the diagrams and code. The supplied execution evidence establishes what the reference actually did on its recorded runtime and machine.",
+    "figure": "—",
+    "kind": "",
+    "caption": "",
+    "boundary": "Preview structured-concurrency APIs are outside this practice. Record the actual JDK before interpreting scheduling or pinning.",
+    "other_content": "Java concurrencyPrimary sources — inspect the Java concurrency contractsThread — start, run, join and interruption.java.util.concurrent — executors, atomicity, handoff and visibility.JEP 444 — Virtual Threads, delivered in Java 21.JEP 491 — monitor-related pinning changes in JDK 24."
+  },
+  {
+    "n": 73,
+    "title": "Java contracts — inspect ownership, waiting and overload policies",
+    "lead": "Use these Java 21 contracts to distinguish the similar-looking waiting areas. A monitor has an owner and blocked entry contenders; an executor queue holds tasks; a semaphore controls permits; a blocking queue stores items. The documentation specifies exceptional outcomes, timeouts and release rules. The new failure diagrams are explanatory scenarios, while the supplied JUnit suite validates the actual reference implementation and its explicitly exercised invariants.",
+    "figure": "—",
+    "kind": "",
+    "caption": "",
+    "boundary": "A timed wait limits that wait; it does not by itself cancel work, release another thread’s monitor or prove termination.",
+    "other_content": "Java concurrencyJava contracts — inspect ownership, waiting and overload policiesContractMechanism to inspectJLS §17.1 — locksMonitor ownership, reentrancy and synchronized release.ThreadPoolExecutorWorker limits, work queues and rejected submissions.FutureCompletion, failed get, cancellation and timed waiting.SemaphoreAcquire, release, permit count and fairness options.ReentrantLockOwnership, interruptible entry and timed acquisition.BlockingQueueBlocking, timed transfer and handoff guarantees."
+  },
+  {
+    "n": 74,
+    "title": "Build small examples; explain the Java mechanism",
+    "lead": "Use the diagrams to explain the problem and solution, then build and run the selected example. Connect the actual result to the Java feature that establishes its invariant. The supplied specialists and short classroom requests support the work; the subject of this practice is coordinated Java execution, shared state and resource ownership.",
+    "figure": "—",
+    "kind": "section",
+    "caption": "",
+    "boundary": "",
+    "other_content": "Java Practice 02 · feature and concurrency conceptBuild small examples; explain the Java mechanismCourse hubPractice source and downloadIllustrated execution referenceJava Optional practice"
+  }
+]

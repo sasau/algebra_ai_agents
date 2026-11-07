@@ -1,0 +1,1 @@
+{"jdk":"Temurin 21.0.10","javacFlags":["--release","21","-Xlint:all","-Werror"],"compileExitCode":0,"executionExitCode":0,"stdout":"work\nwork\nCompleted both creation forms; interrupt status=false\n","scope":"Standalone illustration compiled and executed; retained Maven/JUnit suite was not rerun."}

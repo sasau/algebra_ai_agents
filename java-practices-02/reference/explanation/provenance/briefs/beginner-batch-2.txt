@@ -1,0 +1,262 @@
+Rewrite this existing Java concurrency lesson for students who know ordinary
+Java classes/methods but have NEVER studied threads. Keep every numbered slide,
+its concrete example, API facts, limits, expected numerical results and taught
+mechanism. This is a wording revision, not a new lesson plan. No tools/delegation.
+
+Return plain text (no markdown/HTML) in schema. title: mechanism first, <=11words.
+lead: 50-75words normally, maximum85. Use short connected sentences and concrete
+actors/actions. caption: two sentences, about25-35words. boundary: normally25-45
+words, up to55 only when needed. Empty caption for slides without a figure; empty
+boundary on title/section slides. Keep full Java API spelling/case and parentheses.
+
+Define each unfamiliar concept with everyday meaning before relying on it. Explain
+who calls which method, who runs code, who waits, what changes and what can fail.
+Use caller=thread making a method call; worker=thread running the assigned work;
+task=code to perform. Explain these in slide2. Explain platform thread as Java
+thread normally backed by an OS thread before virtual comparison. Avoid shorthand
+such as execution path, operation boundary, invariant, candidate, resource policy,
+receipt, liveness, observable outcome, admission, cancellation cooperation without
+first explaining the actual action/state. If a technical name matters, define it
+in plain language then keep the precise name. Do not omit difficult concepts.
+First-person course voice is unnecessary. Keep prepared agents/setup brief.
+
+CRITICAL Thread semantics: for the plain platform Thread created with Runnable
+task, worker.start() asks Java to start a new thread. Java runs worker.run() on
+that new thread; the default Thread.run() calls task.run(). start() is NOT an
+ordinary direct call to task.run() on the caller. Direct worker.run() in this
+platform example calls task.run() on the CALLER, with no new thread. Explain this
+explicitly in slides6-10 and lifecycle pages. Calling virtual Thread.run directly
+does not execute its task, so do not generalize direct-run to virtual threads.
+Constructor/builder unstarted does not execute task. Each Thread starts once.
+join waits on CALLER for target termination, not worker waiting for caller. A
+successful join of a started worker establishes termination/visibility; join on
+an unstarted platform Thread returns immediately. None of start/run/join returns
+task result. Timed join can return while target alive; join(0) is untimed.
+isAlive false also before start. interrupt requests cooperation, never force-kill.
+
+Other critical facts: monitor entry contenders BLOCKED, not Object.wait waitset;
+endless monitor owner is indefinite blocking without necessarily deadlock cycle;
+all accesses must share same monitor; volatile is not an atomic increment;
+AtomicInteger does not make separate get/check/decrement one atomic decision;
+executor queue stores tasks, blocking queue stores items; fixed pools have an
+unbounded queue; one-worker parent+child get can deadlock; Future.get wraps failure
+in ExecutionException; cancelled Future.get throws CancellationException; this
+aggregator checks isCancelled then throws its OWN TimeoutException; timed get does
+not cancel, timed invokeAll cancels unfinished tasks; cancellation != worker stop;
+semaphore acquire BEFORE try, release in finally after success, no owner/max-cap
+enforcement; ReentrantLock only owner unlocks, timed tryLock false no ownership;
+Java21 synchronized blocking can pin virtual carriers; JDK24 JEP491 removes
+monitor-related pinning; native cases remain. Queue waiting releases INTERNAL
+lock, not unrelated outer monitor. Global fork order avoids circular deadlock,
+does not prove starvation freedom. Timing no universal speedup or speed assertions.
+Do not add unimplemented runtime/test claims. APIs/exceptions must stay exact.
+
+These slides are one consecutive chunk of a74-slide deck. Retain references to
+earlier definitions if the concept was introduced in preceding slides. The body
+and graphics stay; explain their meaning rather than restating boxes. Actual
+commands/actual logs must not be invented or changed. Here is the current copy:
+[
+  {
+    "n": 20,
+    "title": "Lost update — build and run the forced schedule",
+    "lead": "Build only the forced lost update. Two workers read zero before either writes. The narrated test must observe one; then run races to inspect the same counter result. Add the repairs in the next step.",
+    "figure": "—",
+    "kind": "",
+    "caption": "",
+    "boundary": "Copy the short request into Claude; the repository supplies the build details. Tests must pass before the example is accepted.",
+    "other_content": "Build and run · copy and pasteLost update — build and run the forced scheduleUse the Java specialist: build classroom/02-lost-update.md\nin workspace. Run its narrated tests and example, then stop.cd workspace\nmvn -B -Dtest=SharedStateTest verify\njava -jar target/concurrency-lab-1.0-SNAPSHOT.jar races"
+  },
+  {
+    "n": 21,
+    "title": "Synchronized — identify the monitor, block and blocked contenders",
+    "lead": "synchronized (lock) acquires the monitor associated with that particular object. Its braces enclose the protected block. One thread owns the monitor while other contenders wait to enter; their Java state is BLOCKED. Exiting the block normally or exceptionally releases the monitor. The same object must guard every access covered by the policy. The entry area below shows contenders, without promising their arrival order will be preserved.",
+    "figure": "JC2.13",
+    "kind": "",
+    "figure_name": "monitor-parts",
+    "caption": "The lock expression selects one monitor; braces define its protected region. Blocked contenders can enter only after ownership becomes available.",
+    "boundary": "The entry area is a conceptual contender queue, not Object.wait’s condition wait set. An instance synchronized method locks this; a static one locks its Class object.",
+    "other_content": "Java concurrencySynchronized — identify the monitor, block and blocked contendersFigure JC2.13 — The lock expression selects one monitor; braces define its protected region. Blocked contenders can enter only after ownership becomes available."
+  },
+  {
+    "n": 22,
+    "title": "Synchronized — an endless protected loop prevents entry",
+    "lead": "If A runs an unbounded loop while owning a monitor, B and C can remain blocked at entry. This is a monitor held indefinitely, without requiring a deadlock cycle. An interrupt does not automatically unlock the monitor or stop a loop that ignores cancellation. Move long computation or blocking work outside the critical section where the invariant permits it, and keep each protected update finite. Cancellation checks let the owner finish its work and leave.",
+    "figure": "JC2.14",
+    "kind": "",
+    "figure_name": "monitor-stall",
+    "caption": "A never reaches the closing brace, so its contenders cannot enter. The repair computes outside, performs a short protected update, then releases ownership.",
+    "boundary": "Illustrative failure case. sleep also retains an owned monitor; synchronized entry has no built-in timed or interruptible acquisition API.",
+    "other_content": "Java concurrencySynchronized — an endless protected loop prevents entryFigure JC2.14 — A never reaches the closing brace, so its contenders cannot enter. The repair computes outside, performs a short protected update, then releases ownership."
+  },
+  {
+    "n": 23,
+    "title": "Synchronized — opposite nested lock orders create a true deadlock",
+    "lead": "A deadlock occurs when dependencies form a cycle that prevents every participant from progressing. A owns M1 and waits for M2; B owns M2 and waits for M1. Neither reaches its release boundary. Require one global acquisition order, such as M1 before M2, or remove unnecessary nested locking. Then a waiting worker cannot hold the later resource that the owner still needs. Keep protected work finite as a separate requirement.",
+    "figure": "JC2.15",
+    "kind": "",
+    "figure_name": "monitor-cycle",
+    "caption": "The opposing ownership and wait edges close a cycle. A shared M1-before-M2 rule removes the reverse dependency.",
+    "boundary": "Interrupting a thread blocked on synchronized entry does not abort that acquisition. The later ReentrantLock recovery example uses an explicitly interruptible API.",
+    "other_content": "Java concurrencySynchronized — opposite nested lock orders create a true deadlockFigure JC2.15 — The opposing ownership and wait edges close a cycle. A shared M1-before-M2 rule removes the reverse dependency."
+  },
+  {
+    "n": 24,
+    "title": "Monitor — serialize the complete counter update",
+    "lead": "A monitor gives one worker exclusive entry to a synchronized operation. Protect the read, calculation and write with the same monitor. While A updates the counter, B waits outside that operation. After A releases the monitor, B reads the new value rather than the old zero. The numbered trace follows two increments; either worker may acquire first without changing the final total.",
+    "figure": "JC2.16",
+    "kind": "",
+    "figure_name": "monitor",
+    "caption": "A owns the monitor through its write. Only after A exits can B read one and write two. Every increment must use the same monitor.",
+    "boundary": "Mutual exclusion and visibility come from the monitor boundary. An unprotected access can break the policy; monitor entry does not promise FIFO (first-in, first-out) fairness.",
+    "other_content": "Java concurrencyMonitor — serialize the complete counter updateFigure JC2.16 — A owns the monitor through its write. Only after A exits can B read one and write two. Every increment must use the same monitor."
+  },
+  {
+    "n": 25,
+    "title": "AtomicInteger — identify the shared value and operation boundary",
+    "lead": "An AtomicInteger contains one shared integer and operations with specific guarantees. Get reads a value, set replaces it, and incrementAndGet increases it atomically and returns the new value. Both workers must address the same object. The boundary surrounds one operation, including the increment’s read and update. It does not automatically surround a sequence of separate calls or protect an unrelated field. There is no monitor-entry queue exposed by this API.",
+    "figure": "JC2.17",
+    "kind": "",
+    "figure_name": "atomic-parts",
+    "caption": "Two calls change the same value through indivisible transitions. The operation boundary is one API call, rather than the surrounding business algorithm.",
+    "boundary": "This is the API guarantee, without requiring a particular hardware instruction or implementation. Atomic operations do not promise scheduling fairness.",
+    "other_content": "Java concurrencyAtomicInteger — identify the shared value and operation boundaryFigure JC2.17 — Two calls change the same value through indivisible transitions. The operation boundary is one API call, rather than the surrounding business algorithm."
+  },
+  {
+    "n": 26,
+    "title": "AtomicInteger — separate checks and updates can still race",
+    "lead": "Atomic methods do not make an entire check-then-act sequence atomic. With one ticket left, A and B can each read one before either decrements; two atomic decrements then produce minus one. CompareAndSet can condition the update on the expected value: only one change from one to zero succeeds. A failed contender rereads and rechecks the condition. A monitor around the whole decision or a semaphore for admission can express the same required invariant.",
+    "figure": "JC2.18",
+    "kind": "",
+    "figure_name": "atomic-check-act",
+    "caption": "Separate atomic reads and decrements violate tickets ≥ 0. A conditional compareAndSet preserves one successful claim and leaves the count at zero.",
+    "boundary": "This illustrative ticket algorithm is not the supplied increment example. Retrying must refresh the expected value and condition; retries do not prove starvation freedom.",
+    "other_content": "Java concurrencyAtomicInteger — separate checks and updates can still raceFigure JC2.18 — Separate atomic reads and decrements violate tickets ≥ 0. A conditional compareAndSet preserves one successful claim and leaves the count at zero."
+  },
+  {
+    "n": 27,
+    "title": "AtomicInteger — make one counter transition indivisible",
+    "lead": "AtomicInteger.incrementAndGet combines reading the counter and increasing it into one atomic operation. Concurrent calls take effect in a valid order even while their lifetimes overlap. In this trace A changes zero to one and B changes one to two. The caller waits for both tasks before checking the final count. The API supplies the atomic update without exposing intermediate local calculations.",
+    "figure": "JC2.19",
+    "kind": "",
+    "figure_name": "atomic",
+    "caption": "Steps 2–3 are indivisible counter transitions. Reversing which worker takes effect first still preserves both increments and produces two.",
+    "boundary": "The illustrated ordering is one possibility. AtomicInteger does not promise caller fairness or make a transaction involving several fields atomic.",
+    "other_content": "Java concurrencyAtomicInteger — make one counter transition indivisibleFigure JC2.19 — Steps 2–3 are indivisible counter transitions. Reversing which worker takes effect first still preserves both increments and produces two."
+  },
+  {
+    "n": 28,
+    "title": "Atomicity — protect the complete increment",
+    "lead": "Mutual exclusion permits only one worker at a time inside a protected operation. A synchronized method uses one monitor to protect the entire increment and provides visibility at that boundary. AtomicInteger.incrementAndGet supplies an atomic update for one counter. Both approaches preserve the invariant when every counter access follows the same policy. Choose the guarantee required by the state being protected.",
+    "figure": "—",
+    "kind": "",
+    "caption": "",
+    "boundary": "Atomicity and visibility are distinct. An atomic field does not make a multi-field business transaction atomic.",
+    "other_content": "Java concurrencyAtomicity — protect the complete incrementsynchronized void increment() {\n    count++; // The same monitor protects the full update.\n}\n\nAtomicInteger count = new AtomicInteger();\ncount.incrementAndGet(); // One atomic counter operation."
+  },
+  {
+    "n": 29,
+    "title": "Counter repairs — build and run both solutions",
+    "lead": "Add the monitor and AtomicInteger repairs while preserving the forced race. Run tests with ten thousand increments per worker, then the console’s smaller workload. Both protected variants must preserve every increment.",
+    "figure": "—",
+    "kind": "",
+    "caption": "",
+    "boundary": "Copy the short request into Claude; the repository supplies the build details. Tests must pass before the example is accepted.",
+    "other_content": "Build and run · copy and pasteCounter repairs — build and run both solutionsUse the Java specialist: build classroom/03-counter-repairs.md\nin workspace. Run its narrated tests and example, then stop.cd workspace\nmvn -B -Dtest=SharedStateTest verify\njava -jar target/concurrency-lab-1.0-SNAPSHOT.jar races"
+  },
+  {
+    "n": 30,
+    "title": "Counter results — visibility alone did not preserve the total",
+    "lead": "The reference console records one for the forced race and two thousand for each protected variant, using one thousand increments per worker. The larger unit tests each require twenty thousand. The important difference is the atomicity boundary: both correct variants protect the full update. The barrier makes the defect reproducible; join or Future completion ensures the final result is read after workers finish.",
+    "figure": "—",
+    "kind": "",
+    "caption": "",
+    "boundary": "Java features: CyclicBarrier, synchronized and AtomicInteger. Concepts: interleaving, mutual exclusion, visibility and atomicity.",
+    "other_content": "Java concurrencyCounter results — visibility alone did not preserve the totalVariantConsole resultJUnit checkForced lost update1 after two attempted incrementsThe coordinated unsafe schedule returns 1.Synchronized monitor2000Two × 10,000 increments return 20,000.AtomicInteger2000The same 20,000 updates are preserved."
+  },
+  {
+    "n": 31,
+    "title": "Work orchestration — collect every task outcome",
+    "lead": "A program requesting several independent results needs more than threads that happen to run. It must decide where tasks execute, collect values and failures, define a deadline and release its workers. Build a price aggregator for three simulated shops. The caller returns a total only after every required result has succeeded.",
+    "figure": "—",
+    "kind": "section",
+    "caption": "",
+    "boundary": "",
+    "other_content": "Java Practice 02 · feature and concurrency conceptWork orchestration — collect every task outcome"
+  },
+  {
+    "n": 32,
+    "title": "ExecutorService — identify tasks, workers, queue and outcome receipts",
+    "lead": "An ExecutorService separates submitted work from the threads that execute it. Submit accepts a task and returns a Future receipt. A fixed pool reuses worker threads; pending tasks wait in its task queue until a worker is available. The caller can independently wait for the receipt’s outcome. Queue entries are tasks, not waiting threads. The diagram also names the lifecycle boundary: stop accepting work, finish or cancel outstanding work, and observe termination.",
+    "figure": "JC2.20",
+    "kind": "",
+    "figure_name": "executor-parts",
+    "caption": "Submission moves tasks into executor control; workers produce Future outcomes. The caller, queued task and idle worker have different waiting points.",
+    "boundary": "newFixedThreadPool(2) limits worker threads and uses an unbounded task queue. Executor close can wait for unfinished tasks; a Future is not a thread.",
+    "other_content": "Java concurrencyExecutorService — identify tasks, workers, queue and outcome receiptsFigure JC2.20 — Submission moves tasks into executor control; workers produce Future outcomes. The caller, queued task and idle worker have different waiting points."
+  },
+  {
+    "n": 33,
+    "title": "ExecutorService — bound the backlog and handle rejected work",
+    "lead": "Two busy workers do not bound the number of submitted tasks. With an unbounded queue, slow work can create growing latency and memory pressure. An illustrative ThreadPoolExecutor uses two workers and two queue slots, then rejects a fifth outstanding task through its AbortPolicy. The caller must handle that rejection, for example by returning a busy response or retrying within a deadline. Bounded admission makes overload visible while preserving the actual service capacity limit.",
+    "figure": "JC2.21",
+    "kind": "",
+    "figure_name": "executor-overload",
+    "caption": "Two running tasks and two queued tasks exhaust the configured admission capacity. The next submission is rejected and handled by the caller.",
+    "boundary": "This bounded alternative is explanatory; the supplied shop aggregator uses a fixed pool and a small finite input. Rejection policy and caller handling must be designed together.",
+    "other_content": "Java concurrencyExecutorService — bound the backlog and handle rejected workFigure JC2.21 — Two running tasks and two queued tasks exhaust the configured admission capacity. The next submission is rejected and handled by the caller."
+  },
+  {
+    "n": 34,
+    "title": "ExecutorService — dependent tasks can exhaust their own pool",
+    "lead": "A parent task can deadlock a one-worker pool by submitting its child to that same pool and waiting for the child’s Future. The child needs a worker, but the only worker belongs to the waiting parent. This thread-pool starvation deadlock is a dependency cycle. Submit independent tasks from the caller and collect them outside the exhausted pool, or perform the required child work directly. Adding a few workers does not remove arbitrary nested blocking dependencies.",
+    "figure": "JC2.22",
+    "kind": "",
+    "figure_name": "executor-starvation",
+    "caption": "The parent waits for a child that cannot obtain its occupied worker. Moving the wait to the caller allows that worker to execute the child.",
+    "boundary": "Illustrative one-worker failure, not the supplied two-worker quotes implementation. The caller must remain outside the pool whose capacity its awaited tasks require.",
+    "other_content": "Java concurrencyExecutorService — dependent tasks can exhaust their own poolFigure JC2.22 — The parent waits for a child that cannot obtain its occupied worker. Moving the wait to the caller allows that worker to execute the child."
+  },
+  {
+    "n": 35,
+    "title": "Future — identify pending, successful, failed and cancelled outcomes",
+    "lead": "A Future is a receipt for an eventual outcome. Get can wait, return a value or throw an exception representing failure or cancellation. IsDone includes successful, failed and cancelled completion, so it cannot establish success alone. A timed get bounds that caller wait without automatically cancelling the task. Timed invokeAll has a different contract: it cancels unfinished tasks at the batch deadline. Our aggregator inspects cancellation before collecting values.",
+    "figure": "JC2.23",
+    "kind": "",
+    "figure_name": "future-parts",
+    "caption": "The receipt’s terminal state determines what get observes. Timed get and timed invokeAll have different cancellation behaviour.",
+    "boundary": "Cancelled get throws CancellationException. The supplied aggregator instead checks isCancelled and throws its own TimeoutException; cancellation does not establish worker termination.",
+    "other_content": "Java concurrencyFuture — identify pending, successful, failed and cancelled outcomesFigure JC2.23 — The receipt’s terminal state determines what get observes. Timed get and timed invokeAll have different cancellation behaviour."
+  },
+  {
+    "n": 36,
+    "title": "Cancellation — a cancelled Future can leave work running",
+    "lead": "A cancelled receipt can coexist with a task that still runs. Cancel with interruption requests cooperation; it does not forcibly terminate an arbitrary computation. If the task ignores interruption, executor close may continue waiting. Use finite work units, cancellation checks and interruptible operations where available, then release resources in finally. After requesting cancellation, observe termination through an appropriate bounded wait and handle a still-running worker explicitly.",
+    "figure": "JC2.24",
+    "kind": "",
+    "figure_name": "future-stuck",
+    "caption": "The failure panel separates Future=CANCELLED from task=RUNNING. Cooperative exit and a later termination observation establish cleanup.",
+    "boundary": "Illustrative failure: the supplied waits cooperate. shutdownNow also requests interruption; it does not force tasks to stop or prove cleanup.",
+    "other_content": "Java concurrencyCancellation — a cancelled Future can leave work runningFigure JC2.24 — The failure panel separates Future=CANCELLED from task=RUNNING. Cooperative exit and a later termination observation establish cleanup."
+  },
+  {
+    "n": 37,
+    "title": "ExecutorService — submission and completion are separate",
+    "lead": "A Callable returns a value or throws an exception. An ExecutorService assigns tasks to workers; a Future represents an eventual outcome. Three quote lookups can share two platform workers, with the remaining task waiting for capacity. The caller collects each result through get. That operation exposes task failures and provides the documented visibility boundary for the completed work.",
+    "figure": "JC2.25",
+    "kind": "",
+    "figure_name": "executor",
+    "caption": "Steps 2–3 show two active workers and a queued third task. After invokeAll returns, step 5 collects the submission-ordered Futures and totals 5400 cents.",
+    "boundary": "A fixed thread pool bounds workers but uses an unbounded queue. Large inputs also need explicit admission or a bounded executor queue.",
+    "other_content": "Java concurrencyExecutorService — submission and completion are separateFigure JC2.25 — Steps 2–3 show two active workers and a queued third task. After invokeAll returns, step 5 collects the submission-ordered Futures and totals 5400 cents."
+  },
+  {
+    "n": 38,
+    "title": "Quote aggregation — return a total only after all results",
+    "lead": "The console feature receives three simulated quotes: 1200, 1800 and 2400 cents. It runs them on a two-worker pool under one batch deadline and returns 5400 only after every Future succeeds. Timed invokeAll waits for the batch and cancels unfinished tasks when its deadline expires. The loop inspects cancellation and calls get so a failed shop cannot silently disappear from the total.",
+    "figure": "—",
+    "kind": "",
+    "caption": "",
+    "boundary": "This is the aggregation core. The surrounding source owns executor creation and close; simulated waits do not call a real shop service.",
+    "other_content": "Java concurrencyQuote aggregation — return a total only after all resultsvar futures = executor.invokeAll(quotes, 2, TimeUnit.SECONDS);\nint total = 0;\nfor (var future : futures) {\n    if (future.isCancelled()) throw new TimeoutException();\n    total += future.get(); // Failure reaches the caller here.\n}\nreturn total; // Reached only after every result succeeds."
+  }
+]

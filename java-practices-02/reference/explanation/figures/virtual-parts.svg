@@ -7,4 +7,4 @@
 <rect x="760" y="126" width="166" height="56" rx="8" fill="#E6FAF3" stroke="#00C48C" stroke-width="2"/><text x="775" y="150" font-weight="700">After wake</text><text x="775" y="172">V2 runnable</text>
 <path d="M732,154H758" stroke="#008866" stroke-width="2" marker-end="url(#virtual-parts-ag-pjava02)"/><path d="M843,184V194" stroke="#008866" stroke-width="2" marker-end="url(#virtual-parts-ag-pjava02)"/>
 <rect x="544" y="196" width="382" height="42" rx="8" fill="#E6F4FF" stroke="#0091FF" stroke-width="2"/><text x="556" y="223">Runs when a carrier is available</text>
-<rect x="14" y="250" width="912" height="70" rx="8" fill="#F0EDFF" stroke="#7B61FF" stroke-width="2"/><text x="30" y="276">Task identity persists across unmount and remount.</text><text x="30" y="304">CPU capacity and scarce service capacity remain separate limits.</text></g></svg>
+<rect x="14" y="250" width="912" height="70" rx="8" fill="#F0EDFF" stroke="#7B61FF" stroke-width="2"/><text x="30" y="276">The virtual thread keeps its identity when it pauses and resumes.</text><text x="30" y="304">CPU capacity and scarce service capacity remain separate limits.</text></g></svg>

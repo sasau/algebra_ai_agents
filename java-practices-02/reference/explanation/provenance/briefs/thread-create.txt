@@ -1,0 +1,48 @@
+Figure name: thread-create.
+Explain Java Thread creation BEFORE the existing thread lifecycle
+diagram. Left/top labelled "Selected Java 21 declarations":
+public class Thread
+    implements Runnable { ... }
+public Thread(Runnable target,
+              String name)
+Use readable monospace18. Label Thread=class, constructor has NO return type,
+target=work to perform, name=diagnostic thread name. The body/other members are
+omitted intentionally; do not claim these excerpts compile as a complete class.
+Left/bottom actual example statements with task already defined:
+Thread worker =
+    new Thread(task, "lesson-worker");
+worker.start();
+Right a numbered object/control picture:1 task Runnable supplied ->2 worker Thread
+created in NEW state, no body run yet ->3 start schedules body on platform worker.
+Distinguish variable reference worker, Thread object, task body and name.
+Bottom compact equivalent builder used in supplied source, two lines:
+Thread.ofPlatform().name("lesson-worker")
+    .unstarted(task);
+Label builder ALSO creates unstarted platform thread; requires separate start.
+No claim constructor schedules or starts. Thread can be started only once.
+Use viewBox940x350 maximum, generous spacing. Need signature PLUS parts, not
+just a list of facts. Task definition follows on next slide.
+Create a polished, informative native inline SVG in the existing course style.
+Use viewBox="0 0 940 330" unless another height is specified, never taller than 360.
+Use xmlns, role="img", a full-sentence aria-label, font-family="Inter,sans-serif".
+Exact palette: dark #1A1A2E, white #FAFAFE; neutral #7A7A8A/#B8B8C8;
+orange #FF6200/#FFF4ED/#C44E00; blue #0091FF/#E6F4FF/#0066BB;
+green #00C48C/#E6FAF3/#008866; purple #7B61FF/#F0EDFF/#5B41DF.
+Use dark text on pale cards, generous internal padding, consistent rounded cards,
+restrained icons and meaningful arrows. ALL labels >=18 units; heading 20-22.
+Do not squeeze prose into the art; use compact exact state labels and line breaks.
+Number actual events 1, 2, 3... prominently, with actor and state at each event.
+Make causality and before/after visible, not just a numbered list of abstract nouns.
+Use a suitable trace, resource drawing, memory snapshot, lane or ownership graph.
+Arrows mean execution order, result transfer or labelled ownership/wait requests.
+No connector through labels. No text overlap. Leave at least 14 units padding.
+IDs must start with the figure name and end in -pjava02. Define markers locally.
+No style, script, image, foreignObject, external files or tools. No animation except
+the specifically requested eating spoon. Return only SVG through the JSON schema.
+
+This is an annotated Java API introduction, not a runtime benchmark.
+Use numbered callouts for the named signature parts and numbered runtime events.
+Preserve exact identifiers, return types, parameters, exceptions and Java syntax.
+Do not insert a line break inside an identifier. API excerpts are labelled as
+selected declarations; example statements are separate. All labels18+.
+Prefer code on pale cards; use dark ink and meaningful connecting arrows.

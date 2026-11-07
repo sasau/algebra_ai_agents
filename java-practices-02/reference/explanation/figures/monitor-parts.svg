@@ -32,7 +32,7 @@
 <path d="M600 122V146M600 176V200" stroke="#1A1A2E" stroke-width="4"/>
 <circle cx="648" cy="161" r="13" fill="#1A1A2E"/><text x="648" y="167" font-size="18" text-anchor="middle" fill="#FAFAFE">2</text>
 <rect x="690" y="44" width="236" height="224" rx="14" fill="#FFF4ED" stroke="#FF6200" stroke-width="2"/>
-<text x="706" y="76" font-size="20" font-weight="700" fill="#1A1A2E">Entry contenders</text>
+<text x="706" y="76" font-size="20" font-weight="700" fill="#1A1A2E">Threads trying to enter</text>
 <circle cx="906" cy="62" r="0" fill="none"/>
 <circle cx="730" cy="134" r="22" fill="#FAFAFE" stroke="#C44E00" stroke-width="2"/><text x="730" y="141" font-size="20" font-weight="700" text-anchor="middle" fill="#1A1A2E">B</text>
 <circle cx="730" cy="188" r="22" fill="#FAFAFE" stroke="#C44E00" stroke-width="2"/><text x="730" y="195" font-size="20" font-weight="700" text-anchor="middle" fill="#1A1A2E">C</text>
@@ -42,5 +42,5 @@
 <text x="706" y="256" font-size="18" fill="#008866">one enters after release</text>
 <circle cx="900" cy="108" r="13" fill="#1A1A2E"/><text x="900" y="114" font-size="18" text-anchor="middle" fill="#FAFAFE">4</text>
 <text x="14" y="302" font-size="18" fill="#1A1A2E">Instance synchronized method locks this; static synchronized locks the Class object.</text>
-<text x="14" y="322" font-size="18" fill="#1A1A2E">Entry area is conceptual, not a Java queue.</text>
+<text x="14" y="322" font-size="18" fill="#1A1A2E">Entry area shows waiting threads; no queue order is promised.</text>
 </svg>

@@ -1,0 +1,137 @@
+{
+  "slides": [
+    {
+      "n": 39,
+      "title": "Build the quote aggregator and run its focused test",
+      "lead": "This step builds the three-shop quote aggregator from the executor and Future design. An executor is a helper that runs tasks on worker threads. A Future is a handle the caller uses to get a task's result later. The focused test requires a total of 5400 cents. Then the example runs to show the total. Passing values through a queue comes in a later step.",
+      "caption": "",
+      "boundary": "Copy the short request into Claude. The repository supplies the build details. The tests must pass before the example counts as accepted."
+    },
+    {
+      "n": 40,
+      "title": "Future.get delivers values, failures and deadlines to the caller",
+      "lead": "A batch of tasks can end three ways. A task can return a value. A task can throw an exception, and Future.get wraps it in an ExecutionException that keeps the original cause. Or the deadline arrives, and timed invokeAll cancels the unfinished tasks. This aggregator checks isCancelled, then throws its own TimeoutException. Interrupting a worker only asks it to stop, so cleanup must confirm the worker really finished.",
+      "caption": "Follow steps 1-4 inside one row. A value is added to the total, a task exception reaches get, or a cancelled Future becomes the caller's TimeoutException.",
+      "boundary": "Cancelling a Future does not prove its worker stopped. Closing an executor can wait if tasks ignore interruption. The lesson tasks respond to interruption."
+    },
+    {
+      "n": 41,
+      "title": "Compare four ways to run identical waiting work",
+      "lead": "Many tasks spend most of their time waiting, for example for a network reply, not computing. This section runs the same numbered tasks four ways: one after another, on a platform thread pool, on one platform thread per task, and on one virtual thread per task. A platform thread is a normal Java thread backed by an operating-system thread. First check that all runs finish the same work and use the expected thread types. Only then compare elapsed time. The way tasks are run must not change the result.",
+      "caption": "",
+      "boundary": ""
+    },
+    {
+      "n": 42,
+      "title": "A virtual thread mounts on a carrier thread to run",
+      "lead": "A virtual-thread executor creates one virtual thread per task. A virtual thread is a lightweight Java thread that is not tied to its own operating-system thread. To run, it mounts on a carrier, which is a platform thread. The carrier runs through an OS thread on a processor. When the task waits in a supported way, it unmounts and keeps its identity and stack. Later the scheduler can mount it on any free carrier, possibly a different one.",
+      "caption": "The layers separate the task's identity from the carrier that supplies execution. Parked virtual threads do not each need a carrier that stays busy.",
+      "boundary": "The carrier count shown is only an illustration. Virtual threads add no processor cores, database connections or correctness guarantees. Create one per task instead of pooling them."
+    },
+    {
+      "n": 43,
+      "title": "Pinning holds a carrier; a semaphore limits scarce dependencies",
+      "lead": "On Java 21, a virtual thread that blocks inside synchronized can stay stuck to its carrier. This is called pinning. Other runnable virtual threads then cannot use that carrier. Keep synchronized sections short and move blocking work outside them where that is correct. An explicit lock can also work on Java 21. JDK 24 removes monitor-related pinning, but some native-code cases remain. Separately, a semaphore is still needed to limit use of scarce dependencies.",
+      "caption": "Pinning keeps a carrier occupied. A semaphore separately limits how many tasks use a dependency. Creating more virtual threads solves neither problem.",
+      "boundary": "The version change is JEP (JDK Enhancement Proposal) 491 in JDK 24. Pinning is not a circular deadlock. Upgrading Java does not increase an outside service's capacity."
+    },
+    {
+      "n": 44,
+      "title": "Waiting virtual threads release carriers for other work",
+      "lead": "A virtual thread is a lightweight Java thread scheduled onto platform carrier threads. When it makes a supported blocking call, it parks, meaning it stops running and waits. Parking frees its carrier for other work. So many waiting tasks need not each hold an operating-system thread. This does not make one computation faster. It adds no CPU cores. It also does not protect shared changeable data from unsafe access.",
+      "caption": "V1 frees its carrier when it parks in step 2. V2 uses that carrier in step 3. V1 can later resume on another free carrier.",
+      "boundary": "On Java 21, blocking inside synchronized may pin a carrier. JDK 24 JEP (JDK Enhancement Proposal) 491 removes monitor-related pinning. Some native-code cases can still pin."
+    },
+    {
+      "n": 45,
+      "title": "Four strategies separate thread type from worker count",
+      "lead": "The comparison uses the same task body, task identifiers and checksum in every mode. A pool of eight allows only eight workers to run tasks at once. Both per-task strategies create one thread for each submitted task. Adding platform-per-task separates two questions: how many workers, and which thread type. Inside each task, record Thread.currentThread().isVirtual() to verify which kind of thread ran it.",
+      "caption": "",
+      "boundary": "Use small classroom sizes. Creating many platform threads can exhaust operating-system resources before the comparison tells you anything."
+    },
+    {
+      "n": 46,
+      "title": "A Semaphore counts permits that let tasks use a resource",
+      "lead": "A Semaphore keeps a count of permits, like tokens for a limited resource. A successful acquire() takes one. When none remain, the caller waits before using the resource. release() gives one back and may let a waiting task continue. The code between those calls is ordinary application code, so the programmer must pair the calls correctly. Unlike a lock, a semaphore does not record which thread holds a permit. It also does not cap the count at the starting number.",
+      "caption": "The permit count, the tasks using the resource and the waiting tasks are separate parts. A task uses the resource only after acquire succeeds.",
+      "boundary": "Call acquire before the try whose finally releases the permit. The default constructor does not promise first-come service. Extra releases can push the count above the intended limit."
+    },
+    {
+      "n": 47,
+      "title": "Lost or extra permits break the semaphore's limit",
+      "lead": "If a task ends without returning its permit, later callers may wait forever. To prevent this, call release in a finally block after acquire succeeds, so the permit returns even if the resource use throws. The opposite mistake is releasing when acquire was interrupted before it succeeded. That adds a permit the task never took, and too many tasks may enter. The diagram shows the counter and the waiting tasks, so a missing or extra release is visible.",
+      "caption": "A leaked permit leaves the count at zero after its task ends. Correct try/finally pairing restores capacity without releasing after a failed acquire.",
+      "boundary": "A permit leak stalls the resource but does not necessarily form a deadlock cycle. The supplied runner already acquires before try and releases in finally."
+    },
+    {
+      "n": 48,
+      "title": "Trace permits, resource users and waiting tasks",
+      "lead": "A Semaphore gives out a fixed number of permits around a scarce dependency. Twenty virtual tasks can exist while only two use the protected section at once. Follow the free-permit count. A and B enter. C must wait. When A releases its permit, C can enter, but only after its own acquire succeeds. The unit test records the peak number of simultaneous users and requires it to stay at two or below.",
+      "caption": "Steps 1-2 use both permits. C stays outside in step 3. Releasing A's permit lets C enter later. Peak simultaneous use stays at two.",
+      "boundary": "This shows one possible order of acquisition. A semaphore limits how many are inside at once, not requests per second or how many tasks are waiting. It does not promise first-come service."
+    },
+    {
+      "n": 49,
+      "title": "Release the permit in finally after acquire succeeds",
+      "lead": "This code shows the standard Semaphore pattern. new Semaphore(2) allows two users at once. The task calls acquire() before try, so it waits for capacity first, and an interruption propagates out. Inside try it uses the resource. The finally block calls release(), which runs only after a successful acquire. The unit test records peak simultaneous use and requires two or fewer. Cheap waiting does not add database or service capacity.",
+      "caption": "",
+      "boundary": "The semaphore limits how many enter at once, not requests per second or how many tasks are waiting. Rate limiting and bounded submission are separate controls."
+    },
+    {
+      "n": 50,
+      "title": "Check equal work first, then compare elapsed time",
+      "lead": "Each strategy gets the same 120 tasks and the same simulated wait. Three warmup rounds run first so Java settles into steady running. Then five measured rounds run, with the mode order rotated so no mode always goes first. Accept a sample only if result counts and checksums match. Elapsed time includes startup, completion and cleanup, but not printing. A separate CPU workload shows what happens when tasks compute instead of wait.",
+      "caption": "Steps 1-3 set equal inputs and repeated rounds. Step 4 times execution and cleanup. Step 5 rejects unequal work before step 6 summarizes the samples.",
+      "boundary": "Sleep only simulates waiting. This is not a JMH (Java Microbenchmark Harness) benchmark, a production-service measurement or a memory benchmark."
+    },
+    {
+      "n": 51,
+      "title": "Build the workload runner and run its unit tests",
+      "lead": "This step builds the four strategies around one shared task body. It runs small tests for blocking and CPU work. The tests check the actual thread types and check that the two-permit limit holds. This step runs JUnit, the Java test framework. The timing run comes in the next step.",
+      "caption": "",
+      "boundary": "Copy the short request into Claude. The repository supplies the build details. The tests must pass before the example counts as accepted."
+    },
+    {
+      "n": 52,
+      "title": "Add measurements and run the thread comparison",
+      "lead": "This step adds the comparison command to the tested runner. The command runs 120 identical tasks with 20 ms of simulated waiting. It does three warmup rounds and five measured rounds. Keep the real samples and their medians. The full experiment can take about half a minute.",
+      "caption": "",
+      "boundary": "Copy the short request into Claude. The repository supplies the build details. The tests must pass before the example counts as accepted."
+    },
+    {
+      "n": 53,
+      "title": "Read the measured differences for this one run",
+      "lead": "This real instructor run used Java 21.0.10 on an aarch64 Mac reporting sixteen processors. In each workload, all strategies finished 120 tasks with matching checksums. In the blocking case, waits can overlap, but the pool lets only eight workers be active. The CPU samples include startup and instrumentation cost. Use the numbers to explain this run only. They do not set a required ranking or speedup.",
+      "caption": "",
+      "boundary": "Inputs: 120 tasks, 20 ms wait, 50,000 CPU iterations, three warmups and five measured rounds. No memory usage was measured."
+    },
+    {
+      "n": 54,
+      "title": "Dining philosophers: several exclusive resources can deadlock",
+      "lead": "A worker may hold one resource while waiting for another. If every worker does this in a circle, none can continue. Dining philosophers shows this with five workers and five forks. Each fork can be held by only one philosopher at a time. First the demonstration builds the circular wait on purpose and recovers from it. Then it makes everyone take forks in one fixed order, and the philosophers finish a bounded number of meals.",
+      "caption": "",
+      "boundary": ""
+    },
+    {
+      "n": 55,
+      "title": "ReentrantLock tracks an owner, a hold count and unlocks",
+      "lead": "A ReentrantLock is a lock with one owner and a count of how many times the owner acquired it. The owner can acquire it again. Each unlock() lowers the count, and the last one frees the lock. Other threads wait outside the protected code. lockInterruptibly() lets a waiting thread be interrupted. A timed tryLock can return false if it fails to get the lock. A finally block should still release the lock after success.",
+      "caption": "Acquiring makes a thread the owner, and matching releases remove ownership. Repeated acquisition needs matching unlocks before another worker can enter.",
+      "boundary": "Only the owner may unlock. A timed tryLock that returns false gives no ownership, so no unlock is needed. The default nonfair lock does not promise arrival-order service."
+    },
+    {
+      "n": 56,
+      "title": "Each philosopher holds one fork and waits for the next",
+      "lead": "Deadlock means a group of threads cannot continue because each waits for another thread in that group. Philosopher Pi needs forks Fi and F(i+1)%5. If every philosopher holds Fi before asking for the next fork, the requests form a circle of waiting. The demonstration arranges this state deliberately. It records five first forks held. Then it interrupts and joins every worker so the demonstration can end.",
+      "caption": "Step 1 shows five owners. Step 2 adds five requests. The wait-for cycle in step 3 explains why nobody can get a second fork and eat.",
+      "boundary": "A timeout alone does not prove deadlock. The recorded ownership snapshot explains the cycle. Recovery must release every lock that was acquired."
+    },
+    {
+      "n": 57,
+      "title": "Interrupt all workers, then join, to end the deadlock",
+      "lead": "A classroom deadlock demonstration must end safely. After the five first-fork owners and their second-fork attempts are set up, the caller interrupts every worker before joining any of them. The workers use interruptible lock acquisition and finally blocks, so they stop waiting and release the locks they really hold. The caller then calls join with a time limit on each worker and checks isAlive(). Interrupting only requests a stop. Seeing the workers terminate shows cleanup finished.",
+      "caption": "Record ownership, interrupt all, release held locks, join, then check whether workers are alive. The final workersStopped field is observed after cleanup.",
+      "boundary": "An interrupt asks for cooperation and never forces a stop. Release only locks actually acquired. A timed join can return while a worker is still alive, so the isAlive() check matters."
+    }
+  ]
+}

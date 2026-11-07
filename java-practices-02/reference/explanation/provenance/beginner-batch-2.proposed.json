@@ -1,0 +1,137 @@
+{
+  "slides": [
+    {
+      "n": 20,
+      "title": "Lost update: build and run the forced bad schedule",
+      "lead": "This step builds only the lost update. A lost update happens when two workers both read 0 from a shared counter before either writes, so one increment disappears. Recall that a worker is a thread running assigned work. The narrated test must observe 1. Then the races command runs the same counter example. The repairs come in the next step.",
+      "caption": "",
+      "boundary": "Copy the short request into Claude. The repository supplies the build details. The tests must pass before the example is accepted."
+    },
+    {
+      "n": 21,
+      "title": "synchronized lets one thread own a monitor; others are BLOCKED",
+      "lead": "A monitor is a lock that every Java object has. The code synchronized (lock) makes a thread acquire the monitor of that object. The braces mark the protected block. One thread owns the monitor. Other threads that want in wait at the entrance, and Java reports their state as BLOCKED. Leaving the block, normally or by exception, releases the monitor. Every protected access must use the same object. Arrival order at the entrance is not promised.",
+      "caption": "The lock expression picks one monitor, and the braces mark the protected region. Blocked threads can enter only after the owner releases the monitor.",
+      "boundary": "The entry area is not the wait set used by Object.wait. An instance synchronized method locks this. A static synchronized method locks its Class object."
+    },
+    {
+      "n": 22,
+      "title": "A monitor owner stuck in a loop blocks everyone else",
+      "lead": "Suppose thread A owns a monitor and runs a loop that never ends. Threads B and C stay BLOCKED at the entrance. The monitor is held indefinitely, and this is not necessarily a deadlock, because no circle of waiting exists. An interrupt does not unlock the monitor or stop a loop that ignores it. Do long or blocking work outside the block when the shared data allows. Keep each protected update short and finite.",
+      "caption": "A never reaches the closing brace, so the waiting threads cannot enter. The repair computes outside, does a short protected update, then releases the monitor.",
+      "boundary": "This is an illustrative failure. Thread.sleep also keeps any monitor the thread owns. Entering synchronized has no built-in timed or interruptible version."
+    },
+    {
+      "n": 23,
+      "title": "Opposite lock orders make a true deadlock",
+      "lead": "A deadlock is a circle of waiting in which no thread can move. Thread A owns monitor M1 and waits for M2. Thread B owns M2 and waits for M1. Neither can reach the end of its block to release anything. The fix is one global order, such as always M1 before M2. Nested locking can also be removed when it is not needed. Keeping protected work finite is a separate requirement.",
+      "caption": "The ownership and waiting arrows form a cycle. A shared rule of M1 before M2 removes the reverse dependency.",
+      "boundary": "Interrupting a thread blocked at synchronized entry does not cancel that wait. The later ReentrantLock recovery example uses an API that can be interrupted."
+    },
+    {
+      "n": 24,
+      "title": "A monitor serializes the whole counter update",
+      "lead": "A monitor lets one thread at a time run a synchronized operation. The read, the calculation and the write of the counter must all sit under the same monitor. While A updates the counter, B waits outside. After A releases the monitor, B reads 1 instead of the old 0. The numbered trace shows two increments. Either worker may go first, and the total is still 2.",
+      "caption": "A owns the monitor until its write is done. Only then can B read 1 and write 2. Every increment must use the same monitor.",
+      "boundary": "The monitor provides both mutual exclusion and visibility of changes. Any unprotected access can break this. Monitor entry does not promise FIFO (first-in, first-out) order."
+    },
+    {
+      "n": 25,
+      "title": "AtomicInteger makes one call a single indivisible step",
+      "lead": "An AtomicInteger holds one shared int. Atomic means a step happens whole, with no other thread seeing it half done. get() reads the value, set() replaces it, and incrementAndGet() reads, adds one and returns the new value as one atomic step. Both workers must use the same AtomicInteger object. The atomic step is one call only. It does not cover several separate calls or other fields.",
+      "caption": "Two calls change the same value in indivisible steps. The atomic unit is one API call, not the larger algorithm around it.",
+      "boundary": "This describes what the API guarantees, not a specific hardware instruction. Atomic operations do not promise scheduling fairness."
+    },
+    {
+      "n": 26,
+      "title": "Separate atomic checks and updates can still race",
+      "lead": "Atomic methods do not make a check followed by an action atomic. Say one ticket is left. A and B both read 1 before either decrements. Two atomic decrements then leave minus one. compareAndSet(1, 0) updates only if the value is still 1, so only one thread succeeds. The loser rereads and checks again. A monitor around the whole decision, or a semaphore that limits entry, can also keep tickets from going below zero.",
+      "caption": "Separate atomic reads and decrements break the rule tickets >= 0. A conditional compareAndSet allows one successful claim and leaves the count at zero.",
+      "boundary": "This ticket example is illustrative and is not the supplied increment example. A retry must reread the value and recheck the condition. Retrying does not prove every thread eventually succeeds."
+    },
+    {
+      "n": 27,
+      "title": "incrementAndGet makes one counter change indivisible",
+      "lead": "AtomicInteger.incrementAndGet() reads the counter and adds one as a single atomic operation. Calls that overlap in time still take effect one after another in a valid order. In this trace A changes 0 to 1 and B changes 1 to 2. The caller, the thread that started the work, waits for both tasks before checking the count. Neither worker can see the other's half-finished update.",
+      "caption": "Steps 2 and 3 are indivisible counter changes. If B went first instead, both increments would still count and the result would be 2.",
+      "boundary": "This order is only one possibility. AtomicInteger does not promise fairness between callers. It does not make a change across several fields atomic."
+    },
+    {
+      "n": 28,
+      "title": "Protect the complete increment, not just part of it",
+      "lead": "Mutual exclusion means only one worker at a time is inside a protected operation. A synchronized method uses one monitor around the whole increment, and it also makes the change visible to the next thread that takes the monitor. AtomicInteger.incrementAndGet() gives an atomic update for a single counter. Both are correct when every access to the counter follows the same approach. Choose the guarantee the protected data needs.",
+      "caption": "",
+      "boundary": "Atomicity and visibility are different guarantees. An atomic field does not make a business step across several fields atomic."
+    },
+    {
+      "n": 29,
+      "title": "Counter repairs: build and run both solutions",
+      "lead": "This step adds the monitor repair and the AtomicInteger repair. The forced race stays in the example for comparison. The tests run ten thousand increments per worker, and the console runs a smaller workload. Both repaired versions must keep every increment.",
+      "caption": "",
+      "boundary": "Copy the short request into Claude. The repository supplies the build details. The tests must pass before the example is accepted."
+    },
+    {
+      "n": 30,
+      "title": "Counter results: only protecting the whole update keeps the total",
+      "lead": "With one thousand increments per worker, the console shows 1 for the forced race and 2000 for each repaired version. The larger unit tests require 20000. The key difference is atomicity: both correct versions protect the full read-and-write update. The CyclicBarrier makes the bug repeatable. join or Future completion makes the caller read the total only after the workers finish.",
+      "caption": "",
+      "boundary": "Java features: CyclicBarrier, synchronized and AtomicInteger. Concepts: interleaving, mutual exclusion, visibility and atomicity."
+    },
+    {
+      "n": 31,
+      "title": "Work orchestration: collect every task outcome",
+      "lead": "Asking for several independent results takes more than starting threads. The program must choose where tasks run, collect values and failures, set a deadline and release its workers. Here, a price aggregator asks three simulated shops for quotes. The caller, the thread making the request, returns a total only after every required result has succeeded.",
+      "caption": "",
+      "boundary": ""
+    },
+    {
+      "n": 32,
+      "title": "ExecutorService separates submitted tasks from worker threads",
+      "lead": "An ExecutorService accepts tasks and runs them on its own worker threads. The caller uses submit() to hand over a task and gets back a Future, an object for the task's eventual outcome. A fixed pool reuses its workers. Tasks that cannot start yet wait in the executor's queue. The queue holds tasks, not waiting threads. The caller can wait on the Future separately. The executor must also stop accepting work, finish or cancel what remains, and be observed to terminate.",
+      "caption": "Submitting moves tasks under executor control, and workers produce Future outcomes. The caller, a queued task and an idle worker each wait for different things.",
+      "boundary": "newFixedThreadPool(2) limits workers to two but uses an unbounded task queue. Closing the executor can wait for unfinished tasks. A Future is not a thread."
+    },
+    {
+      "n": 33,
+      "title": "Bound the executor backlog and handle rejected work",
+      "lead": "Two busy workers do not limit how many tasks are submitted. With an unbounded queue, slow work causes longer delays and growing memory use. In this ThreadPoolExecutor example, two workers run tasks and two queue slots hold more. A fifth outstanding task is rejected by AbortPolicy, which throws an exception. The caller must handle it, for example by replying busy or retrying before a deadline. Rejecting makes overload visible.",
+      "caption": "Two running tasks and two queued tasks fill the configured capacity. The next submission is rejected, and the caller handles it.",
+      "boundary": "This bounded executor is only an explanation. The supplied shop aggregator uses a fixed pool and a small finite input. The rejection policy and caller handling must be designed together."
+    },
+    {
+      "n": 34,
+      "title": "Dependent tasks can use up their own pool",
+      "lead": "Suppose a pool has one worker. A parent task runs on it, submits a child task to the same pool, and calls get() on the child's Future. The child needs a worker, but the only worker is held by the waiting parent. This is a deadlock, a circle of waiting, called thread-pool starvation. Instead, let the caller submit the independent tasks and wait for them, or do the child work directly. Adding a few workers does not fix arbitrary nested waiting.",
+      "caption": "The parent waits for a child that cannot get the busy worker. If the caller does the waiting, the worker is free to run the child.",
+      "boundary": "This one-worker failure is only an illustration, not the supplied two-worker quotes code. The caller must stay outside the pool whose capacity its awaited tasks need."
+    },
+    {
+      "n": 35,
+      "title": "Future outcomes: pending, successful, failed or cancelled",
+      "lead": "A Future stands for a task's eventual outcome. Calling get() waits, then returns the value or throws an exception for failure or cancellation. isDone() is true for success, failure and cancellation, so it alone does not prove success. A timed get() limits how long the caller waits and does not cancel the task. Timed invokeAll does cancel tasks unfinished at the deadline. The aggregator checks isCancelled() before collecting values.",
+      "caption": "The Future's final state decides what get() does. Timed get() and timed invokeAll cancel differently.",
+      "boundary": "A failed task makes get() throw ExecutionException. Calling get() on a cancelled Future throws CancellationException. The supplied aggregator instead checks isCancelled() and throws its own TimeoutException. Cancellation does not prove the worker stopped."
+    },
+    {
+      "n": 36,
+      "title": "A cancelled Future can leave work still running",
+      "lead": "A Future can show cancelled while its task still runs. Cancelling with interruption only asks the task to cooperate, meaning to notice the request and stop itself. It cannot force an arbitrary computation to end. If the task ignores the interrupt, closing the executor may keep waiting. Write work in finite steps, check for interruption, use interruptible waits and release resources in finally. After cancelling, wait a bounded time for termination and handle a worker that is still running.",
+      "caption": "The failure panel separates Future=CANCELLED from task=RUNNING. Cleanup is established only when the task exits cooperatively and termination is observed.",
+      "boundary": "This failure is illustrative, since the supplied waits cooperate. shutdownNow() also only requests interruption. It does not force tasks to stop or prove cleanup."
+    },
+    {
+      "n": 37,
+      "title": "With ExecutorService, submitting and finishing are separate",
+      "lead": "A Callable is a task that returns a value or throws an exception. The ExecutorService hands tasks to workers, and each Future stands for one eventual outcome. Three quote lookups can share two platform workers, which are ordinary Java threads normally backed by OS threads. The third lookup waits for a free worker. The caller reads each result with get(), which reports task failures and makes the finished work's results visible to the caller.",
+      "caption": "Steps 2 and 3 show two active workers and a queued third task. After invokeAll returns, step 5 collects the Futures in submission order and totals 5400 cents.",
+      "boundary": "A fixed thread pool limits workers but has an unbounded queue. Large inputs also need a limit on accepted work, or a bounded executor queue."
+    },
+    {
+      "n": 38,
+      "title": "Return the quote total only after every result succeeds",
+      "lead": "The console feature receives three simulated quotes: 1200, 1800 and 2400 cents. It runs them on a two-worker pool with one deadline for the whole batch. Timed invokeAll waits for the batch and cancels tasks still unfinished when the deadline passes. The loop checks isCancelled() and calls get(), so a failed shop cannot quietly vanish from the total. The method returns 5400 only after all succeed.",
+      "caption": "",
+      "boundary": "This is the aggregation core. The surrounding source creates and closes the executor. The simulated waits do not call a real shop service."
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+Figure name: thread-wait-cancel.
+Four important Java21 method contracts as a polished 2x2
+signature-and-effect graphic. Exact public signatures, line-break between tokens:
+TOPLEFT public final void join(long millis)
+    throws InterruptedException;
+Caller waits up to a POSITIVE millisecond budget for target termination. Returns
+void: timeout and termination both return normally; inspect isAlive afterwards.
+join(0) waits without time limit (separate orange chip). Does NOT stop the target.
+TOPRIGHT public void interrupt();
+Requests cooperative cancellation of TARGET thread. Does not force termination.
+If target is blocked in sleep/join/wait, it may throw InterruptedException with
+status cleared; arbitrary code must cooperate. Put detail in surrounding prose
+if space tight. Diagram arrow is request to worker, not forced stopped marker.
+BOTTOMLEFT public final boolean isAlive();
+true means started AND not yet terminated. false also applies BEFORE start, so
+false alone does not mean successful work. Read current state; no waiting.
+BOTTOMRIGHT public boolean isInterrupted();
+Reads target thread's interrupt status WITHOUT clearing it. Worker can check
+Thread.currentThread().isInterrupted() during finite work units.
+Keep signatures18monospace and short labels18+; split throws clause if needed.
+Show request vs observation distinctly. Bottom connecting takeaway: interrupt
+request -> cooperative worker exit -> bounded join -> liveness observation;
+not a promise every request succeeds. 940x350 maximum, no overlapping notes.
+Create a polished, informative native inline SVG in the existing course style.
+Use viewBox="0 0 940 330" unless another height is specified, never taller than 360.
+Use xmlns, role="img", a full-sentence aria-label, font-family="Inter,sans-serif".
+Exact palette: dark #1A1A2E, white #FAFAFE; neutral #7A7A8A/#B8B8C8;
+orange #FF6200/#FFF4ED/#C44E00; blue #0091FF/#E6F4FF/#0066BB;
+green #00C48C/#E6FAF3/#008866; purple #7B61FF/#F0EDFF/#5B41DF.
+Use dark text on pale cards, generous internal padding, consistent rounded cards,
+restrained icons and meaningful arrows. ALL labels >=18 units; heading 20-22.
+Do not squeeze prose into the art; use compact exact state labels and line breaks.
+Number actual events 1, 2, 3... prominently, with actor and state at each event.
+Make causality and before/after visible, not just a numbered list of abstract nouns.
+Use a suitable trace, resource drawing, memory snapshot, lane or ownership graph.
+Arrows mean execution order, result transfer or labelled ownership/wait requests.
+No connector through labels. No text overlap. Leave at least 14 units padding.
+IDs must start with the figure name and end in -pjava02. Define markers locally.
+No style, script, image, foreignObject, external files or tools. No animation except
+the specifically requested eating spoon. Return only SVG through the JSON schema.
+
+This is an annotated Java API introduction, not a runtime benchmark.
+Use numbered callouts for the named signature parts and numbered runtime events.
+Preserve exact identifiers, return types, parameters, exceptions and Java syntax.
+Do not insert a line break inside an identifier. API excerpts are labelled as
+selected declarations; example statements are separate. All labels18+.
+Prefer code on pale cards; use dark ink and meaningful connecting arrows.

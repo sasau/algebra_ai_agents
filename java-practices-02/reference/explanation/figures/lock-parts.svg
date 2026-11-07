@@ -31,7 +31,7 @@
 <rect x="342" y="214" width="268" height="44" rx="8" fill="#E6FAF3" stroke="#00C48C"/>
 <text x="354" y="242" font-size="18" fill="#1A1A2E">last unlock: 0, FREE</text>
 <text x="342" y="284" font-size="18" fill="#1A1A2E">Not synchronized entry:</text>
-<text x="342" y="306" font-size="18" fill="#1A1A2E">explicit unlock, no FIFO claim</text>
+<text x="342" y="306" font-size="18" fill="#1A1A2E">explicit unlock; order may vary</text>
 <path d="M306 130H326" stroke="#1A1A2E" stroke-width="2" marker-end="url(#lock-parts-ar-pjava02)"/>
 <!-- contenders -->
 <rect x="646" y="38" width="278" height="278" rx="14" fill="#FFF4ED" stroke="#FF6200" stroke-width="2"/>

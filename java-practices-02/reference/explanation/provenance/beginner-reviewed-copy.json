@@ -1,0 +1,520 @@
+[
+  {
+    "n": 1,
+    "title": "Java concurrency",
+    "lead": "Build small Java programs that make thread behaviour visible. A thread is one sequence of code execution inside a program. Each topic explains a problem, shows the Java mechanism that solves it, and gives an expected result. Then copy one build request, run the tests and console example, and connect the output to the mechanism. Study completion, shared data, task results, virtual threads and competing resources.",
+    "caption": "",
+    "boundary": ""
+  },
+  {
+    "n": 2,
+    "title": "Concurrency — four problems when tasks overlap",
+    "lead": "A task is code to perform. A thread runs code. The caller is the thread making a method call; a worker runs assigned work. Concurrency means tasks overlap in time. Parallelism means they run at the same moment. Overlapping tasks need coordination: wait for completion, change shared data safely, report results or failures, and share limited resources such as locks or database connections.",
+    "caption": "Read each numbered sequence separately. The final state shows the problem that the named Java feature solves; A and B are threads, and L1 and L2 are locks.",
+    "boundary": "Knowing when work finished, updating data safely, reporting failures and making progress each need their own check. A program that compiles successfully proves none of them."
+  },
+  {
+    "n": 3,
+    "title": "Practice sequence — one Java problem at a time",
+    "lead": "The course moves from one worker to shared counters, batches of tasks and several competing resources. Each mechanism is presented in the same order: its parts and waiting points, then what can fail and how to prevent it, then a worked step-by-step run. After that you build, run and check the example. Extra failure cases are for discussion or follow-up. Queue implementation, extended failure tests and deeper CPU analysis are guided extensions.",
+    "caption": "",
+    "boundary": "Phase minutes are suggested teaching time. Tests check correct behaviour. Elapsed-time measurements are not required to show any speedup."
+  },
+  {
+    "n": 4,
+    "title": "Project setup — use the supplied Maven skill and agents",
+    "lead": "The kit supplies a Maven skill and Java specialist agents. The tutor builds the chosen feature and its tests; the reviewer checks the result; the explainer describes how the Java code works. Their instructions are in the repository. The generated workspace folder starts empty, while reference holds the finished instructor solution. The Java examples run locally and need no outside service.",
+    "caption": "",
+    "boundary": "Use JDK 21 or newer and Maven 3.9 or newer. An empty project has no tests, so its normal verify step fails on purpose until the first feature adds tests."
+  },
+  {
+    "n": 5,
+    "title": "Thread lifecycle — get a finished result from a worker",
+    "lead": "A caller can hand work to another thread, but it still needs a reliable result. Starting a worker and waiting for it are different actions. This section builds a small console example. The task records the name of the thread that actually runs it. You then compare a started worker with a plain method call. No shared counter or thread pool is involved yet.",
+    "caption": "",
+    "boundary": ""
+  },
+  {
+    "n": 6,
+    "title": "Thread — create an object before starting its work",
+    "lead": "Thread is a Java class that provides a run() method. new Thread(task, name) creates an object representing an unstarted platform thread: a Java thread backed by an operating-system thread. The task parameter supplies a Runnable object; name labels the thread. new produces a reference stored in worker. Construction does not execute the task. Call worker.start() separately to start the new thread.",
+    "caption": "The constructor has no return type; its parameters receive the task and name. implements Runnable means Thread provides run(); the supplied Runnable is a separate object containing the task.",
+    "boundary": "These are Java 21 API excerpts. The reference uses Thread.ofPlatform().name(name).unstarted(task), which also creates an unstarted platform thread. A Thread object can be started only once."
+  },
+  {
+    "n": 7,
+    "title": "Runnable — define the work with a lambda",
+    "lead": "Runnable is an interface describing work through run(). This method has no parameters, and void means it returns no value. Its declaration has no body: an implementation supplies the statements to execute. A functional interface has one abstract method, so a lambda can supply that implementation. In Runnable task = () -> { ... }, the empty parentheses match run(), the arrow introduces its body, and the braces contain its statements.",
+    "caption": "The lambda provides the body that void run() requires. The caller decides whether to call it directly or hand it to a worker thread.",
+    "boundary": "Assigning the lambda defines work without running it. A class can also implement Runnable with public void run(). That method declares no checked exceptions; its body must handle any checked exception itself."
+  },
+  {
+    "n": 8,
+    "title": "Thread — start(), run() and join() do different jobs",
+    "lead": "The caller calls worker.start(). Java starts the platform worker, which executes worker.run(); its default implementation calls the supplied task.run(). The caller continues without waiting. Calling worker.run() directly instead runs the task on the caller, creating no new thread. worker.join() makes the caller wait until the worker ends. All three return void, so none returns a task value. After untimed join() returns normally, the worker’s changes are visible to the caller.",
+    "caption": "start() starts a separate thread; a direct run() call uses the caller. join() waits for the worker to end, including when the task ends by throwing an exception.",
+    "boundary": "Call start() before join(): joining an unstarted platform thread returns immediately. A second start() throws IllegalThreadStateException. InterruptedException from join() means the waiting caller was interrupted; it does not cancel the worker."
+  },
+  {
+    "n": 9,
+    "title": "Thread — timed join, interrupt and state checks",
+    "lead": "join() with a positive millisecond value limits the caller’s wait. Its void return does not distinguish a finished worker from a timeout, so check isAlive(). interrupt() asks the target thread to cooperate; it never forces a stop. isInterrupted() reads the target’s interrupt status without clearing it. A worker can check this flag between short pieces of work. isAlive() is true only after the thread starts and before it ends.",
+    "caption": "The signatures separate commands from true-or-false questions. Request cancellation, let the worker cooperate, then check whether it terminated.",
+    "boundary": "join(0) waits without a time limit. isAlive() is also false before start and does not prove success. Interrupting a thread waiting in sleep(), wait() or join() makes that call throw InterruptedException and clears its interrupt status."
+  },
+  {
+    "n": 10,
+    "title": "Thread — connect the task, worker and result",
+    "lead": "The Runnable object describes the work. The Thread object represents the worker that will run it. Creating an unstarted Thread runs no task code. worker.start() starts a new thread; the default platform Thread.run() calls task.run() there. worker.join() makes the caller wait until that worker ends. The task stores its result separately. Follow the diagram from task definition to starting, waiting and reading.",
+    "caption": "start() begins work on the worker thread, and join() waits for that thread to end. The result is stored separately; join() itself returns no value.",
+    "boundary": "A Thread can be started only once. In this platform-thread example, calling worker.run() directly runs task.run() on the caller. Directly calling run() on a virtual Thread does not execute its task."
+  },
+  {
+    "n": 11,
+    "title": "Thread — a worker that never ends keeps join() waiting",
+    "lead": "If a worker never ends, the caller can wait in join() forever. The illustrated loop has no circle of threads waiting for each other; it fails because it never finishes. Design the worker to stop: do finite pieces of work, check for an interrupt request, and leave through cleanup. A timed join() limits the caller’s wait. Then isAlive() checks whether the worker actually stopped.",
+    "caption": "The endless worker never finishes, so join() never gets its completion. The repaired worker cooperates with the stop request before the caller checks that it ended.",
+    "boundary": "This is an illustrative failure, not the finite lifecycle task in the supplied project. Interrupting and timed join cannot force an arbitrary worker to stop."
+  },
+  {
+    "n": 12,
+    "title": "Thread lifecycle — starting work does not finish it",
+    "lead": "The goal is a method that starts one worker and returns the name the task recorded. start() begins independent execution without waiting for its result. If the caller reads the shared result too early, it can still see null, meaning no name has been stored. The diagram shows one possible order of events. The implementation built later waits for the worker before reading the result.",
+    "caption": "Steps 1–2 let the caller see null. Steps 3–4 store the name later. That late store cannot change the value the caller already read.",
+    "boundary": "This is one illustrative unsafe timing. Another timing may happen to return the value. Getting lucky with timing does not prove the work completed."
+  },
+  {
+    "n": 13,
+    "title": "Thread lifecycle — start, join, then read the result",
+    "lead": "worker.start() starts the platform worker; its default run() calls task.run() on that new thread. The caller then calls worker.join() and waits until the worker ends before reading the recorded name. This also guarantees visibility: the worker’s changes can be seen by the caller. Java calls this ordering happens-before. A direct worker.run() call on the separate platform Thread instead runs task.run() on the caller.",
+    "caption": "Steps 2–5 show the caller waiting until the worker ends. Step 6 reads the finished result. The separate direct-call lane stays on the main thread.",
+    "boundary": "The example stores the name in AtomicReference, a container that makes updates visible between threads. Reading that container does not wait for a value. Untimed join() waits for completion; sleep() provides no completion guarantee."
+  },
+  {
+    "n": 14,
+    "title": "Thread lifecycle — build and run",
+    "lead": "Build the two cases from the diagram. A started worker returns lesson-worker after join(). A direct run() records its caller’s thread name. Copy the supplied request into Claude. Then run the narrated test and the lifecycle example.",
+    "caption": "",
+    "boundary": "Copy the short request into Claude. The repository supplies the build details. The tests must pass before the example is accepted."
+  },
+  {
+    "n": 15,
+    "title": "Thread lifecycle — output shows which thread ran the task",
+    "lead": "The reference output reports lesson-worker for the started task and main for the direct call from Main. The task obtains both names with Thread.currentThread().getName(): currentThread() finds the executing thread, and getName() reads its name. LifecycleTest checks the worker result and compares directRun with the test caller’s actual name. join() waits for completion and makes the worker’s changes visible. No assertion depends on which thread prints first.",
+    "caption": "",
+    "boundary": "Use a separate Thread object for the direct-call demonstration. A Java Thread can be started only once."
+  },
+  {
+    "n": 16,
+    "title": "Shared state — count every increment from both workers",
+    "lead": "Two workers adding to one counter can overwrite each other’s update even when both finish normally. First force a lost update so the cause can be repeated. Then protect the complete increment with a monitor, a lock allowing one thread at a time into guarded code, and with an atomic counter whose increment is indivisible. The required rule, called an invariant, is that the final count equals all attempted increments.",
+    "caption": "",
+    "boundary": ""
+  },
+  {
+    "n": 17,
+    "title": "CyclicBarrier and CountDownLatch — waiting and signalling",
+    "lead": "A CyclicBarrier makes a fixed number of peer threads wait for each other at a meeting point. It can be reused. In the counter example, both workers finish reading before either writes. A CountDownLatch counts one-time signals down to zero. A caller waiting on it continues only at zero. Each mechanism has a participant count, a waiting point and a release condition. Neither collects a task’s value or reports its exception.",
+    "caption": "The barrier releases the waiting peers together. The latch releases an observer when the count reaches zero. The pictures show who waits and who supplies each signal.",
+    "boundary": "The lost-update example uses a barrier. The dining example uses latches. A completion signal does not prove the work succeeded, so check failures separately."
+  },
+  {
+    "n": 18,
+    "title": "CyclicBarrier and CountDownLatch — handle missing signals",
+    "lead": "A missing participant can prevent coordination from finishing. If B fails before reaching the barrier, A can wait forever. If a worker forgets its latch signal, the count may never reach zero. Use timed waits and check task failures separately. Signalling a latch in finally can mean the worker ended, including by failure. A barrier timeout breaks that barrier and releases the other waiting threads by throwing an exception.",
+    "caption": "A missing arrival or signal keeps the release condition false. Timeouts expose that failure. Cleanup and separate result checks finish the recovery.",
+    "boundary": "Other threads waiting at the broken barrier receive BrokenBarrierException. Future.get(), introduced later, can report task success or failure. A timeout only reports incomplete coordination; it does not perform the missing work."
+  },
+  {
+    "n": 19,
+    "title": "Race condition — two workers overwrite one increment",
+    "lead": "An increment reads the old value, adds one and writes the new value back. A and B can both read zero, then both write one. A barrier makes both reads finish before either write, forcing this lost update. volatile makes a write visible to later reads of that field, with ordering guarantees. It does not combine the read, calculation and write into one indivisible step.",
+    "caption": "Steps 1–2 copy the shared zero into two local copies. Steps 3–4 calculate locally. Step 6 writes one again, so one increment is lost instead of two being counted.",
+    "boundary": "The reference deliberately forces this interleaving: the order in which thread actions overlap. A loop that relies on uncontrolled timing may happen to return the expected count and hide the defect."
+  },
+  {
+    "n": 20,
+    "title": "Lost update — build and run the forced bad timing",
+    "lead": "Build the lost-update example first. Two workers each attempt one increment: both read 0 before either writes, so both write 1. The narrated test must observe 1 rather than the expected 2. Then run the races command to inspect the same counter result. Add the synchronized and AtomicInteger repairs in the next build step.",
+    "caption": "",
+    "boundary": "Copy the short request into Claude. The repository supplies the build details. The tests must pass before the example is accepted."
+  },
+  {
+    "n": 21,
+    "title": "Synchronized — one monitor owner, other threads wait",
+    "lead": "A monitor is a lock that every Java object has. The code synchronized (lock) makes a thread acquire the monitor of that object. The braces mark the protected block. One thread owns the monitor. Other threads that want in wait at the entrance, and Java reports their state as BLOCKED. Leaving the block, normally or by exception, releases the monitor. Every protected access must use the same object. Arrival order at the entrance is not promised.",
+    "caption": "The lock expression picks one monitor, and the braces mark the protected region. Blocked threads can enter only after the owner releases the monitor.",
+    "boundary": "Entering synchronized uses the object’s monitor. Threads blocked at entry are separate from the waiting threads created by Object.wait(). A synchronized instance method locks this; a static synchronized method locks its Class object."
+  },
+  {
+    "n": 22,
+    "title": "Synchronized — an endless loop keeps the monitor locked",
+    "lead": "Suppose thread A owns a monitor and runs a loop that never ends. Threads B and C stay BLOCKED at the entrance. The monitor is held indefinitely, and this is not necessarily a deadlock, because no circle of waiting exists. An interrupt does not unlock the monitor or stop a loop that ignores it. Do long or blocking work outside the block when the shared data allows. Keep each protected update short and finite.",
+    "caption": "A never reaches the closing brace, so the waiting threads cannot enter. The repair computes outside, does a short protected update, then releases the monitor.",
+    "boundary": "This is an illustrative failure. Thread.sleep also keeps any monitor the thread owns. Entering synchronized has no built-in timed or interruptible version."
+  },
+  {
+    "n": 23,
+    "title": "Synchronized — opposite lock orders create deadlock",
+    "lead": "A deadlock is a circle of waiting in which no thread can move. Thread A owns monitor M1 and waits for M2. Thread B owns M2 and waits for M1. Neither can reach the end of its block to release anything. The fix is one global order, such as always M1 before M2. Nested locking can also be removed when it is not needed. Keeping protected work finite is a separate requirement.",
+    "caption": "The ownership and waiting arrows form a cycle. A shared rule of M1 before M2 removes the reverse dependency.",
+    "boundary": "Interrupting a thread blocked at synchronized entry does not cancel that wait. The later ReentrantLock recovery example uses an API that can be interrupted."
+  },
+  {
+    "n": 24,
+    "title": "Monitor — protect the whole counter update",
+    "lead": "A monitor lets one thread at a time run code guarded by that same monitor. Put the counter’s read, calculation and write inside one synchronized block. While A updates, B waits outside. After A releases the monitor, B sees the updated value 1 and writes 2. Serializing means taking turns: either worker may go first, but both increments are counted.",
+    "caption": "A owns the monitor until its write is done. Only then can B read 1 and write 2. Every increment must use the same monitor.",
+    "boundary": "Mutual exclusion means only one owner at a time. Releasing the monitor also makes changes visible to the next owner. Every counter access must follow the same locking rule; entry order is not guaranteed."
+  },
+  {
+    "n": 25,
+    "title": "AtomicInteger — update one counter in an indivisible step",
+    "lead": "AtomicInteger holds one shared int. Atomic means an operation takes effect as one indivisible step. get() reads the value, set() replaces it, and incrementAndGet() reads, adds one and returns the new value as one atomic operation. Both workers use the same AtomicInteger object. Separate method calls still leave gaps where another thread can act, so several calls do not automatically form one atomic decision.",
+    "caption": "Two calls change the same value in indivisible steps. The atomic unit is one API call, not the larger algorithm around it.",
+    "boundary": "This describes what the API guarantees, not a specific hardware instruction. Atomic operations do not promise scheduling fairness."
+  },
+  {
+    "n": 26,
+    "title": "AtomicInteger — separate checks and updates can still race",
+    "lead": "Atomic methods do not make a separate check and update atomic. With one ticket left, A and B can both read 1. Their two decrements then leave -1. compareAndSet(1, 0) changes the value only if it is still 1 and returns whether it succeeded. Only one thread wins; the loser rereads and checks again. The diagram uses CAS (compare-and-set).",
+    "caption": "Separate atomic reads and decrements break the rule tickets >= 0. A conditional compareAndSet allows one successful claim and leaves the count at zero.",
+    "boundary": "This ticket scenario illustrates a different problem from the supplied increment example. A monitor around the whole check and decrement, or a correctly paired semaphore, is another solution. Retrying does not guarantee every thread eventually succeeds."
+  },
+  {
+    "n": 27,
+    "title": "AtomicInteger — count both increments without losing either",
+    "lead": "AtomicInteger.incrementAndGet() reads the counter and adds one as a single atomic operation. Overlapping calls still take effect in a valid sequence. Here A changes 0 to 1 and B changes 1 to 2. The caller waits for both tasks before checking the total. Neither call can overwrite an increment using a separately saved old value, as the unsafe version did.",
+    "caption": "Steps 2 and 3 are indivisible counter changes. If B went first instead, both increments would still count and the result would be 2.",
+    "boundary": "This order is only one possibility. AtomicInteger does not promise fairness between callers. It does not make a change across several fields atomic."
+  },
+  {
+    "n": 28,
+    "title": "Atomicity — protect the complete increment",
+    "lead": "Mutual exclusion means only one worker at a time is inside a protected operation. A synchronized method uses one monitor around the whole increment, and it also makes the change visible to the next thread that takes the monitor. AtomicInteger.incrementAndGet() gives an atomic update for a single counter. Both are correct when every access to the counter follows the same approach. Choose the guarantee the protected data needs.",
+    "caption": "",
+    "boundary": "Atomicity and visibility are different guarantees. An atomic field does not make a business step across several fields atomic."
+  },
+  {
+    "n": 29,
+    "title": "Counter repairs — build and run both solutions",
+    "lead": "This step adds the monitor repair and the AtomicInteger repair. The forced race stays in the example for comparison. The tests run ten thousand increments per worker, and the console runs a smaller workload. Both repaired versions must keep every increment.",
+    "caption": "",
+    "boundary": "Copy the short request into Claude. The repository supplies the build details. The tests must pass before the example is accepted."
+  },
+  {
+    "n": 30,
+    "title": "Counter results — protecting the whole update preserves the total",
+    "lead": "The forced race attempts two increments in total and returns 1. The repaired console counters each run 1000 increments per worker and return 2000. Their unit tests run 10,000 per worker and require 20,000. The repairs protect the complete update. CyclicBarrier makes the bug repeatable; waiting for both workers ensures the caller checks the total after their work ends.",
+    "caption": "",
+    "boundary": "Interleaving describes the order of actions from different threads. Mutual exclusion makes workers take turns. Visibility makes changes readable across threads; atomicity keeps the complete update indivisible."
+  },
+  {
+    "n": 31,
+    "title": "Work orchestration — collect every task result or failure",
+    "lead": "Asking for several independent results takes more than starting threads. The program must choose where tasks run, collect values and failures, set a deadline and release its workers. Here, a price aggregator asks three simulated shops for quotes. The caller, the thread making the request, returns a total only after every required result has succeeded.",
+    "caption": "",
+    "boundary": ""
+  },
+  {
+    "n": 32,
+    "title": "ExecutorService — separate tasks from the threads running them",
+    "lead": "ExecutorService accepts tasks and runs them on worker threads. submit() hands over a task and returns a Future, an object used to obtain its eventual result or failure. A fixed pool reuses its workers. Tasks that cannot start yet wait in a queue; the queue holds tasks, not threads. The caller can wait through the Future. When finished, the application must close the executor and check that its workers end.",
+    "caption": "Follow the task from submission through the queue to a worker, then follow its result through the Future. The caller’s wait for a result is separate from the task’s queue.",
+    "boundary": "newFixedThreadPool(2) limits workers to two but uses an unbounded task queue. Closing the executor can wait for unfinished tasks. A Future is not a thread."
+  },
+  {
+    "n": 33,
+    "title": "ExecutorService — limit queued tasks and handle rejected work",
+    "lead": "Two busy workers do not limit submissions. An unbounded queue has no fixed maximum length, so slow work can cause growing delays and memory use. This ThreadPoolExecutor has two workers and two queue slots. If both workers stay busy and both slots stay full, the next task is rejected: AbortPolicy throws RejectedExecutionException. The caller must handle this, for example with a busy response or a retry before a deadline.",
+    "caption": "Two running tasks and two queued tasks fill the configured capacity. The next submission is rejected, and the caller handles it.",
+    "boundary": "This bounded executor is only an explanation. The supplied shop aggregator uses a fixed pool and a small finite input. The rejection policy and caller handling must be designed together."
+  },
+  {
+    "n": 34,
+    "title": "ExecutorService — waiting tasks can block their own pool",
+    "lead": "A pool with one worker can deadlock if tasks wait for other tasks in that same pool. A parent runs on the worker, submits a child, then waits for its result with Future.get(). The child cannot run because the parent occupies the only worker. Instead, let an outside caller submit the work and wait, or perform the child work directly. More workers do not solve every nested dependency.",
+    "caption": "The parent waits for a child that needs the occupied worker: this is thread-starvation deadlock. Moving the wait outside the pool leaves the worker available for the child.",
+    "boundary": "This one-worker failure is only an illustration, not the supplied two-worker quotes code. The caller must stay outside the pool whose capacity its awaited tasks need."
+  },
+  {
+    "n": 35,
+    "title": "Future — distinguish pending, successful, failed and cancelled tasks",
+    "lead": "A Future stands for a task’s eventual outcome. Calling get() waits, then returns the value or throws an exception for failure or cancellation. isDone() is true for success, failure and cancellation, so it alone does not prove success. A timed get() limits how long the caller waits and does not cancel the task. Timed invokeAll does cancel tasks unfinished at the deadline. The aggregator checks isCancelled() before collecting values.",
+    "caption": "A Future records whether the task is pending, successful, failed or cancelled. A timed get() can time out without cancelling; timed invokeAll() cancels unfinished tasks before returning.",
+    "boundary": "A failed task makes get() throw ExecutionException. Calling get() on a cancelled Future throws CancellationException. The supplied aggregator instead checks isCancelled() and throws its own TimeoutException. Cancellation does not prove the worker stopped."
+  },
+  {
+    "n": 36,
+    "title": "Future — cancellation does not prove the task stopped",
+    "lead": "A Future can report cancelled while its task still runs. cancel(true) requests interruption when the task is running; the task must respond for that request to stop it. If it ignores interruption, closing the executor may keep waiting. Use finite work steps, interruptible waits and finally blocks that release resources. After cancelling, wait a limited time for termination and explicitly handle any worker that remains alive.",
+    "caption": "The failure panel separates a cancelled Future from a task still running. Cleanup is confirmed by the task ending and the application observing worker termination.",
+    "boundary": "The supplied waits respond to interruption. shutdownNow() requests interruption of running tasks and removes queued tasks, returning them to the caller. It cannot force running tasks to stop or prove cleanup."
+  },
+  {
+    "n": 37,
+    "title": "ExecutorService — submitting work and finishing it are separate",
+    "lead": "A Callable is a task whose call() method returns a value or throws an exception. The executor assigns these tasks to workers; each Future holds one eventual result or failure. Here two platform workers serve three simulated shops, so one lookup waits in the queue. After invokeAll() returns, the caller uses get() to read each value or detect failure, then totals the successful quotes.",
+    "caption": "Steps 2 and 3 show two active workers and a queued third task. After invokeAll returns, step 5 collects the Futures in submission order and totals 5400 cents.",
+    "boundary": "A fixed thread pool limits workers but has an unbounded queue. Large inputs also need a limit on accepted work, or a bounded executor queue."
+  },
+  {
+    "n": 38,
+    "title": "Quote aggregation — return a total after every result succeeds",
+    "lead": "The console feature receives three simulated quotes: 1200, 1800 and 2400 cents. It runs them on a two-worker pool with one deadline for the whole batch. Timed invokeAll waits for the batch and cancels tasks still unfinished when the deadline passes. The loop checks isCancelled() and calls get(), so a failed shop cannot quietly vanish from the total. The method returns 5400 only after all succeed.",
+    "caption": "",
+    "boundary": "This is the aggregation core. The surrounding source creates and closes the executor. The simulated waits do not call a real shop service."
+  },
+  {
+    "n": 39,
+    "title": "Quote aggregation — build and run",
+    "lead": "Build the three-shop quote aggregator using the executor and Future design. The focused test requires a total of 5400 cents. Then run the orchestration command to inspect that total. The program must report a failed or timed-out required quote instead of returning an incomplete total. Passing items through a queue comes in a later step.",
+    "caption": "",
+    "boundary": "Copy the short request into Claude. The repository supplies the build details. The tests must pass before the example counts as accepted."
+  },
+  {
+    "n": 40,
+    "title": "Task outcomes — return values or report failures and timeouts",
+    "lead": "The batch can produce values, contain a failed task, or reach its deadline. Future.get() wraps a task exception in ExecutionException and preserves the original cause. Timed invokeAll() cancels unfinished tasks. This aggregator checks isCancelled() and throws its own TimeoutException. The three rows show what the caller receives. Interruption asks a worker to stop, so cleanup must still confirm that workers actually end.",
+    "caption": "Follow steps 1-4 inside one row. A value is added to the total, a task exception reaches get, or a cancelled Future becomes the caller’s TimeoutException.",
+    "boundary": "Cancelling a Future does not prove its worker stopped. Closing an executor can wait if tasks ignore interruption. The lesson tasks respond to interruption."
+  },
+  {
+    "n": 41,
+    "title": "Platform and virtual threads — compare the same work",
+    "lead": "Many tasks mostly wait, for example for network replies. Run identical tasks four ways: one after another, on eight reusable platform threads, on one platform thread per task, and on one virtual thread per task. Platform threads are backed by operating-system threads; virtual threads share platform threads managed by Java. First check equal completed work and actual thread types. Then compare elapsed time.",
+    "caption": "",
+    "boundary": ""
+  },
+  {
+    "n": 42,
+    "title": "Virtual threads — run on carriers and release them when waiting",
+    "lead": "A virtual-thread executor creates one virtual thread per task. A virtual thread is a lightweight Java thread. To execute, Java mounts it on a carrier: a platform thread backed by an operating-system thread that can run on a processor. During supported blocking operations, the virtual thread can unmount, freeing the carrier. Its identity and saved execution state remain. Later it can resume on an available carrier, possibly a different one.",
+    "caption": "Follow the layers from task to virtual thread, carrier, operating-system thread and processor. A parked virtual thread keeps its saved state without holding a carrier during supported waits.",
+    "boundary": "The carrier count shown is only an illustration. Virtual threads add no processor cores, database connections or correctness guarantees. Create one per task instead of pooling them."
+  },
+  {
+    "n": 43,
+    "title": "Virtual threads — pinning keeps a carrier occupied",
+    "lead": "On Java 21, blocking inside synchronized can keep a virtual thread attached to its carrier. This is pinning: other virtual threads cannot use that occupied carrier. Keep synchronized sections short and move blocking work outside when correctness allows. ReentrantLock can support blocking coordination on Java 21 without this monitor pinning. JDK 24 removes monitor-related pinning; some native-code cases remain. Separately, use a semaphore to limit scarce database or service capacity.",
+    "caption": "Pinning keeps a carrier occupied. A semaphore separately limits how many tasks use a dependency. Creating more virtual threads solves neither problem.",
+    "boundary": "The version change is JEP (JDK Enhancement Proposal) 491 in JDK 24. Pinning is not a circular deadlock. Upgrading Java does not increase an outside service’s capacity."
+  },
+  {
+    "n": 44,
+    "title": "Virtual threads — parked tasks free carriers for other work",
+    "lead": "A virtual thread is a lightweight Java thread scheduled onto platform carrier threads. When it makes a supported blocking call, it parks, meaning it stops running and waits. Parking frees its carrier for other work. So many waiting tasks need not each hold an operating-system thread. This does not make one computation faster. It adds no CPU cores. It also does not protect shared changeable data from unsafe access.",
+    "caption": "V1 frees its carrier when it parks in step 2. V2 uses that carrier in step 3. V1 can later resume on another free carrier.",
+    "boundary": "On Java 21, blocking inside synchronized may pin a carrier. JDK 24 JEP (JDK Enhancement Proposal) 491 removes monitor-related pinning. Some native-code cases can still pin."
+  },
+  {
+    "n": 45,
+    "title": "Execution strategies — compare thread type and worker count",
+    "lead": "Every mode uses the same task body and task identifiers. A checksum is a number summarizing calculated results; equal work must produce equal checksums. The pool reuses eight workers, while each per-task mode creates one thread per task. This separates worker count from thread type. Inside each task, Thread.currentThread().isVirtual() checks whether a virtual thread ran it.",
+    "caption": "",
+    "boundary": "Use small classroom sizes. Creating many platform threads can exhaust operating-system resources before the comparison tells you anything."
+  },
+  {
+    "n": 46,
+    "title": "Semaphore — permits limit access to a resource",
+    "lead": "A Semaphore counts permits, like tokens allowing access to a limited resource. acquire() takes one permit, waiting if none remain. release() returns one and may let a waiting task continue. The programmer must pair these calls around resource use; the semaphore does not guard the code automatically. Unlike a lock, it records no owner, and extra releases can increase the count beyond its starting value.",
+    "caption": "The permit count, the tasks using the resource and the waiting tasks are separate parts. A task uses the resource only after acquire succeeds.",
+    "boundary": "Call acquire() before the try whose finally releases the permit. finally runs when that try exits, including after an exception. The default semaphore does not guarantee first-come service; each successful acquire() needs one release()."
+  },
+  {
+    "n": 47,
+    "title": "Semaphore — missing or extra releases break the limit",
+    "lead": "If a task ends without returning its permit, later callers may wait forever. To prevent this, call release in a finally block after acquire succeeds, so the permit returns even if the resource use throws. The opposite mistake is releasing when acquire was interrupted before it succeeded. That adds a permit the task never took, and too many tasks may enter. The diagram shows the counter and the waiting tasks, so a missing or extra release is visible.",
+    "caption": "A leaked permit leaves the count at zero after its task ends. Correct try/finally pairing restores capacity without releasing after a failed acquire.",
+    "boundary": "A permit leak stalls the resource but does not necessarily form a deadlock cycle. The supplied runner already acquires before try and releases in finally."
+  },
+  {
+    "n": 48,
+    "title": "Semaphore — trace permits, active users and waiting tasks",
+    "lead": "Starting with two permits limits the resource to two users if every acquire() and release() is paired correctly. Twenty virtual tasks can exist while only two use that resource. Follow the free-permit count: A and B enter, so C waits. When A releases a permit, C can enter after its own acquire() succeeds. The unit test records peak simultaneous users and requires at most two.",
+    "caption": "Steps 1-2 use both permits. C stays outside in step 3. Releasing A’s permit lets C enter later. Peak simultaneous use stays at two.",
+    "boundary": "This shows one possible order of acquisition. A semaphore limits how many are inside at once, not requests per second or how many tasks are waiting. It does not promise first-come service."
+  },
+  {
+    "n": 49,
+    "title": "Semaphore — release the permit after successful acquire()",
+    "lead": "new Semaphore(2) starts with two permits. The task calls acquire() before try, waiting for capacity; if interrupted there, it never enters this try. After acquisition succeeds, try uses the resource and finally returns the permit, including if resource use throws. The test records peak simultaneous users and requires two or fewer. More waiting threads do not create more database connections or service capacity.",
+    "caption": "",
+    "boundary": "The semaphore limits how many enter at once, not requests per second or how many tasks are waiting. Rate limiting and bounded submission are separate controls."
+  },
+  {
+    "n": 50,
+    "title": "Timing experiment — compare equal work, then elapsed time",
+    "lead": "Every mode runs the same 120 tasks. Three warmup rounds give Java a chance to prepare frequently used code. Five measured rounds rotate mode order so no mode always goes first. Accept a sample only if completed counts and checksums match. Time startup, execution and cleanup; print afterward. Compare simulated waiting and CPU computation separately.",
+    "caption": "Steps 1–4 prepare equal work and measure repeated runs. Step 5 checks results; step 6 calculates each median, the middle value of five accepted measurements.",
+    "boundary": "Sleep simulates waiting; warmup does not prove stable performance. This is a classroom comparison, not a Java Microbenchmark Harness (JMH), production-service or memory benchmark."
+  },
+  {
+    "n": 51,
+    "title": "Workload runner — build and run its unit tests",
+    "lead": "This step builds the four strategies around one shared task body. It runs small tests for blocking and CPU work. The tests check the actual thread types and check that the two-permit limit holds. This step runs JUnit, the Java test framework. The timing run comes in the next step.",
+    "caption": "",
+    "boundary": "Copy the short request into Claude. The repository supplies the build details. The tests must pass before the example counts as accepted."
+  },
+  {
+    "n": 52,
+    "title": "Thread comparison — add measurements and run",
+    "lead": "This step adds the comparison command to the tested runner. The command runs 120 identical tasks with 20 ms of simulated waiting. It does three warmup rounds and five measured rounds. Keep the real samples and their medians. The full experiment can take about half a minute.",
+    "caption": "",
+    "boundary": "Copy the short request into Claude. The repository supplies the build details. The tests must pass before the example counts as accepted."
+  },
+  {
+    "n": 53,
+    "title": "Thread comparison — interpret the measurements from this run",
+    "lead": "The recorded instructor run used Java 21.0.10 on an aarch64 Mac, a machine with Apple silicon, reporting sixteen processors. In each workload, all strategies finished 120 tasks with matching checksums. Blocking tasks can overlap their waits, while the pool has only eight workers. CPU samples include startup and recording overhead. The table gives median elapsed times in milliseconds for this run; no ranking or speedup is required.",
+    "caption": "",
+    "boundary": "Inputs: 120 tasks, 20 ms wait, 50,000 CPU iterations, three warmups and five measured rounds. No memory usage was measured."
+  },
+  {
+    "n": 54,
+    "title": "Dining philosophers — waiting for several resources can deadlock",
+    "lead": "A worker may hold one resource while waiting for another. If every worker does this in a circle, none can continue. Dining philosophers shows this with five workers and five forks. Each fork can be held by only one philosopher at a time. First the demonstration builds the circular wait on purpose and recovers from it. Then it makes everyone take forks in one fixed order, and the philosophers finish a bounded number of meals.",
+    "caption": "",
+    "boundary": ""
+  },
+  {
+    "n": 55,
+    "title": "ReentrantLock — track ownership and release the lock",
+    "lead": "A ReentrantLock has one owner and counts how often that owner acquires it. Reentrant means the same thread can acquire it again. Each unlock() reduces that count; the last releases the lock. Other threads wait. lockInterruptibly() allows interruption to end an acquisition wait. A timed tryLock() can return false without acquiring anything. After acquisition succeeds, use finally to release the lock.",
+    "caption": "Acquiring makes a thread the owner, and matching releases remove ownership. Repeated acquisition needs matching unlocks before another worker can enter.",
+    "boundary": "Only the owner may unlock. A timed tryLock() that returns false gives no ownership, so that caller must not unlock. The default nonfair lock does not guarantee arrival-order service."
+  },
+  {
+    "n": 56,
+    "title": "Dining philosophers — each worker waits for the next fork",
+    "lead": "Deadlock means threads cannot continue because each waits for another in the group. P0–P4 name five philosophers, and F0–F4 name their forks. Each philosopher needs its own numbered fork and the next one, wrapping from F4 to F0. If all hold the first fork and request the next, their waits form a circle. The demonstration arranges this state, records five first forks held, then interrupts and joins every worker.",
+    "caption": "Step 1 shows five owners. Step 2 adds five requests. The wait-for cycle in step 3 explains why nobody can get a second fork and eat.",
+    "boundary": "A timeout alone does not prove deadlock. The recorded ownership snapshot explains the cycle. Recovery must release every lock that was acquired."
+  },
+  {
+    "n": 57,
+    "title": "Interruption — stop and join the deadlocked demonstration workers",
+    "lead": "A classroom deadlock demonstration must end safely. After the five first-fork owners and their second-fork attempts are set up, the caller interrupts every worker before joining any of them. The workers use interruptible lock acquisition and finally blocks, so they stop waiting and release the locks they really hold. The caller then calls join with a time limit on each worker and checks isAlive(). Interrupting only requests a stop. Seeing the workers terminate shows cleanup finished.",
+    "caption": "Record ownership, interrupt all, release held locks, join, then check whether workers are alive. The final workersStopped field is observed after cleanup.",
+    "boundary": "An interrupt asks for cooperation and never forces a stop. Release only locks actually acquired. A timed join can return while a worker is still alive, so the isAlive() check matters."
+  },
+  {
+    "n": 58,
+    "title": "Circular wait — build and run the recoverable failure",
+    "lead": "Build the controlled circular wait: five philosophers each hold one fork and wait for the next philosopher’s fork. The workers use interruptible acquisition, allowing the demonstration to recover when the caller interrupts them. Run its test and the dining command. Both must report five first forks held and all demonstration workers stopped. The ordered solution comes after its explanation.",
+    "caption": "",
+    "boundary": "Copy the short request into Claude; the repository supplies the build details. The tests must pass before the example is accepted."
+  },
+  {
+    "n": 59,
+    "title": "Global lock order — take the smaller fork first",
+    "lead": "A global lock order means every worker takes shared resources in the same fixed order. Each philosopher picks up the lower-numbered fork first and the higher-numbered fork second, so P4 takes F0 before F4. A circular wait would need numbers to climb and then return to a smaller one, which this rule forbids. In the picture, P0 is eating while its neighbours wait for forks P0 owns exclusively.",
+    "caption": "Steps 1–4 take F0, take F1, then eat; step 5 releases both. The animated table illustrates step 4 with fixed fork ownership and neighbour waits.",
+    "boundary": "The animation illustrates a possible state, not live Java execution. Lock ordering prevents circular deadlock. It does not guarantee freedom from starvation: a worker might repeatedly miss access while others continue."
+  },
+  {
+    "n": 60,
+    "title": "ReentrantLock — release only the forks actually acquired",
+    "lead": "lockInterruptibly() waits for a ReentrantLock but lets an interrupt end that wait with InterruptedException. Once the first fork is acquired, the outer finally releases it even if the second acquisition is interrupted. The inner finally belongs to a try entered only after the second acquisition succeeds. eat() runs while both forks are held. Taking forks in the shared order prevents the circular wait.",
+    "caption": "",
+    "boundary": "Unlocking a fork this thread never acquired is an ownership error. Do not replace the nested structure with unconditional unlock calls."
+  },
+  {
+    "n": 61,
+    "title": "Ordered dining — build and run the solution",
+    "lead": "This step adds the ordered-lock solution and checks that each fork has only one owner at a time. Run the tests with four meals per philosopher, once with platform threads and once with virtual threads. Then run the console example with three meals, which prints real state events. Keep the earlier recoverable circular-wait demonstration in place.",
+    "caption": "",
+    "boundary": "Copy the short request into Claude; the repository supplies the build details. The tests must pass before the example is accepted."
+  },
+  {
+    "n": 62,
+    "title": "Dining results — distinguish safety, completion and fairness",
+    "lead": "The reference reports five first forks held, all demonstration workers stopped, and three meals per philosopher. Tests use four meals on both platform and virtual threads and check that no fork has two owners. Safety means forbidden sharing did not occur; completion means the tested meals finished. Fairness concerns who gets access. A worker can starve by repeatedly missing resources, and global ordering alone does not prevent that.",
+    "caption": "",
+    "boundary": "Java features: ReentrantLock and interruption. Concurrency concepts: one owner per fork, circular wait and shared lock order. A finite successful test does not establish fairness for every future execution."
+  },
+  {
+    "n": 63,
+    "title": "Guided extensions — pass queued items and study CPU limits",
+    "lead": "The core examples already cover waiting for completion, shared state, collecting task outcomes and limiting resources. Two extensions follow. First, move items through a bounded queue, one with a fixed maximum size. Second, examine a separate CPU-heavy workload. Both reuse the existing project and tests. They teach backpressure, where a full queue slows the producer, and how much work the CPUs can run at once.",
+    "caption": "",
+    "boundary": ""
+  },
+  {
+    "n": 64,
+    "title": "BlockingQueue — items, producers, consumers and waits",
+    "lead": "A BlockingQueue transfers items from producers, which add them, to consumers, which remove them. A bounded queue limits stored items. put() waits for space when full; take() waits for an item when empty. ArrayBlockingQueue keeps first-in, first-out order: remove the oldest item first. Waiting releases the queue’s internal lock. Basic use needs no additional synchronized block.",
+    "caption": "The buffer holds items; producers and consumers wait for different conditions. Removing the head item makes room for a later insertion at the tail.",
+    "boundary": "Capacity limits stored items, not all application tasks. Timed offer() returns false and timed poll() returns null on timeout; handle both results explicitly."
+  },
+  {
+    "n": 65,
+    "title": "BlockingQueue — an outer monitor can cause deadlock",
+    "lead": "An outer monitor can break queue coordination that is otherwise correct. Suppose the queue is full. Producer P holds appLock and waits inside put for space. Consumer C needs appLock before it can call take, so C cannot free any space. put releases the queue’s internal lock while waiting, but never appLock. Remove the unrelated outer monitor from blocking queue calls. Use timed offer or poll when you need a limited wait and an explicit failure plan.",
+    "caption": "Producer and consumer form a cycle through the outer monitor and the full buffer. Without that outer lock, take makes space and put can finish.",
+    "boundary": "This is an illustrative failure, not the supplied queue example. A timeout reveals missing progress; handle the item or failure explicitly instead of silently dropping it."
+  },
+  {
+    "n": 66,
+    "title": "BlockingQueue — a full buffer makes the producer wait",
+    "lead": "A BlockingQueue coordinates handoff between producers and consumers. With capacity two, items A and B fill the queue, so put(C) cannot finish until the consumer removes an item. This slowing of the producer when downstream is full is called backpressure. Handing data through the queue also makes the producer’s writes visible to the consumer. The example returns A, B and C in order, with no polling or sleep-based coordination.",
+    "caption": "Step 3 removes A and opens one slot; step 4 inserts C behind B. After the producer finishes, draining the queue gives the full first-in, first-out result A, B, C.",
+    "boundary": "A latch counted down just before put shows the producer reached that line, not that it is already blocked. Queue capacity does not limit all running tasks."
+  },
+  {
+    "n": 67,
+    "title": "Queue and failure cases — build and run",
+    "lead": "This step adds the capacity-two queue transfer and the tests for the aggregator’s failure and cancellation cases. Run the five orchestration checks. Then read the console output for 5400 cents and the first-in, first-out order A, B, C. Also confirm that the workers have terminated, which shows cleanup happened.",
+    "caption": "",
+    "boundary": "Copy the short request into Claude; the repository supplies the build details. The tests must pass before the example is accepted."
+  },
+  {
+    "n": 68,
+    "title": "CPU work — runnable tasks share limited processor capacity",
+    "lead": "A CPU-bound task spends most of its time computing rather than waiting. The picture uses two CPU slots and four tasks to show limited capacity. The instructor’s actual machine reports sixteen processors. Platform and virtual threads both compete for that processor time. Check that tasks finished and results were collected before reading any timings. More runnable tasks do not add cores. The real scheduler may switch among them in short time slices.",
+    "caption": "Four tasks reuse two illustrative execution slots. Step 4 compares finished checksums across strategies before any timing conclusion is accepted.",
+    "boundary": "This simplified schedule shows capacity, not a universal finishing order. The real workload gives identical inputs to every strategy and requires no speed ranking."
+  },
+  {
+    "n": 69,
+    "title": "CPU work — return a checksum to compare completed calculations",
+    "lead": "The CPU task returns a checksum, a number calculated by its loop. Equal returned checksums let us check that every strategy produced the same results. When runnable tasks outnumber available processors, switching among threads and competing for resources can dominate elapsed time. Virtual threads add no cores. Read the CPU samples separately from simulated waiting results, and retain the checks for equal completed work.",
+    "caption": "",
+    "boundary": "The loop intentionally lets long arithmetic overflow, wrapping within its fixed-size integer range in every mode. Startup and background work affect timings. Use JMH to design a controlled microbenchmark."
+  },
+  {
+    "n": 70,
+    "title": "Java mechanisms — choose the guarantee the program needs",
+    "lead": "Choose a coordination tool by what the program must guarantee. Completion means work ended. Atomicity makes an update indivisible. Collecting task results also reveals failures. Capacity limits restrict simultaneous resource use, while lock order prevents circular waiting. Combine the tools when several guarantees are needed. A virtual-thread executor changes how tasks run; the application still has to protect shared data and respect limited resource capacity.",
+    "caption": "",
+    "boundary": "Completion, safety and fairness are separate claims. The unit tests establish the specific behaviours they exercise, not every possible schedule."
+  },
+  {
+    "n": 71,
+    "title": "Final validation — run the whole narrated JUnit test suite",
+    "lead": "After the feature steps, run the entire JUnit suite and keep its actual assertion results. An assertion checks an observed value against the expected one and fails the test if they differ. The reference has sixteen tests for threads, counters, task results, strategies and philosophers. Console narration explains setup, execution, expected and observed values, reasons and limits. A JUnit extension prints the final verdict; printed explanation does not replace assertions.",
+    "caption": "",
+    "boundary": "A missing test, skipped check or old report does not validate a changed feature. After a repair, get fresh test and run evidence."
+  },
+  {
+    "n": 72,
+    "title": "Primary sources — read the official Java API promises",
+    "lead": "A contract is the official statement of what a Java API promises. The contracts describe completion, visibility, failure and cleanup more precisely than timing observations. Use the Java 21 API documentation as the teaching baseline. Use the version-specific JEPs, the official Java enhancement proposals, for virtual-thread behaviour. These sources support the diagrams and code. The supplied run evidence shows only what the reference did on its recorded runtime and machine.",
+    "caption": "",
+    "boundary": "Preview structured-concurrency APIs are outside this practice. Record the actual JDK version before interpreting scheduling or pinning."
+  },
+  {
+    "n": 73,
+    "title": "Java contracts — ownership, waiting and overload rules",
+    "lead": "The Java 21 documentation distinguishes several waiting places. A monitor has one owner, with other threads blocked at entry. An executor queues tasks for workers. A semaphore counts permits for resource use. A blocking queue stores items for consumers. Their API contracts state exception, timeout and release rules. The failure diagrams illustrate possible problems; the supplied JUnit suite validates the reference behaviours it actually exercises.",
+    "caption": "",
+    "boundary": "A timed wait limits that wait only. It does not cancel work, release another thread’s monitor or prove termination."
+  },
+  {
+    "n": 74,
+    "title": "Build small examples and explain the Java mechanism",
+    "lead": "Use the diagrams to explain each problem and its solution. Then build and run the chosen example. Tie the actual result to the Java feature that guarantees it. The supplied specialists and short classroom requests support this work. The subject of the practice is coordinated Java execution, shared state and resource ownership.",
+    "caption": "",
+    "boundary": ""
+  }
+]

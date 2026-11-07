@@ -1,0 +1,260 @@
+Rewrite this existing Java concurrency lesson for students who know ordinary
+Java classes/methods but have NEVER studied threads. Keep every numbered slide,
+its concrete example, API facts, limits, expected numerical results and taught
+mechanism. This is a wording revision, not a new lesson plan. No tools/delegation.
+
+Return plain text (no markdown/HTML) in schema. title: mechanism first, <=11words.
+lead: 50-75words normally, maximum85. Use short connected sentences and concrete
+actors/actions. caption: two sentences, about25-35words. boundary: normally25-45
+words, up to55 only when needed. Empty caption for slides without a figure; empty
+boundary on title/section slides. Keep full Java API spelling/case and parentheses.
+
+Define each unfamiliar concept with everyday meaning before relying on it. Explain
+who calls which method, who runs code, who waits, what changes and what can fail.
+Use caller=thread making a method call; worker=thread running the assigned work;
+task=code to perform. Explain these in slide2. Explain platform thread as Java
+thread normally backed by an OS thread before virtual comparison. Avoid shorthand
+such as execution path, operation boundary, invariant, candidate, resource policy,
+receipt, liveness, observable outcome, admission, cancellation cooperation without
+first explaining the actual action/state. If a technical name matters, define it
+in plain language then keep the precise name. Do not omit difficult concepts.
+First-person course voice is unnecessary. Keep prepared agents/setup brief.
+
+CRITICAL Thread semantics: for the plain platform Thread created with Runnable
+task, worker.start() asks Java to start a new thread. Java runs worker.run() on
+that new thread; the default Thread.run() calls task.run(). start() is NOT an
+ordinary direct call to task.run() on the caller. Direct worker.run() in this
+platform example calls task.run() on the CALLER, with no new thread. Explain this
+explicitly in slides6-10 and lifecycle pages. Calling virtual Thread.run directly
+does not execute its task, so do not generalize direct-run to virtual threads.
+Constructor/builder unstarted does not execute task. Each Thread starts once.
+join waits on CALLER for target termination, not worker waiting for caller. A
+successful join of a started worker establishes termination/visibility; join on
+an unstarted platform Thread returns immediately. None of start/run/join returns
+task result. Timed join can return while target alive; join(0) is untimed.
+isAlive false also before start. interrupt requests cooperation, never force-kill.
+
+Other critical facts: monitor entry contenders BLOCKED, not Object.wait waitset;
+endless monitor owner is indefinite blocking without necessarily deadlock cycle;
+all accesses must share same monitor; volatile is not an atomic increment;
+AtomicInteger does not make separate get/check/decrement one atomic decision;
+executor queue stores tasks, blocking queue stores items; fixed pools have an
+unbounded queue; one-worker parent+child get can deadlock; Future.get wraps failure
+in ExecutionException; cancelled Future.get throws CancellationException; this
+aggregator checks isCancelled then throws its OWN TimeoutException; timed get does
+not cancel, timed invokeAll cancels unfinished tasks; cancellation != worker stop;
+semaphore acquire BEFORE try, release in finally after success, no owner/max-cap
+enforcement; ReentrantLock only owner unlocks, timed tryLock false no ownership;
+Java21 synchronized blocking can pin virtual carriers; JDK24 JEP491 removes
+monitor-related pinning; native cases remain. Queue waiting releases INTERNAL
+lock, not unrelated outer monitor. Global fork order avoids circular deadlock,
+does not prove starvation freedom. Timing no universal speedup or speed assertions.
+Do not add unimplemented runtime/test claims. APIs/exceptions must stay exact.
+
+These slides are one consecutive chunk of a74-slide deck. Retain references to
+earlier definitions if the concept was introduced in preceding slides. The body
+and graphics stay; explain their meaning rather than restating boxes. Actual
+commands/actual logs must not be invented or changed. Here is the current copy:
+[
+  {
+    "n": 39,
+    "title": "Quote aggregation — build and run",
+    "lead": "Build the three-shop aggregator using the executor and Future design. Its focused test requires 5400 cents; then run orchestration to inspect the total. Leave queue transfer for its own feature step.",
+    "figure": "—",
+    "kind": "",
+    "caption": "",
+    "boundary": "Copy the short request into Claude; the repository supplies the build details. Tests must pass before the example is accepted.",
+    "other_content": "Build and run · copy and pasteQuote aggregation — build and runUse the Java specialist: build classroom/04-quotes.md\nin workspace. Run its narrated tests and example, then stop.cd workspace\nmvn -B -Dtest=OrchestrationTest verify\njava -jar target/concurrency-lab-1.0-SNAPSHOT.jar orchestration"
+  },
+  {
+    "n": 40,
+    "title": "Task outcomes — values, failures and deadlines reach the caller",
+    "lead": "A batch can return values, fail inside a task or reach its deadline. Future.get wraps task failures in ExecutionException, preserving the cause. Timed invokeAll cancels unfinished tasks; our aggregator converts that state into TimeoutException. Interruption requests cooperative cancellation, so cleanup must observe worker termination. The three branches below explain what the caller receives.",
+    "figure": "JC2.26",
+    "kind": "",
+    "figure_name": "task-outcomes",
+    "caption": "Follow steps 1–4 within one row. A value is added, a task exception reaches get, or a cancelled Future becomes the caller’s TimeoutException.",
+    "boundary": "Cancellation does not prove a worker stopped. Executor close can wait if tasks ignore interruption; the lesson tasks cooperate.",
+    "other_content": "Java concurrencyTask outcomes — values, failures and deadlines reach the callerFigure JC2.26 — Follow steps 1–4 within one row. A value is added, a task exception reaches get, or a cancelled Future becomes the caller’s TimeoutException."
+  },
+  {
+    "n": 41,
+    "title": "Platform and virtual threads — execute identical work",
+    "lead": "Many tasks spend most of their lifetime waiting rather than computing. Compare four strategies for the same numbered tasks: sequential execution, a platform pool, one platform thread per task and one virtual thread per task. First establish equal completed work and actual thread types, then measure elapsed time. A different execution policy must not change the application result.",
+    "figure": "—",
+    "kind": "section",
+    "caption": "",
+    "boundary": "",
+    "other_content": "Java Practice 02 · feature and concurrency conceptPlatform and virtual threads — execute identical work"
+  },
+  {
+    "n": 42,
+    "title": "Virtual threads — identify task, Java thread, carrier and processor",
+    "lead": "A virtual-thread executor creates a Java virtual thread for each task. While executing, that virtual thread mounts on a platform carrier thread, which runs through an operating-system thread on available processor capacity. Supported waiting can unmount the virtual thread while preserving its identity and stack. Parked tasks sit outside the active carrier mapping. The scheduler can later mount a ready virtual thread on an available carrier, including a different one.",
+    "figure": "JC2.27",
+    "kind": "",
+    "figure_name": "virtual-parts",
+    "caption": "The layers separate task identity from the carrier supplying execution. Parked virtual threads do not each require a continuously occupied carrier.",
+    "boundary": "The carrier count is illustrative. Virtual threads do not add processor cores, database connections or correctness guarantees; create one per task rather than pooling virtual threads.",
+    "other_content": "Java concurrencyVirtual threads — identify task, Java thread, carrier and processorFigure JC2.27 — The layers separate task identity from the carrier supplying execution. Parked virtual threads do not each require a continuously occupied carrier."
+  },
+  {
+    "n": 43,
+    "title": "Virtual threads — distinguish pinning from resource-capacity limits",
+    "lead": "On Java 21, a virtual thread that blocks while inside synchronized can retain its carrier through pinning. Other runnable work cannot use that occupied carrier in the illustrated state. Keep protected updates short and move blocking work outside where correct; an explicit lock can suit Java 21 coordination. JDK 24 removes monitor-related pinning, while some native-code situations remain. Independently, cheap waiting still requires a semaphore or other policy around scarce dependencies.",
+    "figure": "JC2.28",
+    "kind": "",
+    "figure_name": "virtual-pinning",
+    "caption": "Pinning retains an execution resource; a semaphore separately limits dependency users. Neither problem is solved merely by creating more virtual threads.",
+    "boundary": "The version boundary is JEP (JDK Enhancement Proposal) 491 in JDK 24. Pinning is not itself a circular deadlock, and a runtime upgrade does not increase an external service’s capacity.",
+    "other_content": "Java concurrencyVirtual threads — distinguish pinning from resource-capacity limitsFigure JC2.28 — Pinning retains an execution resource; a semaphore separately limits dependency users. Neither problem is solved merely by creating more virtual threads."
+  },
+  {
+    "n": 44,
+    "title": "Virtual threads — waiting tasks can share carriers",
+    "lead": "A virtual thread is a lightweight Java thread scheduled over platform carrier threads. A supported blocking operation can park it and release its carrier for other work. This makes many waiting tasks practical without dedicating an operating-system thread to each one. It does not accelerate an individual computation, add CPU cores or synchronize access to shared mutable state.",
+    "figure": "JC2.29",
+    "kind": "",
+    "figure_name": "virtual",
+    "caption": "V1 releases its carrier when it parks in step 2; V2 uses that carrier in step 3. V1 can later resume on another available carrier.",
+    "boundary": "Java 21 blocking inside synchronized may pin a carrier. JDK 24 JEP (JDK Enhancement Proposal) 491 removes monitor-related pinning; some native-code situations can still pin.",
+    "other_content": "Java concurrencyVirtual threads — waiting tasks can share carriersFigure JC2.29 — V1 releases its carrier when it parks in step 2; V2 uses that carrier in step 3. V1 can later resume on another available carrier."
+  },
+  {
+    "n": 45,
+    "title": "Execution strategies — separate thread type from worker count",
+    "lead": "The comparison keeps the task body, identifiers and checksum identical. A pool of eight limits active workers, while both per-task strategies allow one thread for each submitted task. Including platform-per-task therefore helps separate a worker-count policy from the platform-versus-virtual implementation choice. Record Thread.currentThread().isVirtual inside the task to verify which strategy actually executed it.",
+    "figure": "—",
+    "kind": "",
+    "caption": "",
+    "boundary": "Use bounded classroom sizes. Creating many platform threads can exhaust operating-system resources before producing a useful comparison.",
+    "other_content": "Java concurrencyExecution strategies — separate thread type from worker countModeExecution policyWhat it variesSequentialCaller performs one task at a timeNo overlapPlatform poolEight reusable platform workersBounded worker countPlatform per taskOne platform thread for each taskNative-thread creation and executionVirtual per taskOne virtual thread for each taskRuntime scheduling of lightweight threads"
+  },
+  {
+    "n": 46,
+    "title": "Semaphore — identify permits, resource users and waiting tasks",
+    "lead": "A Semaphore keeps a permit counter. Successful acquire consumes a permit; when none remain, a caller waits before entering the resource operation. Release returns capacity and can enable a waiting task. The protected region is application code between those calls, so correct pairing is the application’s responsibility. A semaphore differs from an ownership lock: it does not track which thread owns a permit or enforce the initial count as a maximum.",
+    "figure": "JC2.30",
+    "kind": "",
+    "figure_name": "semaphore-parts",
+    "caption": "Permit count, admitted resource users and waiting tasks are separate parts. A task uses the resource only after acquire succeeds.",
+    "boundary": "Acquire precedes the try whose finally releases the permit. The default constructor does not promise FIFO service; extra releases can exceed the intended limit.",
+    "other_content": "Java concurrencySemaphore — identify permits, resource users and waiting tasksFigure JC2.30 — Permit count, admitted resource users and waiting tasks are separate parts. A task uses the resource only after acquire succeeds."
+  },
+  {
+    "n": 47,
+    "title": "Semaphore — leaks and extra releases break the capacity policy",
+    "lead": "A task that exits without returning its acquired permit can leave later callers waiting indefinitely. Release in finally after a successful acquire, so exceptional resource use still returns capacity. Conversely, if acquire was interrupted before success, releasing adds a permit that was never obtained. This can let too many tasks enter. The diagram shows both the counter state and the waiting tasks, making the missing or extra release visible.",
+    "figure": "JC2.31",
+    "kind": "",
+    "figure_name": "semaphore-leak",
+    "caption": "A leaked permit leaves capacity at zero after its task ends. Correct try/finally pairing restores capacity without releasing a permit after failed acquisition.",
+    "boundary": "A permit leak is a resource stall, without necessarily forming a deadlock cycle. The supplied runner already acquires before try and releases in finally.",
+    "other_content": "Java concurrencySemaphore — leaks and extra releases break the capacity policyFigure JC2.31 — A leaked permit leaves capacity at zero after its task ends. Correct try/finally pairing restores capacity without releasing a permit after failed acquisition."
+  },
+  {
+    "n": 48,
+    "title": "Semaphore — track permits, users and waiting tasks",
+    "lead": "A Semaphore supplies a fixed number of permits around a scarce dependency. Twenty virtual tasks can exist while only two enter the protected section at once. Follow the free-permit count as A and B enter, C waits, and A releases capacity. C enters only after successfully acquiring a permit. The unit test records peak simultaneous resource use and requires it to stay within two.",
+    "figure": "JC2.32",
+    "kind": "",
+    "figure_name": "semaphore",
+    "caption": "Steps 1–2 consume both permits. C stays outside in step 3; releasing A’s permit makes C’s later entry possible. Peak simultaneous use remains two.",
+    "boundary": "This is one possible acquisition order. A semaphore bounds concurrent entry, not requests per second or all admitted tasks; it does not imply FIFO service.",
+    "other_content": "Java concurrencySemaphore — track permits, users and waiting tasksFigure JC2.32 — Steps 1–2 consume both permits. C stays outside in step 3; releasing A’s permit makes C’s later entry possible. Peak simultaneous use remains two."
+  },
+  {
+    "n": 49,
+    "title": "Semaphore — release after successful acquisition",
+    "lead": "A Semaphore supplies a fixed number of permits around a scarce dependency. Twenty virtual tasks can exist while only two enter the protected section at once. Acquire before using the resource and release in finally after acquisition succeeds. The unit test records peak simultaneous use and requires it to stay within two. Cheap waiting does not increase database or service capacity.",
+    "figure": "—",
+    "kind": "",
+    "caption": "",
+    "boundary": "The semaphore bounds concurrent entry, not requests per second or all admitted tasks. Rate limiting and bounded submission are separate policies.",
+    "other_content": "Java concurrencySemaphore — release after successful acquisitionvar permits = new Semaphore(2);\npermits.acquire(); // Wait for capacity; interruption propagates.\ntry {\n    useResource(); // Illustrative dependency operation.\n} finally {\n    permits.release(); // Only after successful acquisition.\n}"
+  },
+  {
+    "n": 50,
+    "title": "Timing experiment — compare equal work before elapsed time",
+    "lead": "Every strategy receives the same 120 tasks and simulated wait. Three warmup rounds prepare execution, then five measured rounds rotate mode order to reduce a fixed-order bias. Accept a sample only after result counts and checksums agree. Include startup, completion and cleanup in elapsed time; keep printing outside that timer. A separate CPU workload tests interpretation when work computes instead of waiting.",
+    "figure": "JC2.33",
+    "kind": "",
+    "figure_name": "experiment",
+    "caption": "Steps 1–3 establish equal inputs and repeated rounds. Step 4 measures execution and cleanup; step 5 rejects unequal work before step 6 summarizes samples.",
+    "boundary": "Sleep simulates waiting. This is not a JMH (Java Microbenchmark Harness) benchmark, a production-service measurement or a memory benchmark.",
+    "other_content": "Java concurrencyTiming experiment — compare equal work before elapsed timeFigure JC2.33 — Steps 1–3 establish equal inputs and repeated rounds. Step 4 measures execution and cleanup; step 5 rejects unequal work before step 6 summarizes samples."
+  },
+  {
+    "n": 51,
+    "title": "Workload runner — build and run its unit tests",
+    "lead": "Build the four strategies with one task body. Run small blocking and CPU tests, verify actual thread types and check the two-permit resource bound. This step runs JUnit; the measurement route follows.",
+    "figure": "—",
+    "kind": "",
+    "caption": "",
+    "boundary": "Copy the short request into Claude; the repository supplies the build details. Tests must pass before the example is accepted.",
+    "other_content": "Build and run · copy and pasteWorkload runner — build and run its unit testsUse the Java specialist: build classroom/05-workloads.md\nin workspace. Run its narrated tests and example, then stop.cd workspace\nmvn -B -Dtest=ThreadComparisonTest verify"
+  },
+  {
+    "n": 52,
+    "title": "Thread comparison — add measurements and run",
+    "lead": "Add the comparison route to the validated runner. Run 120 identical tasks with 20 ms simulated waiting, three warmups and five measured rounds. Retain actual samples and medians; the full experiment can take half a minute.",
+    "figure": "—",
+    "kind": "",
+    "caption": "",
+    "boundary": "Copy the short request into Claude; the repository supplies the build details. Tests must pass before the example is accepted.",
+    "other_content": "Build and run · copy and pasteThread comparison — add measurements and runUse the Java specialist: build classroom/06-measurements.md\nin workspace. Run its narrated tests and example, then stop.cd workspace\nmvn -B -Dtest=ThreadComparisonTest verify\njava -jar target/concurrency-lab-1.0-SNAPSHOT.jar compare 120 20 5"
+  },
+  {
+    "n": 53,
+    "title": "Thread comparison — interpret the observed differences",
+    "lead": "This actual instructor run used Java 21.0.10 on an aarch64 Mac reporting sixteen processors. All strategies completed 120 tasks with matching checksums for each workload. The blocking case allows waits to overlap, while the pool admits only eight active workers. CPU samples include startup and instrumentation overhead. Use these numbers to explain this run; there is no required ranking or speedup.",
+    "figure": "—",
+    "kind": "",
+    "caption": "",
+    "boundary": "Inputs: 120 tasks, 20 ms wait, 50,000 CPU iterations; three warmups and five measured rounds. No memory usage was measured.",
+    "other_content": "Java concurrencyThread comparison — interpret the observed differencesModeBlocking median msCPU median msSEQUENTIAL2807.9054.661PLATFORM_POOL357.8701.097PLATFORM_PER_TASK29.1974.346VIRTUAL_PER_TASK22.2140.541"
+  },
+  {
+    "n": 54,
+    "title": "Dining philosophers — coordinate multiple exclusive resources",
+    "lead": "A worker can hold one resource while waiting for another. If every worker does this in a cycle, none can progress. Dining philosophers makes that ownership problem visible with five workers and five forks. First construct and recover the circular wait; then impose one acquisition order and observe bounded meals with exclusive fork ownership.",
+    "figure": "—",
+    "kind": "section",
+    "caption": "",
+    "boundary": "",
+    "other_content": "Java Practice 02 · feature and concurrency conceptDining philosophers — coordinate multiple exclusive resources"
+  },
+  {
+    "n": 55,
+    "title": "ReentrantLock — identify ownership, hold count and explicit release",
+    "lead": "A ReentrantLock has an owner and an acquisition count. Its owner can acquire it again; matching unlock calls reduce that count until the final release makes the lock available. Other contenders wait outside the protected operation. LockInterruptibly supports interruption during acquisition, and timed tryLock can report that acquisition failed. These calls make waiting policy explicit, while a finally block still supplies reliable release after success.",
+    "figure": "JC2.34",
+    "kind": "",
+    "figure_name": "lock-parts",
+    "caption": "Acquisition establishes ownership; matching release removes it. Reentrant acquisition needs matching unlocks before another worker can enter.",
+    "boundary": "Only the owner may unlock. A false timed tryLock result gives no ownership and requires no unlock; the default nonfair lock promises no arrival-order service.",
+    "other_content": "Java concurrencyReentrantLock — identify ownership, hold count and explicit releaseFigure JC2.34 — Acquisition establishes ownership; matching release removes it. Reentrant acquisition needs matching unlocks before another worker can enter."
+  },
+  {
+    "n": 56,
+    "title": "Dining philosophers — each worker waits for its neighbour",
+    "lead": "Deadlock means a group of tasks cannot progress because each waits for another in that group. Philosopher Pi needs forks Fi and F(i+1)%5. If every philosopher holds Fi before requesting the next fork, their requests close a circular wait. We will coordinate that state deliberately, record five first forks held, then interrupt and join every worker so the demonstration can finish.",
+    "figure": "JC2.35",
+    "kind": "",
+    "figure_name": "deadlock",
+    "caption": "Step 1 establishes five owners; step 2 adds five requests. The step 3 wait-for cycle explains why nobody can acquire a second fork and eat.",
+    "boundary": "A timeout alone does not establish deadlock. The coordinated ownership snapshot explains the cycle; recovery must release every acquired lock.",
+    "other_content": "Java concurrencyDining philosophers — each worker waits for its neighbourFigure JC2.35 — Step 1 establishes five owners; step 2 adds five requests. The step 3 wait-for cycle explains why nobody can acquire a second fork and eat."
+  },
+  {
+    "n": 57,
+    "title": "Interruption — recover the controlled circular wait",
+    "lead": "A classroom deadlock demonstration must finish safely. After coordinating five first-fork owners and their second-fork attempts, the caller interrupts every worker before joining any worker. Interruptible acquisition and finally blocks let workers stop waiting and release their actual locks. The caller then performs bounded joins and checks every worker’s liveness. Interruption requests recovery; observing termination establishes that cleanup completed.",
+    "figure": "JC2.36",
+    "kind": "",
+    "figure_name": "recovery",
+    "caption": "Record ownership, interrupt all, release held locks, join, then inspect liveness. The final workersStopped field is an observation after cleanup.",
+    "boundary": "An interrupt is cooperative, not a forceful stop. Release only locks actually acquired. Bounded join can return while a worker is alive, so the liveness check matters.",
+    "other_content": "Java concurrencyInterruption — recover the controlled circular waitFigure JC2.36 — Record ownership, interrupt all, release held locks, join, then inspect liveness. The final workersStopped field is an observation after cleanup."
+  }
+]

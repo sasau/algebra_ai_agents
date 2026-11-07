@@ -44,5 +44,188 @@
     "virtual-parts: reviewed palette, labels and connector arrowheads",
     "virtual-pinning: runnable V2 needs the occupied carrier, not monitor entry; separated capacity note",
     "virtual-pinning: reviewed palette, labels and connector arrowheads"
-  ]
+  ],
+  "thread_api_introduction": [
+    "runnable-create: explicit lambda-part meanings; instance worker.start rather than apparent static invocation",
+    "thread-create: split builder at token boundary, retained 18-unit labels, clarified task/reference and transition arrows",
+    "thread-methods: contained exception clause; explicit start branch; caller interruption does not establish worker liveness",
+    "thread-wait-cancel: timeout does not imply target is still running; request/wait/observation are distinct"
+  ],
+  "beginner_wording": {
+    "date": "2026-11-03",
+    "slides": 74,
+    "labels": {
+      "java-problems": {
+        "P0 owns F0": "A holds L1",
+        "P1 owns F1": "B holds L2",
+        "P0 waits F1": "A waits for L2",
+        "P1 waits F0": "B waits for L1"
+      },
+      "thread-create": {
+        "target = work to perform · name = diagnostic name": "target = Runnable task · name = thread label",
+        "worker holds the reference": "worker stores the reference",
+        "start() schedules task body": "worker.start(): new thread",
+        "on a platform worker; once only": "runs task.run(); start once"
+      },
+      "runnable-create": {
+        "one abstract method; no result": "one method to implement; no result",
+        "() = no parameters · -> = run body · { } = statements": "() = no inputs · -> = body follows · { } = statements"
+      },
+      "thread-methods": {
+        "2 worker eligible": "2 worker: task.run()",
+        "2 same stack: task body": "2 caller: task.run()",
+        "Body order not promised.": "Execution order can vary."
+      },
+      "thread-wait-cancel": {
+        "Waits up to the positive budget.": "Waits for up to millis > 0.",
+        "Returns normally either way;": "May return before worker ends;",
+        "Check isAlive; no stop request.": "Check isAlive(); does not stop it.",
+        "Requests cooperative cancel of target.": "Asks the target thread to stop.",
+        "may throw, clearing status.": "throws and clears the status.",
+        "1 interrupt request → 2 bounded join → 3 isAlive()": "1 interrupt() request → 2 timed join() → 3 isAlive()"
+      },
+      "thread-parts": {
+        "task = Runnable body": "task: Runnable object",
+        "body runs": "task.run()",
+        "start schedules": "new thread",
+        "Direct task.run(): ordinary call on the caller stack, no new thread.": "Direct task.run(): the calling thread runs the body; no new thread starts."
+      },
+      "thread-stall": {
+        "Nontermination,": "Worker never ends;"
+      },
+      "lifecycle-problem": {
+        "spawns thread": "starts new thread",
+        "spawn": "start",
+        "missing completion gap": "caller did not wait"
+      },
+      "lifecycle-solution": {
+        "no worker spawned": "no new thread starts",
+        "scheduled": "worker starts",
+        "happens-before": "changes visible after"
+      },
+      "rendezvous-parts": {
+        "reusable phase rendezvous": "reusable meeting point",
+        "No sleeps; no FIFO promise": "No sleeps; no order promise",
+        "Parties: 2 counts · wait: await()": "Signals needed: 2 · wait: await()"
+      },
+      "rendezvous-failure": {
+        "Missing participant: bounded teaching failure": "Missing participant: wait with a time limit",
+        "Illustrative alternative: bounded": "Repair: limit the wait",
+        "Inspect Futures; clean up": "Check task failures; clean up"
+      },
+      "race": {
+        "Local snapshot": "Worker’s saved value",
+        "A calc snapshot+1": "A adds 1 locally",
+        "B calc snapshot+1": "B adds 1 locally"
+      },
+      "monitor-parts": {
+        "Entry contenders": "Threads trying to enter",
+        "Entry area is conceptual, not a Java queue.": "Entry area shows waiting threads; no queue order is promised."
+      },
+      "monitor-stall": {
+        "Entry contenders:": "Threads waiting:",
+        "dependency required (not deadlock)": "wait needed (no deadlock cycle)"
+      },
+      "monitor": {
+        "One legal order; B could win first.": "One possible order; B could enter first."
+      },
+      "atomic-parts": {
+        "One method call can be atomic; several calls are not a transaction.": "One atomic call is indivisible; separate calls leave gaps for other threads."
+      },
+      "atomic-check-act": {
+        "Invariant tickets ≥ 0 breaks": "Rule tickets ≥ 0 breaks",
+        "Each call atomic; whole if is not": "Each call atomic; whole check is not",
+        "same monitor around whole check+decrement, or Semaphore permits; retries give no starvation-freedom claim.": "lock the whole check + decrement, or use Semaphore permits; retries do not guarantee every thread wins."
+      },
+      "atomic": {
+        "AtomicInteger.incrementAndGet: one indivisible transition each": "AtomicInteger.incrementAndGet(): one indivisible increment per call",
+        "No FIFO promise; return order is not guaranteed.": "Calls may return in a different order; no first-come guarantee.",
+        "Covers one counter, not multi-field transactions.": "Protects this counter; several fields need more coordination."
+      },
+      "executor-parts": {
+        "2 workers; unbounded queue": "2 workers; queue can grow",
+        "Future receipt": "Future result",
+        "W1 runningA": "W1 runs A",
+        "W2 runningB": "W2 runs B",
+        "finish pending": "finish tasks"
+      },
+      "executor-overload": {
+        "Latency and heap pressure grow": "Delays and memory use grow",
+        "Two workers ≠ bounded backlog": "Two workers ≠ limited queue"
+      },
+      "executor-starvation": {
+        "Starved: nested submit + get": "Deadlock: parent waits for child",
+        "submit kids": "submit child",
+        "More threads is not a proof.": "More workers may still deadlock."
+      },
+      "future-parts": {
+        "Future = receipt for an outcome, not a worker thread": "Future holds a task result or failure; it is not a worker thread",
+        "receipt returned": "Future returned",
+        "then runs apart": "then worker runs it",
+        "isDone is NOT success": "isDone() does not prove success",
+        "aggregator: sees isCancelled,": "aggregator sees isCancelled(),"
+      },
+      "future-stuck": {
+        "bounded wait, handle liveness": "timed wait, check isAlive()",
+        "finite units, interruptible waits": "short work, interruptible waits"
+      },
+      "virtual-parts": {
+        "Task identity persists across unmount and remount.": "The virtual thread keeps its identity when it pauses and resumes."
+      },
+      "virtual-pinning": {
+        "Separate bound: cheap threads do not create connections.": "Separate limit: more threads do not create connections.",
+        "Semaphore(2) gates 20 virtual tasks to 2 resource users.": "Semaphore(2): 20 virtual tasks, at most 2 resource users."
+      },
+      "virtual": {
+        "still owns its own OS thread": "keeps its operating-system thread"
+      },
+      "semaphore-parts": {
+        "no FIFO promise": "no order promise"
+      },
+      "semaphore-leak": {
+        "Same acquired permit is paired": "Acquired permit is returned"
+      },
+      "semaphore": {
+        "one interleaving, no FIFO claim": "one possible order, not guaranteed"
+      },
+      "experiment": {
+        "wait 20ms or 50,000 loop": "20 ms wait or 50,000 iterations",
+        "4 modes, 4 medians": "one middle value per mode"
+      },
+      "lock-parts": {
+        "explicit unlock, no FIFO claim": "explicit unlock; order may vary"
+      },
+      "deadlock": {
+        "Deadlock: five-philosopher circular wait (Pi needs Fi, F(i+1)%5)": "Deadlock: five philosophers each hold one fork and wait for the next"
+      },
+      "recovery": {
+        "then isAlive": "then isAlive()"
+      },
+      "dining": {
+        "Order prevents deadlock; starvation can remain.": "Order prevents deadlock; some workers may still miss turns."
+      },
+      "queue-parts": {
+        "Lock released while waiting; no outer monitor": "Waiting releases the internal lock; no extra lock is needed"
+      },
+      "queue-outer-lock": {
+        "C needs appLock. Queue works.": "C needs appLock to call take()."
+      },
+      "queue": {
+        "Capacity-2 queue: one possible interleaving": "Capacity-2 queue: one possible order of thread actions"
+      },
+      "cpu": {
+        "seeds differ": "task IDs differ",
+        "Simplified: real scheduling can time-slice. Long overflow intended.": "Simplified: real threads may take turns. long overflow is intentional."
+      }
+    },
+    "review": [
+      "start() is invoked by the caller; the new platform worker executes default Thread.run(), which calls the supplied task.run().",
+      "Direct platform Thread.run() stays on the caller; directly calling virtual Thread.run() does not execute its task.",
+      "Thread termination and visibility do not establish successful task completion.",
+      "The forced race attempts only two increments; repaired console counters use 1000 per worker, tests 10000.",
+      "shutdownNow requests interruption of running tasks and removes queued tasks; termination still requires observation.",
+      "Defined novice terminology, expanded CAS/JMH and separated atomic calls from whole decisions.",
+      "Shortened timing/queue copy after zoom comparison and wrapped the builder expression for mobile HTML."
+    ]
+  }
 }

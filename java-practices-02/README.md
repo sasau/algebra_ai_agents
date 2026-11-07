@@ -116,11 +116,17 @@ Java feature and concurrency guarantee. Instructor output is not student evidenc
 
 ## Graphical Java mechanisms — 2026-11-03
 
-The companion has 70 slides and 37 Claude-drawn diagrams. Mechanism introductions
+The companion has 74 slides and 41 Claude-drawn diagrams. Mechanism introductions
 show parts, protected regions and waiting points; failure/mitigation panels lead
 into the numbered execution examples. Open the [detailed HTML reference](reference/explanation/project.html)
-or the [figure/slide index](reference/explanation/TRACES.md). All 16 preceding
-execution traces and the eating animation remain. The core is 120 minutes with
+or the [figure/slide index](reference/explanation/TRACES.md). All 37 preceding
+mechanism/execution figures and the eating animation remain. The core is 120 minutes with
 additional failure cases for discussion/follow-up. Narrated Java tests and their
 retained validation evidence are unchanged. New failure diagrams are conceptual
 scenarios rather than extra runnable code or test claims.
+
+Slides 6–9 now introduce Thread construction, Runnable/lambda syntax, start/run/join,
+and bounded waiting/cancellation/state methods before the original thread-parts slide.
+The illustrated declarations were checked with Java 21 javap.
+
+2026-11-03: all 74 slides now use beginner explanations, with precise start/run/join behaviour, defined terms, simpler diagram labels and explicit limits. The HTML reference matches. Java implementation, tests, commands and recorded results are unchanged.
