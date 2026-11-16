@@ -1,0 +1,5 @@
+Apache Maven 3.10.0 (c43a36b8d67be7e0805a411bc0898af1a51f5472)
+Maven home: /opt/homebrew/Cellar/maven/3.10.0/libexec
+Java version: 21.0.10, vendor: Eclipse Adoptium, runtime: /Users/auscumlic/.sdkman/candidates/java/21.0.10-tem
+Default locale: en_HR, platform encoding: UTF-8, time zone: Europe/Zagreb
+OS name: "mac os x", version: "26.7.2", arch: "aarch64", family: "mac"

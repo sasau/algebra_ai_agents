@@ -1,0 +1,11 @@
+{
+  "platform": "macOS-26.7.2-arm64-arm-64bit",
+  "command_exit": 1,
+  "totals": {
+    "tests": 0,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "suites": []
+}

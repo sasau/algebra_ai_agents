@@ -1,0 +1,66 @@
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective settings
+[WARNING] 'profiles.profile[artifactory].repositories.repository.id' must be unique but found duplicate repository with id artifactory.ib-ci.com @ /Users/auscumlic/.m2/settings.xml
+[WARNING] 
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ------------------< edu.algebra:java-03-http-server >-------------------
+[INFO] Building java-03-http-server 1.0-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] Loaded 24406 auto-discovered prefixes for remote repository central (prefixes-central.txt)
+[INFO] 
+[INFO] --- resources:3.5.0:resources (default-resources) @ java-03-http-server ---
+[INFO] skip non existing resourceDirectory /private/tmp/java-practice-04-prep.3GWVJg/java-practice-04/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ java-03-http-server ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 13 source files with javac [debug release 21] to target/classes
+[INFO] 
+[INFO] --- resources:3.5.0:testResources (default-testResources) @ java-03-http-server ---
+[INFO] skip non existing resourceDirectory /private/tmp/java-practice-04-prep.3GWVJg/java-practice-04/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ java-03-http-server ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 11 source files with javac [debug release 21] to target/test-classes
+[INFO] 
+[INFO] --- surefire:3.5.3:test (default-test) @ java-03-http-server ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running edu.algebra.http.SessionHttpTest
+[INFO] Tests run: 20, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 4.413 s -- in edu.algebra.http.SessionHttpTest
+[INFO] Running edu.algebra.http.SessionStoreTest
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.016 s -- in edu.algebra.http.SessionStoreTest
+[INFO] Running edu.algebra.http.AdmissionTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.007 s -- in edu.algebra.http.AdmissionTest
+[INFO] Running edu.algebra.http.AppTest
+[INFO] Tests run: 13, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.010 s -- in edu.algebra.http.AppTest
+[INFO] Running edu.algebra.http.RoutingTest
+[INFO] Tests run: 26, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 6.218 s -- in edu.algebra.http.RoutingTest
+[INFO] Running edu.algebra.http.EchoTest
+[INFO] Tests run: 11, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.089 s -- in edu.algebra.http.EchoTest
+[INFO] Running edu.algebra.http.ServerLifecycleTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.011 s -- in edu.algebra.http.ServerLifecycleTest
+[INFO] Running edu.algebra.http.LoadProbeTest
+[INFO] Tests run: 20, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 4.113 s -- in edu.algebra.http.LoadProbeTest
+[INFO] Running edu.algebra.http.ConcurrencyTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.065 s -- in edu.algebra.http.ConcurrencyTest
+[INFO] Running edu.algebra.http.ResilienceTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 4.051 s -- in edu.algebra.http.ResilienceTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 107, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] 
+[INFO] --- jar:3.4.2:jar (default-jar) @ java-03-http-server ---
+[INFO] Building jar: /private/tmp/java-practice-04-prep.3GWVJg/java-practice-04/target/java-03-http-server.jar
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  23.367 s
+[INFO] Finished at: 2026-11-16T09:44:10+01:00
+[INFO] ------------------------------------------------------------------------

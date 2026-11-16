@@ -1,0 +1,40 @@
+[
+  {
+    "command": [
+      "java",
+      "-version"
+    ],
+    "cwd": "/private/tmp/java-practice-04-prep.3GWVJg/java-practice-04",
+    "started_utc": "2026-11-16T08:43:45.273242+00:00",
+    "elapsed_seconds": 0.031,
+    "exit_code": 0,
+    "stdout": "java-version.stdout.txt",
+    "stderr": "java-version.stderr.txt"
+  },
+  {
+    "command": [
+      "mvn",
+      "-version"
+    ],
+    "cwd": "/private/tmp/java-practice-04-prep.3GWVJg/java-practice-04",
+    "started_utc": "2026-11-16T08:43:45.304368+00:00",
+    "elapsed_seconds": 0.609,
+    "exit_code": 0,
+    "stdout": "maven-version.stdout.txt",
+    "stderr": "maven-version.stderr.txt"
+  },
+  {
+    "command": [
+      "mvn",
+      "-B",
+      "-o",
+      "verify"
+    ],
+    "cwd": "/private/tmp/java-practice-04-prep.3GWVJg/java-practice-04",
+    "started_utc": "2026-11-16T08:43:45.913261+00:00",
+    "elapsed_seconds": 24.181,
+    "exit_code": 0,
+    "stdout": "maven-verify.stdout.txt",
+    "stderr": "maven-verify.stderr.txt"
+  }
+]

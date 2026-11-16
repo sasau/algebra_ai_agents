@@ -1,0 +1,8 @@
+target/
+cookies.txt
+.idea/
+.vscode/
+*.iml
+*.log
+*.pid
+.DS_Store
